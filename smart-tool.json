@@ -1,0 +1,5 @@
+{
+  "manifest": "src/unslopper/SMART_TOOL.md",
+  "cli_argv": ["unslopper"],
+  "deterministic_smoke": ["manifest"]
+}
