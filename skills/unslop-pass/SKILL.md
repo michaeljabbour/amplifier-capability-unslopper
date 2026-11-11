@@ -7,6 +7,7 @@ description: >-
   generated", "reads as design slop", needs "unslopping", or an audit found specific problems worth fixing.
 license: MIT
 metadata:
+  version: "0.2.0"
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
 ---
 

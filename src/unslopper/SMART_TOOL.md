@@ -1,7 +1,7 @@
 ---
 smart_tool_format: 1
 name: unslopper
-version: 0.1.0
+version: 0.2.0
 description: >-
   Removes AI design defaults from visual work: audits HTML, CSS or screenshots against twenty slop indicators, applies the fixes, commits a brief to a three-color direction, generates textured backgrounds, and teaches the vocabulary needed to direct a model
 use_cases:

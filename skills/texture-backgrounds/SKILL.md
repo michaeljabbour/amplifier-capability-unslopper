@@ -4,6 +4,7 @@ description: >-
   Replaces a flat fill or a purple gradient with a textured background from the subject's own world, as self-contained CSS or a small seeded canvas script in the design's palette, under 3 KB, with text on top kept at WCAG AA. Knows the course's twenty-two textures (felt, fluted glass, blueprint grids, paper, halftone, contour lines, water ripples and the rest), recommends two or three for a subject and says why, and warns when dithering, ASCII or a gradient is used as decoration. Use when someone requests a texture or asks to replace a background that does not serve the design, or asks for a background texture, grain, noise, pattern or a textured hero. Triggers on "background texture", "textured background", "grainy gradient", "noise texture", "background pattern".
 license: MIT
 metadata:
+  version: "0.2.0"
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
   source: Unslop School, lesson 6, after Charles Liu's short videos on AI design
 ---
