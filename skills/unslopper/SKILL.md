@@ -11,6 +11,7 @@ description: >-
   "AI slop design", "unslop this page", "unslop this design".
 license: MIT
 metadata:
+  version: "0.2.0"
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
 ---
 

@@ -11,6 +11,7 @@ description: >-
   runs the lesson by hand from references/terms.md otherwise.
 license: MIT
 metadata:
+  version: "0.2.0"
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
 ---
 

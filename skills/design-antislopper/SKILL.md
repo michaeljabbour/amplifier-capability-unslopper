@@ -9,6 +9,7 @@ description: >-
   when it is installed and runs the same method by hand otherwise.
 license: MIT
 metadata:
+  version: "0.2.0"
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
 ---
 

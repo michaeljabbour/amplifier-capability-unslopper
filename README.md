@@ -34,9 +34,15 @@ uv add "unslopper[all] @ git+https://github.com/michaeljabbour/amplifier-capabil
 To update:
 
 ```bash
-npx skills update unslopper   # add -g for global installs
+npx skills@latest update -p unslopper design-slop-audit unslop-pass palette-director design-terms-tutor texture-backgrounds design-antislopper
 uv tool upgrade unslopper
+unslopper --version
 ```
+
+Run in each project where the skills are installed; use `-g` instead of `-p` for global installs.
+Update only installed skills and preserve local customizations. The skills and Python tool are separate:
+the current release is **0.2.0**, recorded in the CLI, manifest and each skill's metadata.
+Pinned Git installs need their source reference updated too. Start a fresh agent session after updating.
 
 To uninstall:
 

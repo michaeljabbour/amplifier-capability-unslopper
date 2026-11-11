@@ -4,6 +4,7 @@ description: >-
   Turns a short product or brand brief into a committed visual direction before any layout is built: one concrete scene, three colours with roles (ground, light, signal) that pass WCAG AA, a display and body face from Google Fonts the subject would use on its own signage, one hero image idea, and a :root block of CSS tokens. Use before asking a model to design a page, when a page has no committed visual direction, or when a product, brand or page needs its colours and type chosen for it. Triggers when a product, brand or page needs a colour palette, a visual direction, brand colours, a colour scheme, a type pairing or design tokens chosen for it.
 license: MIT
 metadata:
+  version: "0.2.0"
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
   source: Unslop School, lesson 5, after Charles Liu's short videos on AI design
 ---

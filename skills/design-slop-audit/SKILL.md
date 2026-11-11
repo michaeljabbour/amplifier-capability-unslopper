@@ -8,6 +8,7 @@ description: >-
   one. Triggers on "design slop", "this design looks AI generated", "audit this design for AI defaults", "AI slop page".
 license: MIT
 metadata:
+  version: "0.2.0"
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
 ---
 
