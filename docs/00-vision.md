@@ -6,10 +6,10 @@ The material comes from the Unslop School course in [unslop-school.html](unslop-
 
 ## Goals
 
-- `audit` and `scan` tell a person which defaults a design shows, with evidence they can check, a score out of twenty and the three fixes to make first. `scan` is static and free; `audit` adds a model's judgment of whether a choice was deliberate.
+- `audit` and `scan` tell a person which defaults a design shows, with evidence they can check, a score out of twenty and the three fixes to make first. `scan` is static and free: its score counts candidate indicators, not visual quality. `audit` adds a model's judgment of whether a choice was deliberate; confirm actual problems before rewriting.
 - `unslop` turns that reading into a diff that keeps the content, brand colours and layout intent, and only writes when asked.
 - `direct` and `contrast` take a design past clean to committed: one concrete scene, three colours with roles that pass WCAG AA, type the subject would use, and CSS tokens.
-- `texture` replaces flat fills and purple gradients with a background from the subject's world, as code under 3 KB that keeps text readable.
+- `texture` creates an optional background from the subject's world when requested, as code under 3 KB that keeps text readable.
 - `tutor` teaches the twenty terms with live demos, so a non-designer can ask for what they want by name.
 - `antislop` chains the rest into one entry point, reporting a before and after score.
 - `reference` hands the course material to any caller as data, and `route` names the capability and Agent Skill a job calls for, so an agent never has to guess.

@@ -92,6 +92,11 @@ Agent Skills for each capability live under [skills/](skills/): `unslopper` (the
 
 See the [CLI reference](docs/02-cli.md) for every flag and the [library reference](docs/01-library.md) for the Python surface.
 
+`scan` reports candidate indicators, not a visual-quality grade. URL scans include bounded same-origin
+linked stylesheets and report loaded, skipped and failed assets. Local and inline scans stay offline.
+Check coverage warnings, confirm candidates in the rendered page, and preserve functional controls before
+applying fixes. See [scan](docs/capabilities/scan.md) for the supported CSS scope and limits.
+
 ## Website
 
 [michaeljabbour.github.io/amplifier-capability-unslopper](https://michaeljabbour.github.io/amplifier-capability-unslopper/) presents the tool with the unedited outputs of one recorded run of every capability, and serves the course as `course.html`, generated from [docs/unslop-school.html](docs/unslop-school.html). The source is `site/`; the standard library alone builds it into `_site/`:

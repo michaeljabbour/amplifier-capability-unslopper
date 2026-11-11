@@ -22,6 +22,7 @@ from unslopper.schemas import (
     Finding,
     Layer,
     ReasoningEffort,
+    ScanAsset,
     ScanReport,
     UnslopperError,
 )
@@ -115,7 +116,7 @@ def scan_source(loaded: Source) -> ScanReport:
     """The deterministic reading of loaded text: HTML runs every check, CSS the rule-based ones."""
     match loaded.kind:
         case "html":
-            document = parse_html(loaded.text)
+            document = parse_html(loaded.text, loaded.stylesheets)
         case "css":
             document = parse_css(loaded.text)
         case "text":
@@ -131,13 +132,31 @@ def scan_source(loaded: Source) -> ScanReport:
         verdict=knowledge.verdict(len(hits)),
         hits=hits,
         fixes_first=[fix.name for fix in knowledge.fixes_for(names)],
+        source_kind=loaded.kind,
+        assets=[ScanAsset(**asset._asdict()) for asset in loaded.assets],
+        warnings=list(
+            dict.fromkeys(
+                [
+                    "Static candidates only: no rendered layout, JavaScript state, or complete browser cascade was evaluated.",
+                    *loaded.warnings,
+                    *document.warnings,
+                ]
+            )
+        ),
     )
 
 
 def render_prompt(loaded: Source | None, scanned: ScanReport | None, image_name: str | None = None) -> str:
     """The audit prompt: the catalog, the deliberate-versus-default rule, the source or image, the scan and the contract."""
     text = loaded.text if loaded is not None else ""
-    truncated = len(text) > MAX_SOURCE_CHARS
+    linked_stylesheets: list[dict[str, str]] = []
+    total_chars = len(text)
+    remaining = max(0, MAX_SOURCE_CHARS - len(text))
+    for stylesheet in loaded.stylesheets if loaded is not None else ():
+        total_chars += len(stylesheet.text)
+        linked_stylesheets.append({"label": stylesheet.label, "text": stylesheet.text[:remaining]})
+        remaining = max(0, remaining - len(stylesheet.text))
+    truncated = total_chars > MAX_SOURCE_CHARS
     environment = liquid.Environment(loader=liquid.FileSystemLoader(HERE), undefined=liquid.StrictUndefined)
     return environment.get_template(PROMPT_TEMPLATE).render(
         indicators=[entry.model_dump() for entry in knowledge.INDICATORS],
@@ -148,8 +167,9 @@ def render_prompt(loaded: Source | None, scanned: ScanReport | None, image_name:
         source_kind=loaded.kind if loaded is not None else "",
         source_text=text[:MAX_SOURCE_CHARS],
         truncated=truncated,
-        total_chars=len(text),
+        total_chars=total_chars,
         kept_chars=MAX_SOURCE_CHARS,
+        linked_stylesheets=linked_stylesheets,
         scan_json=scanned.model_dump_json(indent=2) if scanned is not None else "",
         image_name=image_name or "",
     )

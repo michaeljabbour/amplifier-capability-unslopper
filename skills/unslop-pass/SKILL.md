@@ -4,7 +4,7 @@ description: >-
   Removes AI design defaults from an existing HTML or CSS page or component by applying twenty fixes
   in four moves (Subtract, Focus, Systematize, Respond) while keeping the content, brand colours,
   layout intent and every link and form. Shows a diff before writing. Use when a page or component "looks AI
-  generated", "reads as design slop", needs "unslopping", or a design audit scored it three or more out of twenty.
+  generated", "reads as design slop", needs "unslopping", or an audit found specific problems worth fixing.
 license: MIT
 metadata:
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
@@ -41,13 +41,15 @@ print(result.diff)
 ```
 
 Always run without `--write` first, read the diff, then rerun with `--write`. Never skip the review
-unless the user has asked for an unattended run. Report the before and after score from the result.
+unless the user has asked for an unattended run. Report the before and after score as candidate counts,
+not a visual-quality grade. Retained legacy verdicts are not rewrite gates; review coverage warnings first.
 
 Install, if missing: `uv tool install "unslopper[all] @ git+https://github.com/michaeljabbour/amplifier-capability-unslopper"`.
 
 ## Doing the pass by hand
 
-When the tool is not available, work the file yourself in this order. Finish one move before
+When the tool or model credentials are unavailable, label the work a manual pass, not a successful tool run.
+Work the file yourself in this order, applying only fixes justified by evidence. Finish one move before
 starting the next. The canonical text of each fix is `unslopper reference fixes`, or
 `knowledge.py` in the repository.
 
@@ -95,10 +97,12 @@ Design the moments between states.
 
 - Never invent new content claims. Rewrite copy only to be shorter and more specific.
 - Keep every existing link and form behaviour working. Before and after, list the `href`, `src` and `action` values and the `<a>` and `<form>` counts; nothing may go missing. A `<link>` to a stylesheet or font is the one exception: it may change when a fix replaces the font.
-- Keep scripts and the ids and classes they rely on.
+- Keep scripts and the ids and classes they rely on, functional navigation, filters, keyboard focus and accessible names. Hidden empty/loading/error states are not filler.
+- Preserve intentional sentence headings, punctuation, coherent palettes and typography. Flat backgrounds are not defects; new colours and texture are optional, not required.
 - Respect `prefers-reduced-motion`.
 - Show the diff and wait for approval before writing, unless told to run unattended.
-- Finish by re-scanning (`unslopper scan page.html` when available) and reporting the before and after score.
+- Re-scan (`unslopper scan page.html` when available), disclose missing CSS and other coverage limits, and report before/after candidate counts.
+- Before claiming improvement, compare rendered desktop/mobile views and test navigation, filters, forms, keyboard focus and empty/loading/error states. Report any checks not performed; retained link counts alone do not prove behavior.
 
 ## A worked example
 

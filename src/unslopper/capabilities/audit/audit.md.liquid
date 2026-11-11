@@ -25,6 +25,15 @@ game, a real file path inside a terminal tool's own output. Flag it as a default
 are still reported, with `deliberate` true, so the reader can see what you left alone; they do not count toward
 the score.
 
+# Context and limits
+
+Functional navigation, filters, real status badges and hidden empty/loading/error states are not filler.
+Preserve intentional sentence headings and their punctuation. Flat backgrounds, a system font and a coherent
+existing palette are not defects by themselves; do not prescribe new colours or texture just to change them.
+Source-only review cannot verify runtime behavior, keyboard focus or rendered desktop/mobile layouts.
+Disclose missing assets, unsupported CSS, truncation and untested states in the summary. A static candidate
+count and its legacy verdict are not a visual-quality grade or an automatic rewrite gate.
+
 # The fixes
 
 Name fixes from this catalog only, by their exact name:
@@ -48,6 +57,13 @@ judge only what you can see and say in the summary that the source was cut.{% en
 {{ source_text }}
 ```
 
+{% for stylesheet in linked_stylesheets %}
+## Linked stylesheet: {{ stylesheet.label }}
+
+```css
+{{ stylesheet.text }}
+```
+{% endfor %}
 # What static heuristics found
 
 A deterministic scan already ran over the same source. Each hit is evidence to confirm or reject, not a verdict:
