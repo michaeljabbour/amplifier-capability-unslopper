@@ -11,6 +11,7 @@ from unslopper.schemas import UnslopperError
     [
         ("this landing page looks AI generated, what is wrong with it", "audit", "design-slop-audit"),
         ("here is a screenshot, is it slop", "audit", "design-slop-audit"),
+        ("is this page slop", "audit", "design-slop-audit"),
         ("quick static check of this css", "scan", "design-slop-audit"),
         ("fix this page so it looks less generic", "unslop", "unslop-pass"),
         ("give the coffee roaster site a palette and fonts", "direct", "palette-director"),

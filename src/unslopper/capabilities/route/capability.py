@@ -66,6 +66,7 @@ ROUTES: tuple[tuple[RouteOption, str, tuple[str, ...]], ...] = (
             "review",
             "score",
             "is this slop",
+            "slop",
             "looks ai",
             "looks generated",
             "generic",
