@@ -1,7 +1,7 @@
 ---
 name: texture-backgrounds
 description: >-
-  Replaces a flat fill or a purple gradient with a textured background from the subject's own world, as self-contained CSS or a small seeded canvas script in the design's palette, under 3 KB, with text on top kept at WCAG AA. Knows the course's twenty-two textures (felt, fluted glass, blueprint grids, paper, halftone, contour lines, water ripples and the rest), recommends two or three for a subject and says why, and warns when dithering, ASCII or a gradient is used as decoration. Use when a page background is flat, when a design shows the purple-to-blue gradient, when someone asks for a background texture, grain, noise, pattern or a textured hero. Triggers on "background texture", "textured background", "grainy gradient", "noise texture", "background pattern".
+  Replaces a flat fill or a purple gradient with a textured background from the subject's own world, as self-contained CSS or a small seeded canvas script in the design's palette, under 3 KB, with text on top kept at WCAG AA. Knows the course's twenty-two textures (felt, fluted glass, blueprint grids, paper, halftone, contour lines, water ripples and the rest), recommends two or three for a subject and says why, and warns when dithering, ASCII or a gradient is used as decoration. Use when someone requests a texture or asks to replace a background that does not serve the design, or asks for a background texture, grain, noise, pattern or a textured hero. Triggers on "background texture", "textured background", "grainy gradient", "noise texture", "background pattern".
 license: MIT
 metadata:
   repository: https://github.com/michaeljabbour/amplifier-capability-unslopper
@@ -10,9 +10,10 @@ metadata:
 
 # Texture backgrounds
 
-Flat fills read as unfinished and a purple gradient reads as AI. Texture is the middle path, and
-it works when it comes from the subject's world: a blueprint grid for engineering, paper for
-publishing, felt for games. This skill is that method. Run it by hand, or let the tool run it.
+Flat fills can be intentional and complete. Add texture only when requested and when it serves the design,
+not as an automatic cure for a scan score. It works best when it comes from the subject's world: a blueprint
+grid for engineering, paper for publishing, felt for games. Preserve a coherent palette and check rendered
+desktop/mobile readability and keyboard focus after applying it. Run this method by hand, or use the tool.
 
 ## Prefer the tool
 

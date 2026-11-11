@@ -3,8 +3,8 @@ Systematize, Respond, through an agent that edits a copy of the file in a scratc
 keeps the content, brand colours, layout intent and every link and form, shortens copy without
 inventing claims, and returns the change as a unified diff with a deterministic scan of the file
 before and after. Without `--write` nothing on disk changes: the diff is the deliverable, to review
-before running again with `--write`. Reach for it after `scan` or `audit` has shown a score worth
-fixing; for the whole pipeline with direction and texture, use `antislop` instead.
+before running again with `--write`. Reach for it after confirming problems worth fixing, not merely
+a scan score; for the whole pipeline with direction and texture, use `antislop` instead.
 
 ## Arguments
 
@@ -33,8 +33,7 @@ result = unslop(page, audit_report=report)  # the audit's findings guide the pla
 print(result.diff)
 for change in result.plan:
     print(change.move, change.fix, change.change)
-if result.after.score < result.before.score:
-    unslop(page, write=True, audit_report=report)
+# Review the diff, coverage warnings, rendered layouts and interactions before writing.
 ```
 
 ## Result
@@ -43,7 +42,8 @@ if result.after.score < result.before.score:
 `diff` (unified, labelled `a/<name>` and `b/<name>`), `before` and `after` (`ScanReport`s with
 `score`, `verdict`, `hits`, `fixes_first`; `after` is a scan of the edited text), `written` (true
 only with `--write`) and `notes` (what to check by hand: shortened copy, the accent chosen, states
-that need real data). The `after` score is deterministic, so a drop is evidence, not opinion.
+that need real data). The deterministic score counts candidates. A drop is not proof of better
+design or working behavior; compare equivalent coverage and verify the rendered result.
 
 ## Failures
 

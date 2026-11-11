@@ -1,4 +1,4 @@
-name: Check the website
+name: Check the tool and website
 
 on:
   push:
@@ -9,6 +9,24 @@ permissions:
   contents: read
 
 jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install uv and locked development dependencies
+        run: |
+          python3 -m pip install 'uv>=0.13,<0.14'
+          uv sync --frozen --all-extras --all-groups
+      - name: Lint, format, type check, and test
+        run: |
+          uv run --frozen ruff check .
+          uv run --frozen ruff format --check .
+          uv run --frozen ty check .
+          uv run --frozen pytest
   check:
     runs-on: ubuntu-24.04
     steps:

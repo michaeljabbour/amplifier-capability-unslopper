@@ -1,20 +1,23 @@
 `scan` reads HTML or CSS as text and reports which of the twenty slop indicators static heuristics
 can see, each with evidence a person can check: the selector or element, its line number, and the
-quoted text or CSS value. No model, no credentials, no network beyond fetching `--url`. Use it as a
-free first pass before `unslopper audit`, as a gate in a script, or to re-check a file after a fix.
+quoted text or CSS value. No model or credentials. Network access is limited to URL input and its
+eligible linked CSS. Use it as a free first pass before `unslopper audit` or to re-check candidates
+after a fix. The score counts candidate indicators, not visual quality; never use it alone as a rewrite gate.
 
 It is conservative: a false positive is worse than a miss, so slight tracking on display type,
 monospace inside code, one gradient in warm colours, and a single terminal block are left alone.
 What it cannot see, such as copy that restates a heading in other words or a screenshot, is the
-`audit` capability's job. Only inline `<style>` blocks, `style` attributes and Google Fonts
-`<link>` hrefs are read; external stylesheets are not fetched.
+`audit` capability's job. URL input includes same-origin linked CSS, up to 16 assets of 1 MiB each
+(page limit: 4 MiB). Cross-origin, conditional, alternate, disabled and imported CSS is skipped
+with reasons. Local and inline inputs stay offline and disclose unloaded linked CSS. HTML checks
+use DOM context and basic cascade handling, not a browser or runtime; unsupported CSS produces warnings.
 
 ## Arguments
 
 Exactly one of the three:
 
 - `PATH`: an `.html`, `.htm` or `.css` file.
-- `--url TEXT`: fetch a page over http(s) and scan its HTML.
+- `--url TEXT`: fetch HTML or CSS over http(s); HTML also gathers bounded same-origin linked CSS.
 - `--source TEXT`: inline HTML or CSS; the kind is told from its shape.
 
 A `.css` file or inline stylesheet runs only the rule-based checks. Plain text that is neither fails
@@ -43,7 +46,11 @@ for hit in report.hits:
 of 20), `verdict` (the course's reading of that count), `hits` and `fixes_first`. Each hit is a
 `ScanHit` with `indicator`, `layer` (Type, Surface, Structure or Content), `evidence` (up to eight
 `Evidence` entries with `location` and `detail`) and `fix_ids`. `fixes_first` lists the fix names the
-hits call for, in the course's priority order and without repeats.
+hits call for, in the course's priority order and without repeats. The legacy `verdict` is retained
+for compatibility, not a visual-quality judgment. Coverage fields: `analysis_kind` is
+`static_candidates`, `source_kind` is `html` or `css`, `assets` lists `url`, `status`, `reason` and
+`bytes_read`, and `warnings` lists limitations. Disclose partial coverage when reporting results.
+A lower count alone proves no improvement: check rendered desktop/mobile views and interactions.
 
 ## Failures
 

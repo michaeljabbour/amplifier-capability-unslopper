@@ -139,14 +139,19 @@ def instrument_serif(document: Document) -> list[Evidence]:
 def excessive_italics(document: Document) -> list[Evidence]:
     evidence: list[Evidence] = []
     for heading in document.headings():
-        italics = [node for node in heading.walk() if node is not heading and node.tag in {"em", "i"}]
+        italics = [
+            node
+            for node in heading.walk()
+            if node is not heading and node.tag in {"em", "i"} and not document.hidden(node)
+        ]
         if not italics:
             continue
-        italic_text = " ".join(node.text() for node in italics)
-        if len(italic_text) < len(heading.text()):
+        italic_text = " ".join(document.text(node) for node in italics)
+        if len(italic_text) < len(document.text(heading)):
             evidence.append(
                 Evidence(
-                    location=heading.describe(), detail=f"{quote(heading.text())} with {quote(italic_text)} in italics"
+                    location=heading.describe(),
+                    detail=f"{quote(document.text(heading))} with {quote(italic_text)} in italics",
                 )
             )
     for source in document.declared():
@@ -208,7 +213,7 @@ def all_caps_subtitles(document: Document) -> list[Evidence]:
             continue
         if is_eyebrow(document, element) or not is_small(document.font_size(element)):
             continue
-        text = element.own_text() or element.text()
+        text = element.own_text() or document.text(element)
         if shouting(text) or (document.style(element).get("text-transform", "").lower() == "uppercase" and text):
             evidence.append(Evidence(location=element.describe(), detail=quote(text)))
     return evidence
@@ -218,7 +223,7 @@ def periods_in_titles(document: Document) -> list[Evidence]:
     evidence: list[Evidence] = []
     ending: list[Evidence] = []
     for heading in document.headings():
-        text = heading.text()
+        text = document.text(heading)
         if not text.endswith("."):
             continue
         sentences = [part.strip() for part in re.split(r"[.!?](?:\s+|$)", text) if part.strip()]
@@ -363,8 +368,8 @@ def dithering(document: Document) -> list[Evidence]:
         if "dither" in name.lower()
     ]
     evidence.extend(
-        Evidence(location=rule.where(), detail="selector names dithering")
-        for rule in document.rules
+        Evidence(location=rule.where, detail="selector names dithering")
+        for rule in document.declared()
         if "dither" in rule.selector.lower()
     )
     evidence.extend(
@@ -383,7 +388,7 @@ def ascii_images(document: Document) -> list[Evidence]:
             continue
         if element.tag != "pre" or any(ancestor.tag == "pre" for ancestor in element.ancestors()):
             continue
-        text = element.text()
+        text = document.text(element)
         lines = [
             line
             for line in "".join(child for child in element.children if isinstance(child, str)).splitlines()
@@ -421,9 +426,9 @@ def tags_and_pills(document: Document) -> list[Evidence]:
         ]
     found: list[tuple[Element, str]] = []
     for element in document.elements():
-        if INTERACTIVE.match(element.tag) or element.inside(SKIPPED_TEXT_TAGS | CODE_TAGS):
+        if functional_control(element) or element.inside(SKIPPED_TEXT_TAGS | CODE_TAGS):
             continue
-        text = element.text()
+        text = document.text(element)
         if not text or len(text.split()) > 3:
             continue
         radius = radius_px(document.style(element))
@@ -434,6 +439,20 @@ def tags_and_pills(document: Document) -> list[Evidence]:
     if len(found) >= 2 or any(FILLER.match(text) for _, text in found):
         return [Evidence(location=element.describe(), detail=quote(text)) for element, text in found]
     return []
+
+
+def functional_control(element: Element) -> bool:
+    """Pill-shaped navigation and controls are not decorative badges."""
+    children = element.elements()
+    if children and not element.own_text() and all(functional_control(child) for child in children):
+        return True
+    roles = {"button", "link", "tab", "checkbox", "radio", "option", "switch", "menuitem", "searchbox"}
+    return any(
+        INTERACTIVE.match(node.tag)
+        or node.tag in {"nav", "label", "summary"}
+        or node.attrs.get("role", "").lower() in roles
+        for node in (element, *element.ancestors())
+    )
 
 
 def eyebrows(document: Document) -> list[Evidence]:
@@ -453,7 +472,10 @@ def eyebrows(document: Document) -> list[Evidence]:
             following = element.next_element()
             assert following is not None
             evidence.append(
-                Evidence(location=element.describe(), detail=f"{quote(element.text())} above {quote(following.text())}")
+                Evidence(
+                    location=element.describe(),
+                    detail=f"{quote(document.text(element))} above {quote(document.text(following))}",
+                )
             )
     return evidence
 
@@ -468,7 +490,7 @@ def section_numbering(document: Document) -> list[Evidence]:
     for element in document.elements():
         if element.tag == "time" or element.inside(SKIPPED_TEXT_TAGS | CODE_TAGS):
             continue
-        text = element.own_text() or element.text()
+        text = element.own_text() or document.text(element)
         if len(text.split()) <= 8 and NUMBERED.match(text) and not MONTHS.match(text):
             evidence.append(Evidence(location=element.describe(), detail=quote(text)))
     return evidence
@@ -480,11 +502,11 @@ def code_breadcrumbs(document: Document) -> list[Evidence]:
     for element in document.elements():
         if element.inside(SKIPPED_TEXT_TAGS | CODE_TAGS) or not is_mono(document.font_family(element) or ""):
             continue
-        text = element.own_text() or element.text()
+        text = element.own_text() or document.text(element)
         if not text or len(text.split()) > 12:
             continue
         if any(
-            is_block_of_output(node)
+            is_block_of_output(document, node)
             for node in (element, *element.ancestors())
             if is_mono(document.font_family(node) or "")
         ):
@@ -512,14 +534,14 @@ def verbose_text(document: Document) -> list[Evidence]:
     restated: list[Evidence] = []
     for heading in document.headings():
         following = heading.next_element()
-        if following is None or following.tag not in {"p", "div"}:
+        if following is None or document.hidden(following) or following.tag not in {"p", "div"}:
             continue
-        heading_words = content_words(heading.text())
+        heading_words = content_words(document.text(heading))
         if (
             len(heading_words) >= 3
-            and len(heading_words & content_words(following.text())) * 10 >= len(heading_words) * 6
+            and len(heading_words & content_words(document.text(following))) * 10 >= len(heading_words) * 6
         ):
-            restated.append(Evidence(location=following.describe(), detail=f"restates {quote(heading.text())}"))
+            restated.append(Evidence(location=following.describe(), detail=f"restates {quote(document.text(heading))}"))
     if len(found) >= 2 or (found and restated) or len(restated) >= 2:
         return [*found.values(), *restated]
     return []
@@ -531,7 +553,7 @@ def detailed_ui(document: Document) -> list[Evidence]:
     for element in document.elements():
         if element.inside(SKIPPED_TEXT_TAGS | CODE_TAGS):
             continue
-        text = element.text()
+        text = document.text(element)
         if text and looks_like_stat(text) and not element.elements() and is_small(document.font_size(element), 12):
             stats.append(Evidence(location=element.describe(), detail=quote(text)))
         style = document.style(element)
@@ -596,11 +618,16 @@ CHECKS: tuple[tuple[str, Check], ...] = (
 def is_eyebrow(document: Document, element: Element) -> bool:
     """A short, small or uppercase line whose next sibling is a heading."""
     following = element.next_element()
-    if following is None or following.tag not in HEADING_TAGS or element.tag in HEADING_TAGS:
+    if (
+        following is None
+        or document.hidden(following)
+        or following.tag not in HEADING_TAGS
+        or element.tag in HEADING_TAGS
+    ):
         return False
     if element.inside(SKIPPED_TEXT_TAGS | CODE_TAGS):
         return False
-    text = element.own_text() or element.text()
+    text = element.own_text() or document.text(element)
     if not text or len(text.split()) > 8:
         return False
     if any(EYEBROW_CLASS.search(name) for name in element.classes) or shouting(text):
@@ -615,8 +642,8 @@ def all_caps(text: str) -> bool:
     return len(letters) >= 3 and all(char.isupper() for char in letters)
 
 
-def is_block_of_output(element: Element) -> bool:
-    return any(child.tag == "br" for child in element.elements()) or len(element.text().split()) > 12
+def is_block_of_output(document: Document, element: Element) -> bool:
+    return any(child.tag == "br" for child in element.elements()) or len(document.text(element).split()) > 12
 
 
 def shouting(text: str) -> bool:

@@ -3,7 +3,7 @@ name: design-antislopper
 description: >-
   Takes any HTML or CSS design through the whole de-sloppping method, end to end: audit against the twenty AI
   design defaults, apply the four fixing moves, commit to a three-colour direction when there is none, add a
-  textured background when the page is flat, polish the craft and the copy, then re-audit and report the before
+  textured background only when requested and appropriate, polish the craft and the copy, then re-audit and report the before
   and after score. Use when asked to make a page "not look AI-generated", "unslop this design", "clean up this
   landing page", or to run the visual twin of a writing antislop pass. Prefers the `unslopper antislop` command
   when it is installed and runs the same method by hand otherwise.
@@ -34,34 +34,37 @@ variables for `amplifier-agent`). Never read a `.env` file to find them.
 
 The result carries `before` and `after` audits, six `steps` (each says whether it ran and why not), the unified
 `diff`, and a three-line `summary`. Relay the summary and hand over the diff. It makes several model calls and
-takes minutes on a long page.
+takes minutes on a long page. The current tool uses a model-audit threshold of 3 for its unslop stage
+and a separate direction assessment; these are pipeline heuristics, not proof that a redesign is needed.
+Review its proposed diff against the existing design before writing.
 
 ## The method, by hand
 
-Without the tool, run the same six stages with the sibling skills: `design-slop-audit`, `unslop-pass`,
+Without the tool or usable model credentials, label the work a manual review/pass, not a successful
+model-backed tool run. Run the same six stages with the sibling skills: `design-slop-audit`, `unslop-pass`,
 `palette-director` and `texture-backgrounds`. Work on a copy. Never write over the original until the end, and
 then only when asked.
 
 1. Audit. Score the file against the twenty indicators with `design-slop-audit`. Keep the score, the verdict
    and the three fixes to make first; that is the "before".
 
-2. Four moves. If the score is 3 or more, run `unslop-pass` in this order: Subtract (filler badges, redundant
+2. Four moves. For confirmed problems worth fixing, run `unslop-pass` in this order: Subtract (filler badges, redundant
    labels, random italics, mono where it means nothing, embellishments), Focus (show the product, enlarge the
    main feature, make the headline specific, one emphasised CTA, headlines that wrap), Systematize (a small
    token set, grouping by spacing not borders, one accent, consistent icons, inner radius = outer minus padding,
    AA contrast, tabular numbers, optical alignment), Respond (loading, empty and error states; motion only where
-   it confirms an action). Below 3, skip and say so.
+   it confirms an action). Skip unsupported changes. A score counts indicators, not visual quality; static
+   scan hits are candidates and legacy verdict labels are not automatic rewrite gates.
 
-3. Direction. Read the page's custom properties, `font-family` and `background` declarations. It has a direction
-   only when all three hold: a clear ground, light and signal colour; type the subject would use rather than a
-   default (system stack, Inter alone, Instrument Serif because a model likes it); colours declared as tokens.
-   When it does not, infer a brief from the title and headings (what it is, who it is for, no invented
-   features), run `palette-director` for one direction, and apply it: add the `:root` tokens, switch the fonts,
-   put the signal colour on the one thing to notice and nowhere else. Change no copy and no layout in this pass.
+3. Direction. Inspect the existing palette, typography and tokens in context. Preserve a coherent direction,
+   including system fonts or a flat ground. If there is a demonstrated gap and a new direction fits the task,
+   infer a brief from the title and headings without inventing features, then use `palette-director`.
+   Preserve layout and content; do not prescribe a new palette just because a token is absent.
 
 4. Texture, only when asked and only when the background is a flat fill or plain gradient. Run
    `texture-backgrounds` for the subject in the page's three colours, replace the flat fill with its code, and
-   keep text on top at WCAG AA (a solid panel from the tokens beats a lightened texture).
+   keep text on top at WCAG AA (a solid panel from the tokens beats a lightened texture). A flat background
+   is not inherently a defect; leave it alone when it serves the design.
 
 5. Polish. Tabular numbers where numbers stack or change; touch targets of at least 44 by 44 px; no layout shift
    (image dimensions, `font-display: swap`, reserved space); loading and empty states where there is data;
@@ -73,14 +76,17 @@ then only when asked.
 
 Before handing anything over, confirm every `href`, `src` and `action` of the original (stylesheet and font `<link>` hrefs excepted) is still present and
 no link, form, image or section was added or removed. If one is missing, fix it or start the stage again; never
-deliver a page that lost a link.
+deliver a page that lost a link. Preserve functional navigation, filters, keyboard focus, intentional sentence
+headings and hidden empty/loading/error states. Verify rendered desktop/mobile layouts and exercise those
+interactions before claiming improvement. If checks are unavailable, disclose them along with missing CSS
+and other coverage limits; static counts and retained URLs are not proof of visual or behavioral quality.
 
 ## Report
 
 Three lines, always:
 
 ```
-Score 11/20 before, 2/20 after.
+Audit indicators 11/20 before, 2/20 after (not a visual-quality grade).
 Biggest moves: 9 fixes (Delete filler badges, Group with spacing, Emphasize the CTA); a committed direction (#000412/#E8EEF2/#2BF08A, Fraunces); 4 polish edits.
 Check by hand: the hero image still loads; open the result in a browser, confirm the signal colour sits on one element, and read the copy aloud.
 ```

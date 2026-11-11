@@ -102,7 +102,7 @@ Every result is a pydantic model in `unslopper.schemas`, so `model_dump_json()` 
 ## Shared modules
 
 - `unslopper.knowledge`: the terms, indicators, fixes, textures and palette studies, with `fixes_for`, `verdict`, `fix` and `indicator` lookups. The one source of truth; prompts, scans and `reference` all read it.
-- `unslopper.sources`: `load_source(path, url, source)` loads exactly one of a file, a URL or inline text and says whether it is HTML, CSS or neither.
+- `unslopper.sources`: `load_source(path, url, source)` loads exactly one of a file, a URL or inline text and says whether it is HTML, CSS or neither. URL HTML also gathers bounded same-origin linked CSS separately from the original text. `ScanReport.assets` and `warnings` disclose coverage; `analysis_kind` identifies static candidates and `source_kind` distinguishes HTML from standalone CSS. Scores and legacy verdicts are not rendered design grades.
 - `unslopper.color`: `parse_hex`, `normalize_hex`, `relative_luminance`, `contrast_ratio`, `contrast` and `to_oklch`, pure functions with no model involved.
 
 ## Adding a capability

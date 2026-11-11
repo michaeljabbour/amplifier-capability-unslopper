@@ -6,7 +6,7 @@ Edit `{{ file_name }}` in place. It is the only file in the current working dire
 
 # The four moves, in this order
 
-Work through the moves in order. Subtraction comes first because most slop is additive and deleting is the cheapest work; systematizing last of the visual moves so you are not polishing things that should have gone.
+Apply only moves that address confirmed problems; leave coherent choices alone. Work through the moves in order. Subtraction comes first because most slop is additive and deleting is the cheapest work; systematizing last of the visual moves so you are not polishing things that should have gone.
 
 {% for move in moves -%}
 ## {{ move.name }}
@@ -20,7 +20,9 @@ Work through the moves in order. Subtraction comes first because most slop is ad
 
 # What the deterministic scan found
 
-Treat each hit as a place to look, with its evidence. The `fixes_first` list is the priority order.
+Treat each hit as a candidate to verify, with its evidence. The score counts candidate indicators, not visual
+quality, and the legacy verdict is not an automatic rewrite gate. Read coverage warnings and missing assets
+before acting. Use `fixes_first` only for confirmed problems; never edit merely to lower the count.
 
 ```json
 {{ scan_json }}
@@ -39,15 +41,16 @@ A model has already read this design. Findings marked `deliberate: true` are cho
 - Keep the content, the brand colours and the layout intent. The page must still be recognisably the same page about the same thing.
 - Never invent new content claims. Rewrite copy only to make it shorter and more specific, using facts already on the page.
 - Keep every existing link and form behaviour working: every `href`, `src` and `action` value stays, and no `<a>` or `<form>` is removed. The one exception is a `<link>` element's href: stylesheet and font links may change or go when a fix replaces the font, since no reader follows them. The result is rejected automatically if one goes missing.
-- Keep scripts and the ids and classes they rely on; change presentation, not behaviour.
-- Introduce a small token set and use only it: 4 to 6 colours, 2 to 3 fonts, one spacing scale. Put them in CSS custom properties and replace one-off values with them.
+- Keep scripts and the ids and classes they rely on; change presentation, not behaviour. Preserve navigation, filters, keyboard focus, accessible names, event hooks and hidden empty/loading/error states. They are not decorative filler.
+- Preserve intentional sentence headings and punctuation. Keep coherent palettes, flat backgrounds and typography unless there is evidence of a specific problem; texture and new colours are not mandatory.
+- Reuse an existing coherent token set. Only when needed, introduce a small token set: 4 to 6 colours, 2 to 3 fonts, one spacing scale. Put them in CSS custom properties and replace one-off values with them.
 - Group with spacing instead of borders and dividers: related things sit closer, unrelated things further apart.
-- One primary call to action per view, solid, in the accent colour. Every other action becomes a quiet link.
+- Make the primary call to action clear without demoting navigation, filters or stateful buttons into decorative links.
 - Headings get `text-wrap: balance` and a max width in `ch`.
 - Anywhere numbers stack or change, turn on `font-variant-numeric: tabular-nums`.
 - Nested rounded corners: inner radius equals the outer radius minus the padding between them.
 - Text contrast meets WCAG AA: 4.5 to 1 for body text, 3 to 1 for large text. No grey text at low opacity on a gradient.
-- Where the markup shows data (lists, tables, stats, feeds), give it loading, empty and error states, so the layout holds still while data arrives.
+- Preserve existing loading, empty and error states. Add states only when the data flow supports them; do not invent nonfunctional UI for static content.
 - Motion only where it confirms an action. Any motion you keep or add is wrapped in `@media (prefers-reduced-motion: no-preference)` or disabled under `prefers-reduced-motion: reduce`.
 - For a CSS file with no markup to read, apply the moves to the rules: tokens, spacing instead of borders, contrast, headings, numbers, radii, motion.
 
@@ -84,4 +87,4 @@ Subtract removed the section number, the eyebrow, the pill, the all-caps subtitl
 When the edits are done and the file is saved, answer with the plan you carried out and your notes, in the required structure:
 
 - `plan`: one entry per change, in the order you made them. Each has `move` (Subtract, Focus, Systematize or Respond), `fix_id` (1 to 20), `fix` (the fix's name as listed above) and `change` (what changed, in one sentence).
-- `notes`: anything the caller should check by hand, such as copy you shortened, a colour you chose for the accent, or a state you could not design without knowing the data. Empty when there is nothing.
+- `notes`: coverage limits and checks still needed. Unless actually verified, explicitly request rendered desktop/mobile QA, keyboard focus, navigation, filters, forms and empty/loading/error states. Source inspection and retained link counts do not prove interactions work or that the design improved. Do not claim browser QA you did not perform.

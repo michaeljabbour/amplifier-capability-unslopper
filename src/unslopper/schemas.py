@@ -149,14 +149,27 @@ class ScanHit(BaseModel):
     fix_ids: list[int]
 
 
+class ScanAsset(BaseModel):
+    """Coverage of a stylesheet reference, including why it could not be inspected."""
+
+    url: str
+    status: Literal["loaded", "skipped", "failed"]
+    reason: str = ""
+    bytes_read: int = Field(default=0, ge=0)
+
+
 class ScanReport(BaseModel):
     """The deterministic reading of a source: which indicators static heuristics can see."""
 
     source: str = Field(description="What was scanned: a path, a URL or 'inline'")
-    score: int = Field(ge=0, le=20, description="Indicators present, out of twenty")
-    verdict: str
+    score: int = Field(ge=0, le=20, description="Distinct candidate indicators, not a visual-quality grade")
+    verdict: str = Field(description="Legacy course label for the candidate count, not a rendered design verdict")
     hits: list[ScanHit]
     fixes_first: list[str] = Field(description="Fix names in priority order")
+    analysis_kind: Literal["static_candidates"] = "static_candidates"
+    source_kind: Literal["html", "css"] | None = None
+    assets: list[ScanAsset] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
 
 
 class Finding(BaseModel):
