@@ -171,8 +171,8 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
+# mkdocs documentation (not used here; the website source is site/ and its build is _site/)
+_site/
 
 # mypy
 .mypy_cache/
@@ -223,3 +223,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Scratch copies made while recording site artifacts, and Finder metadata
+.capture/
+.DS_Store

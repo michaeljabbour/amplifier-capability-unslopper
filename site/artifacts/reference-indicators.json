@@ -1,0 +1,174 @@
+{
+  "topic": "indicators",
+  "items": [
+    {
+      "name": "Instrument Serif",
+      "layer": "Type",
+      "description": "An elegant italic display serif that became the go-to tasteful choice in 2025. It is a fine typeface, and now it is a signature of generated pages.",
+      "fix_ids": [
+        5
+      ]
+    },
+    {
+      "name": "Excessive italics",
+      "layer": "Type",
+      "description": "Random words in a headline set in italics for flavor, as in Plans <em>first</em>. Acts <em>second</em>.",
+      "fix_ids": [
+        3
+      ]
+    },
+    {
+      "name": "Negative kerning",
+      "layer": "Type",
+      "description": "Tight negative letter-spacing applied to every heading, sometimes to body text, so letters start to collide.",
+      "fix_ids": [
+        5,
+        17
+      ]
+    },
+    {
+      "name": "Excessive mono fonts",
+      "layer": "Type",
+      "description": "Monospace used for labels, captions, nav and stats to look technical.",
+      "fix_ids": [
+        4
+      ]
+    },
+    {
+      "name": "ALL CAPS subtitles",
+      "layer": "Type",
+      "description": "Small uppercase lines of adjectives under a headline. Hard to read and rarely read.",
+      "fix_ids": [
+        2
+      ]
+    },
+    {
+      "name": "Periods in titles",
+      "layer": "Type",
+      "description": "Short staccato headlines with full stops. Fast. Confident. Generic.",
+      "fix_ids": [
+        9,
+        16
+      ]
+    },
+    {
+      "name": "Gradient backgrounds",
+      "layer": "Surface",
+      "description": "The purple to blue diagonal, the most recognizable AI background there is.",
+      "fix_ids": [
+        5,
+        11
+      ]
+    },
+    {
+      "name": "Color shades and opacities",
+      "layer": "Surface",
+      "description": "Many tints of one hue at 10, 20 and 40 percent opacity, stacked until hierarchy turns to mud.",
+      "fix_ids": [
+        5,
+        11,
+        15
+      ]
+    },
+    {
+      "name": "Squircles",
+      "layer": "Surface",
+      "description": "Large soft corner radii on every card, button and image, with nested corners that do not line up.",
+      "fix_ids": [
+        14
+      ]
+    },
+    {
+      "name": "Containers with borders",
+      "layer": "Surface",
+      "description": "Every block boxed in a thin border, often inside another bordered box.",
+      "fix_ids": [
+        8
+      ]
+    },
+    {
+      "name": "Overusing dividers",
+      "layer": "Surface",
+      "description": "Hairline rules between every section and inside every card.",
+      "fix_ids": [
+        8
+      ]
+    },
+    {
+      "name": "Dithering",
+      "layer": "Surface",
+      "description": "Pixel dither patterns added for retro texture, regardless of the brand.",
+      "fix_ids": [
+        13
+      ]
+    },
+    {
+      "name": "ASCII images",
+      "layer": "Surface",
+      "description": "Pictures drawn from characters, used as a shortcut to look technical.",
+      "fix_ids": [
+        13,
+        6
+      ]
+    },
+    {
+      "name": "Tags and pills",
+      "layer": "Structure",
+      "description": "Rounded badges on headings and cards that carry no real information.",
+      "fix_ids": [
+        1
+      ]
+    },
+    {
+      "name": "Eyebrows",
+      "layer": "Structure",
+      "description": "A tiny uppercase label above every heading, usually repeating it.",
+      "fix_ids": [
+        2
+      ]
+    },
+    {
+      "name": "Section numbering",
+      "layer": "Structure",
+      "description": "01, 02, 03 on content that has no real order.",
+      "fix_ids": [
+        2
+      ]
+    },
+    {
+      "name": "Code breadcrumbs",
+      "layer": "Structure",
+      "description": "File paths, arrows and comment syntax used as decoration on marketing pages.",
+      "fix_ids": [
+        4,
+        6
+      ]
+    },
+    {
+      "name": "Verbose, redundant text",
+      "layer": "Content",
+      "description": "Copy that restates the headline, stacks adjectives and says seamlessly.",
+      "fix_ids": [
+        9,
+        2
+      ]
+    },
+    {
+      "name": "Over-the-top detailed UI",
+      "layer": "Content",
+      "description": "Fake dashboards crammed with tiny charts, numbers and status dots to look impressive.",
+      "fix_ids": [
+        6,
+        7
+      ]
+    },
+    {
+      "name": "Overly detailed diagrams",
+      "layer": "Content",
+      "description": "Flowcharts with more boxes, arrows and glows than the idea needs.",
+      "fix_ids": [
+        13
+      ]
+    }
+  ]
+}

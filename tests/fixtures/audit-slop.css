@@ -1,0 +1,15 @@
+/* The slop card's rules from lesson 3 of docs/unslop-school.html, as a stylesheet on its own. */
+:root{
+  --display:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+.slop{background:linear-gradient(135deg,#6E4CF5 0%,#3B82F6 55%,#22D3EE 100%);padding:22px;color:#fff;position:relative}
+.slop .box{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);border-radius:22px;padding:22px}
+.slop .eb{font:500 11px/1 var(--mono);letter-spacing:.14em;color:rgba(255,255,255,.7);text-transform:uppercase}
+.slop .pill{display:inline-block;font:600 10px/1 var(--display);letter-spacing:.08em;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3)}
+.slop h5{font:400 30px/1.1 "Instrument Serif",Georgia,serif;letter-spacing:-.03em;margin:14px 0 8px}
+.slop h5 em{font-style:italic}
+.slop .sub{font:600 11px/1.4 var(--display);letter-spacing:.12em;opacity:.75;text-transform:uppercase}
+.slop hr{border:0;border-top:1px solid rgba(255,255,255,.25);margin:14px 0}
+.slop .crumb{font:400 12px/1.5 var(--mono);opacity:.8}
+.slop .ctas span{font:600 12px var(--display);padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12)}

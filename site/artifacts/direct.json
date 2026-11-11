@@ -1,0 +1,43 @@
+{
+  "brief": "a silent retreat in Kyoto, golden hour on water",
+  "directions": [
+    {
+      "scene": "The last ten minutes of sun on a temple pond in Arashiyama, seen from a cedar veranda as one streak of light crosses the dark water.",
+      "palette": [
+        {
+          "role": "ground",
+          "name": "pond-shadow ink",
+          "hex": "#14211F",
+          "oklch": "oklch(23.5% 0.019 184.1)"
+        },
+        {
+          "role": "light",
+          "name": "shoji paper",
+          "hex": "#EFE6D2",
+          "oklch": "oklch(92.7% 0.028 86.6)"
+        },
+        {
+          "role": "signal",
+          "name": "setting-sun persimmon",
+          "hex": "#E8963A",
+          "oklch": "oklch(74.1% 0.143 64.9)"
+        }
+      ],
+      "contrast": {
+        "foreground": "#EFE6D2",
+        "background": "#14211F",
+        "ratio": 13.35,
+        "aa_body": true,
+        "aa_large": true,
+        "aaa_body": true
+      },
+      "typography": {
+        "display": "Shippori Mincho B1",
+        "body": "Zen Kaku Gothic New",
+        "rationale": "Shippori Mincho has the brush-cut strokes of the carved wooden plaques at temple gates, and Zen Kaku Gothic New has the quiet, even voice of a printed schedule card in a shukubō room. Together they read like the retreat's own signage, not like a website. The ink-green ground is the pond under the maples, the paper white is the shoji screens behind the guest, and persimmon appears only once per screen, as the single line of sun on the water."
+      },
+      "hero": "A wide, low photograph from inside a darkened tatami room. Through an open shoji, a cedar engawa veranda runs out to the edge of a still pond, which is almost black-green under the maple shade. One cushion sits on the boards. A single horizontal streak of persimmon sunlight crosses the water and catches the rim of a celadon tea bowl on the cushion. The retreat's name is set small in shoji-paper white, vertical, in the upper left shadow.",
+      "css": ":root {\n  --ground: #14211F;\n  --light: #EFE6D2;\n  --signal: #E8963A;\n  --font-display: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif;\n  --font-body: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic', sans-serif;\n}"
+    }
+  ]
+}

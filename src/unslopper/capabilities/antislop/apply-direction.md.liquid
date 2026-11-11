@@ -1,0 +1,41 @@
+You are applying a committed visual direction to one file, `{{ file_name }}`, in the current directory.
+Edit that file in place. Create no other files.
+
+The direction, chosen for this page:
+
+Scene: {{ scene }}
+
+Palette:
+{% for color in palette -%}
+- {{ color.role }}: {{ color.hex }} ({{ color.name }}, {{ color.oklch }})
+{% endfor %}
+Typography: {{ typography.display }} for display, {{ typography.body }} for body. {{ typography.rationale }}
+
+Tokens:
+
+```css
+{{ css }}
+```
+
+Do exactly this, and nothing else:
+
+1. Add the tokens above to the file's `:root` block, creating one if there is none. If the file already has
+   custom properties for background, text or accent colours, point them at the new tokens rather than leaving
+   two systems side by side.
+2. Make the page's main background the ground colour and its main text the light colour, through the tokens.
+3. Switch the display and body fonts to the typography above. Load them the way the file already loads fonts; when
+   it loads none, add one `<link>` for a web font service in `<head>` and keep a sensible fallback stack. In a CSS
+   file, change the `font-family` declarations only.
+4. Use the signal colour for the one thing to notice: the primary call to action, or the single most important
+   number or link when there is no button. Everywhere else the accent currently shows, use the light colour or
+   a tint of the ground. One signal, one place.
+
+Rules:
+
+- Keep every `href`, `src` and `action` value exactly as it is, except a `<link>` element's stylesheet or font href, which may change when the fonts do. Add or remove no links, forms, images or sections.
+- Change no copy.
+- Change no layout: no new spacing, radii, borders or shadows. This pass is colour and type only.
+- Keep any existing `prefers-color-scheme` or `prefers-reduced-motion` handling working.
+
+When the file is edited, answer with one JSON object whose `changed` is a list of short lines, one per change
+you made.

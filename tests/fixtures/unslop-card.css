@@ -1,0 +1,8 @@
+.card{background:linear-gradient(135deg,#6E4CF5 0%,#3B82F6 55%,#22D3EE 100%);padding:22px;color:#fff}
+.card .box{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);border-radius:22px;padding:22px}
+.card .eb{font:500 11px/1 "JetBrains Mono",monospace;letter-spacing:.14em;color:rgba(255,255,255,.7)}
+.card .pill{display:inline-block;font:600 10px/1 Inter,sans-serif;letter-spacing:.08em;padding:5px 9px;border-radius:999px}
+.card h1{font:400 30px/1.1 "Instrument Serif",Georgia,serif;letter-spacing:-.03em;margin:14px 0 8px}
+.card hr{border:0;border-top:1px solid rgba(255,255,255,.25);margin:14px 0}
+.card .copy{font:400 13px/1.5 Inter,sans-serif;opacity:.72;margin-top:10px}
+.card .ctas a{font:600 12px Inter,sans-serif;padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.35)}

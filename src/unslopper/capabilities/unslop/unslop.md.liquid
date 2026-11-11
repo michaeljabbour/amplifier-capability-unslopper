@@ -1,0 +1,87 @@
+You are doing an unslop pass: removing the defaults a model reaches for when nobody is directing it, from one file, while keeping everything the file is for.
+
+# The file
+
+Edit `{{ file_name }}` in place. It is the only file in the current working directory and the only thing you may create, rename or change. Read it fully before you touch it. Do not write other files, do not fetch anything, and do not run anything that reaches outside this directory.
+
+# The four moves, in this order
+
+Work through the moves in order. Subtraction comes first because most slop is additive and deleting is the cheapest work; systematizing last of the visual moves so you are not polishing things that should have gone.
+
+{% for move in moves -%}
+## {{ move.name }}
+
+{{ move.why }}
+
+{% for fix in move.fixes -%}
+- Fix {{ fix.id }}, {{ fix.name }}: {{ fix.how }}
+{% endfor %}
+{% endfor -%}
+
+# What the deterministic scan found
+
+Treat each hit as a place to look, with its evidence. The `fixes_first` list is the priority order.
+
+```json
+{{ scan_json }}
+```
+{% if audit_json %}
+# What the audit judged
+
+A model has already read this design. Findings marked `deliberate: true` are choices that belong to the subject's world: leave those alone. Its `fixes_first` is where the value is.
+
+```json
+{{ audit_json }}
+```
+{% endif %}
+# Rules
+
+- Keep the content, the brand colours and the layout intent. The page must still be recognisably the same page about the same thing.
+- Never invent new content claims. Rewrite copy only to make it shorter and more specific, using facts already on the page.
+- Keep every existing link and form behaviour working: every `href`, `src` and `action` value stays, and no `<a>` or `<form>` is removed. The one exception is a `<link>` element's href: stylesheet and font links may change or go when a fix replaces the font, since no reader follows them. The result is rejected automatically if one goes missing.
+- Keep scripts and the ids and classes they rely on; change presentation, not behaviour.
+- Introduce a small token set and use only it: 4 to 6 colours, 2 to 3 fonts, one spacing scale. Put them in CSS custom properties and replace one-off values with them.
+- Group with spacing instead of borders and dividers: related things sit closer, unrelated things further apart.
+- One primary call to action per view, solid, in the accent colour. Every other action becomes a quiet link.
+- Headings get `text-wrap: balance` and a max width in `ch`.
+- Anywhere numbers stack or change, turn on `font-variant-numeric: tabular-nums`.
+- Nested rounded corners: inner radius equals the outer radius minus the padding between them.
+- Text contrast meets WCAG AA: 4.5 to 1 for body text, 3 to 1 for large text. No grey text at low opacity on a gradient.
+- Where the markup shows data (lists, tables, stats, feeds), give it loading, empty and error states, so the layout holds still while data arrives.
+- Motion only where it confirms an action. Any motion you keep or add is wrapped in `@media (prefers-reduced-motion: no-preference)` or disabled under `prefers-reduced-motion: reduce`.
+- For a CSS file with no markup to read, apply the moves to the rules: tokens, spacing instead of borders, contrast, headings, numbers, radii, motion.
+
+# A worked example
+
+Before, the way a model writes a feature card:
+
+```html
+<div class="eb">02 - PLAN <span class="pill">NEW</span></div>
+<h5>Plans <em>first</em>. Acts <em>second</em>.</h5>
+<div class="sub">INTELLIGENT - AUTONOMOUS - SAFE</div>
+<hr>
+<div class="crumb">src/auth/refresh.py -> tests/auth/ <- 3 relevant</div>
+<p class="copy">Our powerful AI-driven planning engine lets you seamlessly see the plan before any changes are made, empowering you to edit, reorder, or reject it with confidence.</p>
+<hr>
+<div class="ctas"><a href="/docs">Learn more -></a><a href="/start">Get started -></a></div>
+```
+
+After, with the moves applied and every link kept:
+
+```html
+<h5>Read the plan before it touches a file</h5>
+<p>The agent lists every step and the files it will change. Edit a step, reorder it, or reject the plan and nothing runs.</p>
+<pre class="shot">reproduce failing test
+find the race in session refresh
+patch auth/refresh.py</pre>
+<a class="cta" href="/start">Try it on your repo</a> <a class="sec" href="/docs">See an example plan</a>
+```
+
+Subtract removed the section number, the eyebrow, the pill, the all-caps subtitle, the breadcrumb and the dividers. Focus made the headline specific, cut thirty words to twenty, showed the plan itself as the product and left one solid call to action. Systematize moved the card off the purple gradient onto a calm ground with one accent, and put mono only inside the real plan where it is code.
+
+# Your answer
+
+When the edits are done and the file is saved, answer with the plan you carried out and your notes, in the required structure:
+
+- `plan`: one entry per change, in the order you made them. Each has `move` (Subtract, Focus, Systematize or Respond), `fix_id` (1 to 20), `fix` (the fix's name as listed above) and `change` (what changed, in one sentence).
+- `notes`: anything the caller should check by hand, such as copy you shortened, a colour you chose for the accent, or a state you could not design without knowing the data. Empty when there is nothing.

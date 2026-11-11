@@ -1,0 +1,179 @@
+/* Amplifier Smart Tools family theme supplies the baseline. These are Unslopper's own choices: one signal colour,
+   spacing instead of rules, mono only for code, tabular figures where numbers appear. */
+:root { --accent: #9E3A1C; --faint: #efeee7; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+html { scroll-padding-top: 28px; }
+body { font-size: 16px; line-height: 1.65; }
+h1, h2, h3, h4 { text-wrap: balance; }
+h4 { font: 400 22px/1.2 var(--serif); letter-spacing: -.02em; margin: 0; }
+p, li, dd, figcaption { max-width: 70ch; }
+button, input, select, textarea { font: inherit; }
+button { color: inherit; }
+code, pre { font-family: var(--mono); }
+code { font-size: .88em; background: var(--faint); padding: 1px 5px; overflow-wrap: anywhere; }
+pre { margin: 0; padding: 20px; background: #242b27; color: #edf0e6; font-size: 12.5px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; }
+pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+.num { font-family: var(--serif); font-variant-numeric: tabular-nums; }
+.nav a, .footer-links a { display: inline-block; padding: 12px 0; }
+.masthead .nav { gap: 24px; }
+.brand-name { font-size: 22px; }
+.tool-hero { padding-top: 60px; }
+.tool-hero h1 { font-size: clamp(64px, 9vw, 124px); }
+.tool-hero .lede { color: var(--ink); }
+.tool-hero .lede + p { margin-top: 18px; font-size: 15px; color: var(--muted); }
+.button.primary { background: var(--accent); border-color: var(--accent); }
+.button.primary:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.section { padding: 72px 0; }
+.section + .section { border-top: 0; }
+.section-heading { align-items: start; }
+.section-heading p { max-width: 54ch; }
+.section-heading code { font-size: .85em; }
+.wrap.section-heading-wide p { max-width: 70ch; }
+
+/* The recorded card, before and after */
+.frames { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 40px 32px; margin-top: 8px; }
+.frame { margin: 0; display: flex; flex-direction: column; }
+.frame figcaption { flex: 1 0 auto; }
+.frame figcaption b { display: block; font: 400 24px/1.2 var(--serif); letter-spacing: -.02em; }
+.frame iframe, .demo-frame { display: block; width: 100%; border: 0; background: #fff; margin-top: 14px; }
+.frame iframe { height: 420px; }
+.demo-frame { height: 200px; max-width: 420px; margin: 20px 0; }
+.frame-links { font-size: 13px; margin-top: 2px; }
+.frame-links a, .skill-files a, .run a, .text-link { display: inline-block; padding: 12px 0; }
+.brand { min-height: 44px; }
+td a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+.measure { margin-top: 8px; font-size: 14px; color: var(--muted); }
+.measure .num { display: block; font-size: 44px; line-height: 1; color: var(--ink); margin-bottom: 4px; }
+.measure-also { display: block; margin-top: 4px; }
+.frames + p { margin-top: 28px; font-size: 14px; color: var(--muted); }
+
+/* One recorded output */
+.artifact { margin-top: 72px; max-width: 78ch; }
+.artifact h3 { font-size: 30px; }
+.artifact h4 { margin-top: 28px; }
+.artifact p { margin-top: 14px; }
+.artifact ul, .artifact ol { margin: 14px 0 0; padding-left: 0; list-style: none; }
+.artifact ol { list-style: decimal; padding-left: 1.4em; }
+.artifact li + li { margin-top: 10px; }
+.run { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.run code { font-size: 13px; }
+.run a { white-space: nowrap; }
+.artifact .measure { margin-top: 22px; }
+.artifact .measure .num { font-size: 56px; }
+.hits > li { padding-top: 16px; }
+.hits > li > b { font: 400 20px/1.25 var(--serif); letter-spacing: -.02em; }
+.layer { margin-left: 10px; font-size: 13px; color: var(--muted); }
+.evidence { display: grid; gap: 6px; font-size: 13px; }
+.evidence li { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 2px 14px; align-items: start; }
+.evidence li + li, .evidence code { margin-top: 0; }
+.evidence code:first-child { background: none; padding-left: 0; color: var(--muted); }
+.findings p { font-size: 15px; margin-top: 6px; }
+.findings .where { color: var(--muted); font-size: 14px; }
+.plan > li { padding-top: 10px; }
+.plan h4 { margin-top: 14px; }
+.plan ul li { font-size: 15px; }
+.steps li { font-size: 15px; }
+.summary p { font-size: 15px; }
+.scene { font: 400 22px/1.4 var(--serif); letter-spacing: -.015em; }
+.swatches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 22px 0 0; padding: 0; list-style: none; font-size: 14px; }
+.swatches.pair { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 440px; }
+.swatches li + li { margin-top: 0; }
+.swatch { display: block; height: 72px; margin-bottom: 10px; }
+.swatches code { font-size: 12px; }
+details { margin-top: 20px; }
+summary { cursor: pointer; font-size: 15px; min-height: 44px; display: flex; align-items: center; }
+details pre { margin-top: 12px; }
+.diff ins, .diff del { text-decoration: none; display: block; }
+.diff ins { background: #2f4a3a; }
+.diff del { background: #563531; }
+.stderr { white-space: pre-wrap; }
+.texture-panel { position: relative; margin-top: 22px; padding: 36px; overflow: hidden; isolation: isolate; }
+.texture-panel canvas, .texture-panel .texture { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+.texture-text { max-width: 54ch; }
+.texture-text p { margin: 0; font-size: 15px; }
+.texture-title { font: 400 24px/1.25 var(--serif); letter-spacing: -.02em; margin-bottom: 12px !important; }
+.prompt-line { font: 400 19px/1.5 var(--serif); letter-spacing: -.01em; margin-top: 18px; max-width: 60ch; }
+.copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 10px; }
+.copy-button { display: none; border: 1px solid var(--line); background: transparent; color: var(--ink); min-height: 44px; padding: 8px 14px; font-size: 13px; }
+.js .copy-button { display: inline-block; }
+.copy-button:hover { border-color: var(--accent); background: var(--wash); }
+.copy-status { font-size: 13px; color: var(--muted); }
+
+/* One row per recorded run on the front page */
+.rows { list-style: none; padding: 0; margin: 56px 0 0; display: grid; gap: 40px 56px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.row h3 { font-size: 24px; }
+.row-body { margin-top: 10px; }
+.row-body p { margin-top: 8px; font-size: 15px; }
+.row-body .measure { margin-top: 10px; }
+.row-body .measure .num { font-size: 40px; display: inline; margin-right: 6px; }
+.row-body .prompt-line { font-size: 17px; margin-top: 12px; }
+.row-body .demo-frame { margin: 12px 0 0; height: 170px; }
+.row-links { display: flex; flex-wrap: wrap; gap: 0 18px; font-size: 13px; margin-top: 4px; }
+.row-links a { display: inline-block; padding: 12px 0; }
+.swatches.small { margin-top: 10px; gap: 12px; max-width: 420px; }
+.swatches.small .swatch { height: 40px; margin-bottom: 6px; }
+.texture-panel.compact { padding: 22px 24px; margin-top: 10px; }
+.texture-panel.compact .texture-title { font-size: 20px; margin-bottom: 4px !important; }
+.skills-line, .limits-line { margin-top: 28px; font-size: 16px; max-width: 64ch; }
+.limits-line { font: 400 19px/1.5 var(--serif); letter-spacing: -.01em; }
+#install pre { max-width: 78ch; }
+.page-title { font-size: clamp(34px, 3.6vw, 48px); margin-top: 8px; margin-bottom: 36px; letter-spacing: -.035em; }
+.manifest td:nth-child(2) code { white-space: normal; }
+.manifest td.num { font-variant-numeric: tabular-nums; }
+
+/* Capabilities, routes, skills, install, limits */
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 60px; }
+.split h3 { font-size: 26px; margin-bottom: 18px; }
+.capabilities { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; font-size: 15px; }
+.capabilities code { font-size: 14px; margin-right: 6px; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.table-scroll table { min-width: 760px; }
+.table-scroll:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 14px 24px 14px 0; border-bottom: 1px solid var(--line); }
+th { font: 400 14px/1.4 var(--sans); color: var(--muted); }
+td code { font-size: 12.5px; white-space: nowrap; }
+td:last-child code { white-space: normal; }
+.skill-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 60px; }
+.skill-list h3 { font-size: 26px; }
+.skill-list p { margin-top: 10px; font-size: 15px; }
+.skill-files { display: flex; flex-wrap: wrap; gap: 0 18px; font-size: 13px; margin-top: 0 !important; }
+.skill-install { margin-top: 48px; max-width: 78ch; }
+.skill-install p { margin-top: 14px; font-size: 15px; }
+.sha { font-size: 12px; }
+.install { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 60px; }
+.install h3 { font-size: 26px; margin-bottom: 18px; }
+.install p { margin-top: 14px; font-size: 15px; }
+.install pre { font-size: 13px; }
+.limits { list-style: none; padding: 0; margin: 0; display: grid; gap: 18px; }
+.limits li { font: 400 20px/1.45 var(--serif); letter-spacing: -.015em; max-width: 60ch; }
+#build pre { max-width: 78ch; }
+.downloads { margin-top: 28px; font-size: 14px; }
+.site-footer .footer-brand { font-size: 22px; }
+.footer-links { gap: 6px 22px; }
+
+@media (max-width: 900px) {
+  .split, .install, .skill-list { gap: 32px; }
+  .tool-hero h1 { font-size: clamp(60px, 11vw, 100px); }
+}
+@media (max-width: 620px) {
+  .tool-hero { padding-top: 36px; }
+  .tool-hero h1 { font-size: clamp(52px, 17vw, 72px); }
+  .section { padding: 48px 0; }
+  .split, .install, .skill-list, .rows { grid-template-columns: minmax(0, 1fr); }
+  .swatches:not(.small) { grid-template-columns: minmax(0, 1fr); }
+  .rows { gap: 36px; }
+  .frames { gap: 32px; }
+  .frame iframe { height: 460px; }
+  .artifact { margin-top: 56px; }
+  .artifact h3 { font-size: 26px; }
+  .artifact .measure .num { font-size: 48px; }
+  .scene, .limits li { font-size: 19px; }
+  .texture-panel { padding: 24px; }
+  .masthead .nav { gap: 8px 18px; flex-wrap: wrap; justify-content: start; }
+  .evidence li { grid-template-columns: minmax(0, 1fr); }
+  .footer-links { gap: 4px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

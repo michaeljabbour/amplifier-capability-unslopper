@@ -1,0 +1,54 @@
+{
+  "intent": "this landing page looks AI generated, what is wrong with it",
+  "capability": "audit",
+  "skill": "design-slop-audit",
+  "command": "unslopper audit page.html",
+  "reason": "The job says 'looks ai'. You need to say why a design reads as generated, with evidence and a score, including screenshots.",
+  "alternatives": [
+    {
+      "capability": "antislop",
+      "skill": "design-antislopper",
+      "when": "The whole pass on one file: audit, fix, direct, texture, polish, re-audit."
+    },
+    {
+      "capability": "unslop",
+      "skill": "unslop-pass",
+      "when": "You have the HTML or CSS and want the fixes applied as a reviewable diff."
+    },
+    {
+      "capability": "audit",
+      "skill": "design-slop-audit",
+      "when": "You need to say why a design reads as generated, with evidence and a score, including screenshots."
+    },
+    {
+      "capability": "scan",
+      "skill": "design-slop-audit",
+      "when": "The same question answered statically and for free, on HTML or CSS only."
+    },
+    {
+      "capability": "direct",
+      "skill": "palette-director",
+      "when": "A brief needs a committed direction: scene, three colours with roles, type, hero, CSS tokens."
+    },
+    {
+      "capability": "contrast",
+      "skill": "palette-director",
+      "when": "Check one colour pair against WCAG."
+    },
+    {
+      "capability": "texture",
+      "skill": "texture-backgrounds",
+      "when": "A background is flat or a purple gradient and should come from the subject's world."
+    },
+    {
+      "capability": "tutor",
+      "skill": "design-terms-tutor",
+      "when": "Someone needs the vocabulary: teach a term, quiz on it, or name what a screenshot gets wrong."
+    },
+    {
+      "capability": "reference",
+      "skill": "unslopper",
+      "when": "Hand an agent the course material as data: terms, indicators, fixes, textures, palettes."
+    }
+  ]
+}

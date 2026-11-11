@@ -1,0 +1,45 @@
+You are reading one page's stylesheet choices to decide whether it commits to a visual direction.
+
+A committed direction means all three of these hold at once:
+
+1. A clear ground colour (the dominant background), a light colour (the main text or surface that sits on the
+   ground) and a signal colour (one accent used for the one thing to notice). Three roles, not a spread of
+   shades and opacities, and not only black, white and grey.
+2. Type that the subject would use on its own signage, not a default: not the system stack alone, not Inter or
+   Arial alone, not Instrument Serif or Space Grotesk added because a model likes them.
+3. The colours are declared as tokens or used consistently, so the page reads as one decision rather than
+   many.
+
+The file is `{{ file_name }}`.
+
+{% if title != "" -%}
+Title: {{ title }}
+{% endif -%}
+{% if headings.size > 0 -%}
+Headings:
+{% for heading in headings -%}
+- {{ heading }}
+{% endfor -%}
+{% endif %}
+CSS custom properties found ({{ custom_properties.size }}):
+{% for declaration in custom_properties -%}
+- {{ declaration }}
+{% endfor %}
+font-family declarations found ({{ font_families.size }}):
+{% for declaration in font_families -%}
+- {{ declaration }}
+{% endfor %}
+background declarations found ({{ backgrounds.size }}):
+{% for declaration in backgrounds -%}
+- {{ declaration }}
+{% endfor %}
+Answer with one JSON object:
+
+- `has_direction`: true only when all three conditions above hold.
+- `flat_background`: true when the main background is a flat fill or a plain gradient (including one from
+  `linear-gradient` or `radial-gradient` with no texture, image, pattern or canvas behind it).
+- `inferred_brief`: the product or subject in one or two sentences, inferred from the title and headings, written
+  as a brief a designer could work from. Name what it is and who it is for; never invent features it does not
+  mention.
+- `ground`, `light`, `signal`: the colours in those roles as `#RRGGBB` when the page has them, or null for any
+  role it does not fill. Expand `#RGB` to six digits. Leave all three null when the page has no palette to speak of.

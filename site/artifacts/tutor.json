@@ -1,0 +1,11 @@
+{
+  "mode": "teach",
+  "term": "Tabular numbers",
+  "text": "Tabular numbers are digits that all take up the same width, so a 1 is as wide as an 8. That makes columns of prices line up neatly and stops a changing counter or timer from wobbling sideways.\n\nAI mockups almost always leave prices, tables and timers on the font's default proportional digits, because nothing in a typical prompt asks for anything else. The mistake only shows once real numbers stack in a column or start ticking, which a static mockup rarely tests.",
+  "demo_html": "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:16px;font:20px/1.4 sans-serif;max-width:360px\"><div style=\"font-variant-numeric:proportional-nums;text-align:right;border:1px solid #ddd;border-radius:6px;padding:8px 12px\">$1,111.11<br>$8,808.00<br>$417.90<small style=\"display:block;font-size:12px;color:#b00;text-align:left;margin-top:4px\">Wrong: proportional digits, columns drift</small></div><div style=\"font-variant-numeric:tabular-nums;text-align:right;border:1px solid #ddd;border-radius:6px;padding:8px 12px\">$1,111.11<br>$8,808.00<br>$417.90<small style=\"display:block;font-size:12px;color:#070;text-align:left;margin-top:4px\">Right: tabular digits, columns line up</small></div></div>",
+  "prompt_line": "Use tabular numbers (font-variant-numeric: tabular-nums) on every price, table column, counter and timer so the digits line up and don't jitter.",
+  "question": null,
+  "answer_correct": null,
+  "progress": [],
+  "next_term": "Kerning"
+}

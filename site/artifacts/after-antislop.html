@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Feature card, default AI output</title>
+<!-- The slop card from lesson 3 of docs/unslop-school.html, without the course's numbered callout dots. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700&family=Barlow:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{
+  --ground: #1C2A30;
+  --light: #E4E8E3;
+  --signal: #FF6A1F;
+  --font-display: 'Big Shoulders Stencil Display', 'Arial Narrow', sans-serif;
+  --font-body: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+  /* colour: legacy names mapped onto the harbour tokens */
+  --surface:color-mix(in oklch, var(--ground), var(--light) 7%);
+  --ink:var(--light);
+  --muted:color-mix(in oklch, var(--light) 78%, var(--ground));
+  --accent:var(--signal);
+  /* type */
+  --display:var(--font-display);
+  --body:var(--font-body);
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  /* spacing scale */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px;
+  /* radius */
+  --r-card:20px;
+}
+.slop{background:var(--ground);padding:var(--s5);color:var(--ink);font-family:var(--body)}
+.slop .box{background:var(--surface);border-radius:var(--r-card);padding:var(--s5)}
+.slop h5{font:700 24px/1.2 var(--display);letter-spacing:-.01em;margin:0 0 var(--s2);text-wrap:balance;max-width:24ch}
+.slop .copy{font:400 15px/1.5 var(--body);color:var(--muted);margin:0;max-width:52ch}
+/* the plan preview is real output, so mono belongs here; inner radius = 20 - 24 padding -> clamp to a small radius */
+.slop .crumb{font:400 13px/1.6 var(--mono);color:var(--ink);background:var(--ground);border-radius:var(--s1);padding:var(--s3) var(--s4);margin:var(--s4) 0 0;list-style:none;font-variant-numeric:tabular-nums}
+.slop .crumb li span{color:var(--muted)}
+.slop .ctas{display:flex;align-items:center;gap:var(--s4);margin-top:var(--s5)}
+.slop .ctas span{font:500 14px/1 var(--body);color:var(--light);cursor:pointer}
+/* hit area: grow each control to at least 44x44 without changing how it looks */
+.slop .ctas span{position:relative}
+.slop .ctas span::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+.slop .ctas span.cta{font-weight:700;color:var(--ground);background:var(--accent);padding:var(--s3) var(--s4);border-radius:var(--s2)}
+</style>
+</head>
+<body>
+<div class="slop" id="cardSlop">
+  <div class="box">
+    <h5>See the plan before any file changes</h5>
+    <p class="copy">Edit, reorder or reject the plan. Nothing runs until you approve it.</p>
+    <ul class="crumb" aria-label="Example plan">
+      <li>src/auth/refresh.py</li>
+      <li>tests/auth/ <span>· 3 relevant</span></li>
+    </ul>
+    <div class="ctas"><span class="cta">Get started</span><span>Learn more</span></div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Feature card, default AI output</title>
+<!-- The slop card from lesson 3 of docs/unslop-school.html, without the course's numbered callout dots. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+:root{
+  --display:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+.slop{background:linear-gradient(135deg,#6E4CF5 0%,#3B82F6 55%,#22D3EE 100%);padding:22px;color:#fff;position:relative}
+.slop .box{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);border-radius:22px;padding:22px}
+.slop .eb{font:500 11px/1 var(--mono);letter-spacing:.14em;color:rgba(255,255,255,.7)}
+.slop .pill{display:inline-block;font:600 10px/1 var(--display);letter-spacing:.08em;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);margin-left:8px;vertical-align:middle}
+.slop h5{font:400 30px/1.1 "Instrument Serif",Georgia,serif;letter-spacing:-.03em;margin:14px 0 8px}
+.slop h5 em{font-style:italic}
+.slop .sub{font:600 11px/1.4 var(--display);letter-spacing:.12em;opacity:.75}
+.slop hr{border:0;border-top:1px solid rgba(255,255,255,.25);margin:14px 0}
+.slop .crumb{font:400 12px/1.5 var(--mono);opacity:.8}
+.slop .copy{font:400 13px/1.5 var(--display);opacity:.72;margin-top:10px}
+.slop .ctas{display:flex;gap:8px;margin-top:14px}
+.slop .ctas span{font:600 12px var(--display);padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12)}
+</style>
+</head>
+<body>
+<div class="slop" id="cardSlop">
+  <div class="box">
+    <div class="eb">02 · PLAN<span class="pill">NEW</span></div>
+    <h5>Plans <em>first</em>. Acts <em>second</em>.</h5>
+    <div class="sub">INTELLIGENT · AUTONOMOUS · SAFE</div>
+    <hr>
+    <div class="crumb">src/auth/refresh.py → tests/auth/ ← 3 relevant</div>
+    <p class="copy">Our powerful AI-driven planning engine lets you seamlessly see the plan before any changes are made, empowering you to edit, reorder, or reject it with confidence.</p>
+    <hr>
+    <div class="ctas"><span>Learn more →</span><span>Get started →</span></div>
+  </div>
+</div>
+</body>
+</html>

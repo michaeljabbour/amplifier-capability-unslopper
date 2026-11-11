@@ -1,0 +1,409 @@
+{
+  "source": "tests/fixtures/audit-slop-card.html",
+  "score": 15,
+  "verdict": "Pure default output",
+  "summary": "A template feature card: purple-to-blue gradient, Instrument Serif with arbitrary italics, a mono eyebrow with numbering and a NEW pill, and filler copy. Almost nothing on it is a choice.",
+  "findings": [
+    {
+      "indicator": "Gradient backgrounds",
+      "layer": "Surface",
+      "location": ".slop (line 14)",
+      "evidence": "background: linear-gradient(135deg,#6E4CF5 0%,#3B82F6 55%,#22D3EE 100%)",
+      "deliberate": false,
+      "rationale": "This is the standard purple, blue and cyan diagonal. None of its colours come from a planning or coding subject, and it sets the default tone for the whole card."
+    },
+    {
+      "indicator": "Verbose, redundant text",
+      "layer": "Content",
+      "location": "p.copy (line 36)",
+      "evidence": "\"Our powerful AI-driven planning engine lets you seamlessly see the plan before any changes are made, empowering you to edit, reorder, or reject it with confidence.\"",
+      "deliberate": false,
+      "rationale": "The paragraph repeats the headline's 'plans first' idea and wraps it in stacked buzzwords. Its only useful content is 'edit, reorder, or reject'."
+    },
+    {
+      "indicator": "Instrument Serif",
+      "layer": "Type",
+      "location": ".slop h5 (line 18), Google Fonts link",
+      "evidence": "font: 400 30px/1.1 \"Instrument Serif\",Georgia,serif",
+      "deliberate": false,
+      "rationale": "A display serif on a developer-tool card, unrelated to the grotesk and mono used everywhere else on it. It is the 2025 default 'tasteful' face."
+    },
+    {
+      "indicator": "Excessive italics",
+      "layer": "Type",
+      "location": "h5 (line 32)",
+      "evidence": "Plans <em>first</em>. Acts <em>second</em>.",
+      "deliberate": false,
+      "rationale": "The italics land on ordinal words that carry no real stress. They are there for flavour."
+    },
+    {
+      "indicator": "Periods in titles",
+      "layer": "Type",
+      "location": "h5 (line 32)",
+      "evidence": "\"Plans first. Acts second.\"",
+      "deliberate": false,
+      "rationale": "Two short staccato fragments that would fit any agent product. Nothing in them is specific to this one."
+    },
+    {
+      "indicator": "ALL CAPS subtitles",
+      "layer": "Type",
+      "location": "div.sub (line 33)",
+      "evidence": "\"INTELLIGENT · AUTONOMOUS · SAFE\", letter-spacing .12em, opacity .75",
+      "deliberate": false,
+      "rationale": "A faded, tracked line of adjectives under the headline. It carries no information and is hard to read."
+    },
+    {
+      "indicator": "Tags and pills",
+      "layer": "Structure",
+      "location": "span.pill (line 31)",
+      "evidence": "\"NEW\" badge with border-radius 999px",
+      "deliberate": false,
+      "rationale": "A generic NEW badge that shows no real, changing state."
+    },
+    {
+      "indicator": "Eyebrows",
+      "layer": "Structure",
+      "location": "div.eb (line 31)",
+      "evidence": "\"02 · PLAN\" in 11px mono caps above \"Plans first. Acts second.\"",
+      "deliberate": false,
+      "rationale": "'PLAN' repeats the heading's own word, so the eyebrow tells the reader nothing new."
+    },
+    {
+      "indicator": "Color shades and opacities",
+      "layer": "Surface",
+      "location": ".box, .eb, .pill, hr, .ctas span, .copy, .sub, .crumb",
+      "evidence": "white at alphas .08, .12, .18, .25, .28, .3, .35, .7, plus opacity .72/.75/.8",
+      "deliberate": false,
+      "rationale": "Around a dozen one-off transparencies of white stand in for a palette. Edges turn to mud, and the faded body text loses contrast over the gradient."
+    },
+    {
+      "indicator": "Code breadcrumbs",
+      "layer": "Structure",
+      "location": "div.crumb (line 35)",
+      "evidence": "\"src/auth/refresh.py → tests/auth/ ← 3 relevant\"",
+      "deliberate": false,
+      "rationale": "A file path with arrows pointing nowhere, used as technical decoration on a marketing card. It is not real product output."
+    },
+    {
+      "indicator": "Excessive mono fonts",
+      "layer": "Type",
+      "location": ".slop .eb (line 16), .slop .crumb (line 22)",
+      "evidence": "font: 500 11px var(--mono); font: 400 12px var(--mono) (JetBrains Mono)",
+      "deliberate": false,
+      "rationale": "Monospace is used as costume on the eyebrow label and the decorative path. Neither is code a person would read or type."
+    },
+    {
+      "indicator": "Section numbering",
+      "layer": "Structure",
+      "location": "div.eb (line 31)",
+      "evidence": "\"02 ·\"",
+      "deliberate": false,
+      "rationale": "This is a single standalone card. The number implies a sequence that isn't there."
+    },
+    {
+      "indicator": "Containers with borders",
+      "layer": "Surface",
+      "location": ".box (line 15), .pill (line 17), .ctas span (line 25)",
+      "evidence": "1px solid rgba(255,255,255,.28/.3/.35) on the card, the pill inside it and both buttons inside it",
+      "deliberate": false,
+      "rationale": "Bordered boxes are nested inside a bordered box. Both CTAs carry the same treatment, so neither reads as primary."
+    },
+    {
+      "indicator": "Overusing dividers",
+      "layer": "Surface",
+      "location": "hr (lines 34, 37)",
+      "evidence": "two <hr> with border-top 1px rgba(255,255,255,.25)",
+      "deliberate": false,
+      "rationale": "Two hairlines split a card of five short elements. Spacing alone would separate them."
+    },
+    {
+      "indicator": "Squircles",
+      "layer": "Surface",
+      "location": ".box radius 22px with 22px padding; .ctas span radius 12px; .pill radius 999px",
+      "evidence": "border-radius:22px outer, 12px and 999px inner",
+      "deliberate": false,
+      "rationale": "Every element gets a soft radius, and the radii don't form a scale. The inner radius should be 22 − 22 = 0, so the nested 12px corners are not concentric with the card."
+    }
+  ],
+  "fixes_first": [
+    "Drop redundant labels",
+    "Delete filler badges",
+    "Unitalicize random words"
+  ],
+  "scan": {
+    "source": "tests/fixtures/audit-slop-card.html",
+    "score": 14,
+    "verdict": "Pure default output",
+    "hits": [
+      {
+        "indicator": "Instrument Serif",
+        "layer": "Type",
+        "evidence": [
+          {
+            "location": ".slop h5 (line 18)",
+            "detail": "font-family: \"Instrument Serif\",Georgia,serif"
+          },
+          {
+            "location": "Google Fonts stylesheet",
+            "detail": "loads Instrument Serif: https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+          }
+        ],
+        "fix_ids": [
+          5
+        ]
+      },
+      {
+        "indicator": "Excessive italics",
+        "layer": "Type",
+        "evidence": [
+          {
+            "location": "<h5> (line 32)",
+            "detail": "\"Plans first. Acts second.\" with \"first second\" in italics"
+          }
+        ],
+        "fix_ids": [
+          3
+        ]
+      },
+      {
+        "indicator": "Excessive mono fonts",
+        "layer": "Type",
+        "evidence": [
+          {
+            "location": ".slop .eb (line 16)",
+            "detail": "font-family: \"JetBrains Mono\", ui-monospace, Menlo, Consolas, monospace at 11px"
+          },
+          {
+            "location": ".slop .crumb (line 22)",
+            "detail": "font-family: \"JetBrains Mono\", ui-monospace, Menlo, Consolas, monospace at 12px"
+          }
+        ],
+        "fix_ids": [
+          4
+        ]
+      },
+      {
+        "indicator": "ALL CAPS subtitles",
+        "layer": "Type",
+        "evidence": [
+          {
+            "location": "<div class=\"sub\"> (line 33)",
+            "detail": "\"INTELLIGENT · AUTONOMOUS · SAFE\""
+          }
+        ],
+        "fix_ids": [
+          2
+        ]
+      },
+      {
+        "indicator": "Periods in titles",
+        "layer": "Type",
+        "evidence": [
+          {
+            "location": "<h5> (line 32)",
+            "detail": "\"Plans first. Acts second.\""
+          }
+        ],
+        "fix_ids": [
+          9,
+          16
+        ]
+      },
+      {
+        "indicator": "Gradient backgrounds",
+        "layer": "Surface",
+        "evidence": [
+          {
+            "location": ".slop (line 14)",
+            "detail": "background: linear-gradient(135deg,#6E4CF5 0%,#3B82F6 55%,#22D3EE 100%) (purple to blue)"
+          }
+        ],
+        "fix_ids": [
+          5,
+          11
+        ]
+      },
+      {
+        "indicator": "Color shades and opacities",
+        "layer": "Surface",
+        "evidence": [
+          {
+            "location": ".slop .box (line 15)",
+            "detail": "border: rgba(255,255,255,.28) (one of 8 alphas of rgb(255, 255, 255))"
+          },
+          {
+            "location": ".slop .box (line 15)",
+            "detail": "background: rgba(255,255,255,.08) (one of 8 alphas of rgb(255, 255, 255))"
+          },
+          {
+            "location": ".slop .eb (line 16)",
+            "detail": "color: rgba(255,255,255,.7) (one of 8 alphas of rgb(255, 255, 255))"
+          },
+          {
+            "location": ".slop .pill (line 17)",
+            "detail": "background: rgba(255,255,255,.18) (one of 8 alphas of rgb(255, 255, 255))"
+          },
+          {
+            "location": ".slop .pill (line 17)",
+            "detail": "border: rgba(255,255,255,.3) (one of 8 alphas of rgb(255, 255, 255))"
+          },
+          {
+            "location": ".slop hr (line 21)",
+            "detail": "border-top: rgba(255,255,255,.25) (one of 8 alphas of rgb(255, 255, 255))"
+          },
+          {
+            "location": ".slop .ctas span (line 25)",
+            "detail": "border: rgba(255,255,255,.35) (one of 8 alphas of rgb(255, 255, 255))"
+          },
+          {
+            "location": ".slop .ctas span (line 25)",
+            "detail": "background: rgba(255,255,255,.12) (one of 8 alphas of rgb(255, 255, 255))"
+          }
+        ],
+        "fix_ids": [
+          5,
+          11,
+          15
+        ]
+      },
+      {
+        "indicator": "Containers with borders",
+        "layer": "Surface",
+        "evidence": [
+          {
+            "location": ".slop .box (line 15)",
+            "detail": "border: 1px solid rgba(255,255,255,.28)"
+          },
+          {
+            "location": ".slop .pill (line 17)",
+            "detail": "border: 1px solid rgba(255,255,255,.3)"
+          },
+          {
+            "location": ".slop .ctas span (line 25)",
+            "detail": "border: 1px solid rgba(255,255,255,.35)"
+          },
+          {
+            "location": "<span class=\"pill\"> (line 31)",
+            "detail": "bordered box inside bordered <div class=\"box\"> (line 30)"
+          },
+          {
+            "location": "<span> (line 38)",
+            "detail": "bordered box inside bordered <div class=\"box\"> (line 30)"
+          }
+        ],
+        "fix_ids": [
+          8
+        ]
+      },
+      {
+        "indicator": "Overusing dividers",
+        "layer": "Surface",
+        "evidence": [
+          {
+            "location": "<hr> (line 34)",
+            "detail": "<hr>"
+          },
+          {
+            "location": "<hr> (line 37)",
+            "detail": "<hr>"
+          }
+        ],
+        "fix_ids": [
+          8
+        ]
+      },
+      {
+        "indicator": "Tags and pills",
+        "layer": "Structure",
+        "evidence": [
+          {
+            "location": "<span class=\"pill\"> (line 31)",
+            "detail": "\"NEW\""
+          }
+        ],
+        "fix_ids": [
+          1
+        ]
+      },
+      {
+        "indicator": "Eyebrows",
+        "layer": "Structure",
+        "evidence": [
+          {
+            "location": "<div class=\"eb\"> (line 31)",
+            "detail": "\"02 · PLANNEW\" above \"Plans first. Acts second.\""
+          }
+        ],
+        "fix_ids": [
+          2
+        ]
+      },
+      {
+        "indicator": "Section numbering",
+        "layer": "Structure",
+        "evidence": [
+          {
+            "location": "<div class=\"eb\"> (line 31)",
+            "detail": "\"02 · PLAN\""
+          }
+        ],
+        "fix_ids": [
+          2
+        ]
+      },
+      {
+        "indicator": "Code breadcrumbs",
+        "layer": "Structure",
+        "evidence": [
+          {
+            "location": "<div class=\"crumb\"> (line 35)",
+            "detail": "\"src/auth/refresh.py → tests/auth/ ← 3 relevant\""
+          }
+        ],
+        "fix_ids": [
+          4,
+          6
+        ]
+      },
+      {
+        "indicator": "Verbose, redundant text",
+        "layer": "Content",
+        "evidence": [
+          {
+            "location": "<p class=\"copy\"> (line 36)",
+            "detail": "\"powerful\" in \"Our powerful AI-driven planning engine lets you seamlessly see the plan before any changes are ma...\""
+          },
+          {
+            "location": "<p class=\"copy\"> (line 36)",
+            "detail": "\"AI-driven\" in \"Our powerful AI-driven planning engine lets you seamlessly see the plan before any changes are ma...\""
+          },
+          {
+            "location": "<p class=\"copy\"> (line 36)",
+            "detail": "\"seamlessly\" in \"Our powerful AI-driven planning engine lets you seamlessly see the plan before any changes are ma...\""
+          },
+          {
+            "location": "<p class=\"copy\"> (line 36)",
+            "detail": "\"empowering\" in \"Our powerful AI-driven planning engine lets you seamlessly see the plan before any changes are ma...\""
+          }
+        ],
+        "fix_ids": [
+          9,
+          2
+        ]
+      }
+    ],
+    "fixes_first": [
+      "Delete filler badges",
+      "Drop redundant labels",
+      "Unitalicize random words",
+      "Mono only where needed",
+      "Make headlines specific",
+      "Show the actual product",
+      "Group with spacing",
+      "Use a design system",
+      "Add an accent colour",
+      "Improve text contrast",
+      "Wrap headlines properly"
+    ]
+  }
+}

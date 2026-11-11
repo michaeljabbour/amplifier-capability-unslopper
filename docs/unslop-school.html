@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unslop School</title>
+<meta name="description" content="A short course in spotting and fixing AI design defaults: twenty terms, twenty slop indicators, twenty fixes, three palettes, twenty-two textures, an audit and six skill prompts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+/* Layout: a course. Sticky lesson index on the left, one reading column, demos break wider. Practices what it teaches: no pills, no eyebrows, mono only for code and prompts. */
+:root{
+  --paper:#F4F6FA; --ink:#141A2E; --muted:#555E78; --line:#D7DCE7; --well:#E9EDF4;
+  --accent:#C43D1F; --accent-ink:#FFFFFF; --good:#1F7A55; --bad:#B3261E;
+  --radius:10px; --radius-s:6px;
+  --display:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0F1322; --ink:#E7EAF2; --muted:#9BA3BC; --line:#252B42; --well:#171C2F;
+  --accent:#FF7650; --accent-ink:#1A0E09; --good:#5BD39F; --bad:#FF8A80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1322; --ink:#E7EAF2; --muted:#9BA3BC; --line:#252B42; --well:#171C2F;
+  --accent:#FF7650; --accent-ink:#1A0E09; --good:#5BD39F; --bad:#FF8A80; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.6;
+  padding:env(safe-area-inset-top,0px) max(16px, env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px, env(safe-area-inset-left,0px))}
+a{color:inherit;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);line-height:1.12;text-wrap:balance;margin:0}
+p{margin:0;text-wrap:pretty}
+code{font-family:var(--mono);font-size:.82em;background:var(--well);padding:.1em .35em;border-radius:4px}
+
+.shell{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:200px minmax(0,1fr);gap:56px;padding-block:48px 96px}
+nav.index{position:sticky;top:calc(env(safe-area-inset-top,0px) + 32px);align-self:start;font-family:var(--display);font-size:15px}
+nav.index .brand{font-weight:800;font-size:19px;margin-bottom:20px;display:block;text-decoration:none}
+nav.index ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;counter-reset:l}
+nav.index li{counter-increment:l}
+nav.index ol a{text-decoration:none;color:var(--muted);display:flex;gap:10px;padding:7px 0}
+nav.index ol a::before{content:counter(l);font-variant-numeric:tabular-nums;width:1.2em}
+nav.index ol a:hover{color:var(--ink)}
+nav.index ol a.on{color:var(--ink);font-weight:700}
+nav.index ol a.on::before{color:var(--accent)}
+nav.index .credit{margin-top:28px;font-family:var(--body);font-size:14px;color:var(--muted);line-height:1.5}
+
+main{min-width:0}
+.hero{padding-bottom:56px}
+.hero h1{font-size:clamp(40px,6.4vw,76px);font-weight:800;letter-spacing:-.025em;max-width:13ch}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:21px;color:var(--muted);max-width:36em;margin-top:24px}
+.hero .route{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:32px;font-family:var(--display);font-size:15px;color:var(--muted)}
+.hero .route b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+section.lesson{padding-top:72px;scroll-margin-top:24px}
+.lesson-head{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0 8px;align-items:baseline;margin-bottom:20px}
+.lesson-head .n{font-family:var(--display);font-weight:800;font-size:56px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.lesson-head h2{font-size:clamp(28px,3.6vw,40px);font-weight:800;letter-spacing:-.015em;max-width:24ch}
+.lede{max-width:36em;font-size:19px;margin-bottom:12px}
+.prose{max-width:36em}
+.muted{color:var(--muted)}
+
+/* glossary */
+.terms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 48px;margin-top:36px}
+.term h3{font-size:19px;font-weight:700;margin-bottom:4px}
+.term p{font-size:16px;line-height:1.55}
+.term .ai{color:var(--muted);margin-top:6px}
+.demo{margin-top:10px;background:var(--well);border-radius:var(--radius);padding:14px 16px;font-size:15px}
+.demo .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}
+.demo small{display:block;font-family:var(--display);font-size:12px;color:var(--muted);margin-top:4px}
+.kern-on,.kern-off{font-family:var(--display);font-size:34px;font-weight:700;line-height:1}
+.kern-off{font-kerning:none;letter-spacing:.02em}
+.nums{font-family:var(--display);font-size:20px;line-height:1.3}
+.tab{font-variant-numeric:tabular-nums}.prop{font-variant-numeric:proportional-nums}
+.xh{font-size:32px;line-height:1}
+.tgt{display:flex;gap:18px;align-items:center}
+.tgt button{border:0;background:var(--accent);color:var(--accent-ink);border-radius:var(--radius-s);font:600 13px var(--display);cursor:pointer}
+.tgt .small{width:24px;height:24px;padding:0}.tgt .big{width:44px;height:44px;padding:0}
+
+/* slop list */
+.group{margin-top:40px}
+.group > h3{font-size:22px;font-weight:800;margin-bottom:6px}
+.group > p{color:var(--muted);max-width:36em;font-size:16px}
+.rows{margin-top:20px;display:grid;gap:24px}
+.row{display:grid;grid-template-columns:220px minmax(0,1fr);gap:8px 32px}
+.row h4{margin:0;font-family:var(--display);font-size:17px;font-weight:700;line-height:1.3}
+.row p{font-size:16px;line-height:1.55;max-width:36em}
+.row .fix{margin-top:6px;color:var(--muted)}
+.row .fix b{color:var(--good);font-weight:600;font-family:var(--display);font-size:14px}
+.note{margin-top:28px;max-width:36em;padding-left:18px;border-left:3px solid var(--accent);font-size:17px}
+
+/* before / after */
+.lab{margin-top:28px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:start}
+.toggle{display:inline-flex;background:var(--well);border-radius:var(--radius);padding:4px;margin-top:20px}
+.toggle button{border:0;background:transparent;color:var(--muted);font:700 15px var(--display);padding:9px 18px;border-radius:var(--radius-s);cursor:pointer;min-height:44px}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.stage{border-radius:var(--radius);overflow:hidden;min-height:340px}
+/* slop card, deliberately */
+.slop{background:linear-gradient(135deg,#6E4CF5 0%,#3B82F6 55%,#22D3EE 100%);padding:22px;color:#fff;position:relative}
+.slop .box{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);border-radius:22px;padding:22px}
+.slop .eb{font:500 11px/1 var(--mono);letter-spacing:.14em;color:rgba(255,255,255,.7)}
+.slop .pill{display:inline-block;font:600 10px/1 var(--display);letter-spacing:.08em;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);margin-left:8px;vertical-align:middle}
+.slop h5{font:400 30px/1.1 "Instrument Serif",Georgia,serif;letter-spacing:-.03em;margin:14px 0 8px}
+.slop h5 em{font-style:italic}
+.slop .sub{font:600 11px/1.4 var(--display);letter-spacing:.12em;opacity:.75}
+.slop hr{border:0;border-top:1px solid rgba(255,255,255,.25);margin:14px 0}
+.slop .crumb{font:400 12px/1.5 var(--mono);opacity:.8}
+.slop .copy{font:400 13px/1.5 var(--display);opacity:.72;margin-top:10px}
+.slop .ctas{display:flex;gap:8px;margin-top:14px}
+.slop .ctas span{font:600 12px var(--display);padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12)}
+.mk{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#FFD43B;color:#1a1a1a;font:800 11px var(--display);margin-left:6px;vertical-align:middle;font-variant-numeric:tabular-nums}
+/* clean card */
+.clean{background:#FBFAF7;color:#1C1D22;padding:32px 28px}
+.clean h5{font:800 30px/1.08 var(--display);letter-spacing:-.02em;margin:0 0 12px;max-width:15ch;text-wrap:balance}
+.clean p{font:400 16px/1.55 var(--body);color:#4A4D57;max-width:30em}
+.clean .shot{margin-top:20px;background:#ECEAE3;border-radius:10px;padding:16px 18px;font:400 14px/1.7 var(--mono);color:#2A2C33}
+.clean .shot .add{color:#17703F}.clean .shot .del{color:#A3261C;text-decoration:line-through}
+.clean .cta{display:inline-block;margin-top:20px;background:#C43D1F;color:#fff;font:700 15px var(--display);padding:12px 20px;border-radius:8px}
+.clean .sec{margin-left:16px;font:600 15px var(--display);color:#4A4D57}
+.callouts{font-size:16px}
+.callouts h3{font-size:20px}
+.callouts ol{margin:12px 0 0;padding-left:1.4em;display:grid;gap:10px}
+.callouts li::marker{font-family:var(--display);font-weight:800;color:var(--accent)}
+.callouts li b{font-family:var(--display)}
+
+/* fixes */
+.fixgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 48px;margin-top:20px}
+.fx h4{margin:0 0 4px;font:700 17px/1.3 var(--display)}
+.fx p{font-size:16px;line-height:1.55}
+.radius-demo{display:flex;gap:28px;flex-wrap:wrap;margin-top:12px}
+.rd{font:600 12px var(--display);color:var(--muted);text-align:center}
+.rd .o{width:120px;height:84px;border-radius:24px;background:var(--accent);padding:12px;margin-bottom:6px}
+.rd .i{width:100%;height:100%;background:var(--paper)}
+.rd.wrong .i{border-radius:24px}.rd.right .i{border-radius:12px}
+
+/* palettes */
+.palettes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:32px}
+.pal h3{font-size:20px;font-weight:800}
+.pal .mood{font-size:15px;color:var(--muted);margin:4px 0 14px}
+.sw{display:grid;grid-template-columns:2fr 1fr 1fr;height:120px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+.sw div{display:flex;align-items:flex-end;padding:8px;font:500 11px/1.3 var(--mono)}
+.pal dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:15px}
+.pal dt{font-family:var(--display);font-weight:700}
+.pal dd{margin:0;color:var(--muted)}
+.method{margin-top:40px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.method div h4{margin:0 0 4px;font:700 16px var(--display)}
+.method div p{font-size:15px;line-height:1.5;color:var(--muted)}
+.method div .s{font:800 15px var(--display);color:var(--accent);font-variant-numeric:tabular-nums}
+
+/* textures */
+.textures{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:24px 20px;margin-top:28px}
+.tx canvas{width:100%;aspect-ratio:8/5;max-width:100%;display:block;border-radius:var(--radius);background:var(--well)}
+.tx h4{margin:8px 0 2px;font:700 15px var(--display)}
+.tx p{font-size:14px;line-height:1.45;color:var(--muted)}
+
+/* audit */
+.audit{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;margin-top:24px;align-items:start}
+.audit fieldset{border:0;margin:0 0 20px;padding:0}
+.audit legend{font:800 17px var(--display);margin-bottom:8px;padding:0}
+.audit label{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:8px 0;font-size:16px;cursor:pointer;line-height:1.4}
+.audit input{width:18px;height:18px;margin-top:3px;accent-color:var(--accent);flex:none}
+.result{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);background:var(--well);border-radius:var(--radius);padding:24px}
+.result .score{font:800 52px/1 var(--display);font-variant-numeric:tabular-nums}
+.result .score span{font-size:22px;color:var(--muted);font-weight:700}
+.result .verdict{margin-top:6px;font:700 17px var(--display)}
+.result ul{margin:16px 0 0;padding-left:1.1em;font-size:16px;display:grid;gap:6px}
+.result .reset{margin-top:16px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 14px var(--display);padding:8px 14px;border-radius:var(--radius-s);cursor:pointer;min-height:44px}
+
+/* prompts */
+.prompts{display:grid;gap:36px;margin-top:28px}
+.pr{max-width:648px} /* 80 columns of 13.5px mono */
+.pr .head{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.pr h3{font-size:22px;font-weight:800}
+.pr .why{font-size:16px;color:var(--muted);margin:4px 0 12px;max-width:36em}
+.pr pre{margin:0;padding:20px;background:var(--well);border-radius:var(--radius);overflow-x:auto;font:400 13.5px/1.65 var(--mono);white-space:pre-wrap;word-break:break-word;max-height:360px;overflow-y:auto}
+.pr .copy{flex:none;border:0;background:var(--ink);color:var(--paper);font:700 13px var(--display);padding:0 14px;border-radius:var(--radius-s);cursor:pointer;min-height:44px}
+footer{margin-top:88px;font-size:15px;color:var(--muted);max-width:36em}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0;padding-block:24px 72px}
+  nav.index{position:static;margin-bottom:24px}
+  nav.index ol{grid-auto-flow:column;grid-auto-columns:max-content;gap:18px;overflow-x:auto;padding-bottom:6px}
+  nav.index .credit{display:none}
+  .terms,.fixgrid,.lab,.audit,.palettes{grid-template-columns:minmax(0,1fr)}
+  .method{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .row{grid-template-columns:minmax(0,1fr)}
+  .result{position:static}
+}
+@media (max-width:480px){
+  body{font-size:17px}
+  .lesson-head{grid-template-columns:48px minmax(0,1fr)}
+  .lesson-head .n{font-size:40px}
+  .method{grid-template-columns:minmax(0,1fr)}
+  .demo .pair{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="index" aria-label="Lessons">
+  <a class="brand" href="#top">Unslop School</a>
+  <ol>
+    <li><a href="#vocabulary">Vocabulary</a></li>
+    <li><a href="#slop">Spotting slop</a></li>
+    <li><a href="#lab">Before and after</a></li>
+    <li><a href="#fixes">Twenty fixes</a></li>
+    <li><a href="#palette">Direction from a palette</a></li>
+    <li><a href="#texture">Backgrounds with texture</a></li>
+    <li><a href="#audit">Audit a design</a></li>
+    <li><a href="#skills">Make it a skill</a></li>
+  </ol>
+  <p class="credit">Lists adapted from Charles Liu's short design videos. Explanations, demos and prompts written for this course.</p>
+</nav>
+
+<main id="top">
+<header class="hero">
+  <h1>Every AI design starts from the <span>same defaults</span></h1>
+  <p>Models reach for the same fonts, the same gradients and the same little labels because those choices were safe in their training data. This course teaches you to name what you see, spot the defaults, fix them, and then give a design a direction of its own.</p>
+  <div class="route"><span><b>20</b> terms</span><span><b>20</b> slop indicators</span><span><b>20</b> fixes</span><span><b>3</b> palette studies</span><span><b>22</b> textures</span><span><b>6</b> skill prompts</span></div>
+</header>
+
+<!-- 1 -->
+<section class="lesson" id="vocabulary">
+  <div class="lesson-head"><span class="n">1</span><h2>Learn the vocabulary</h2></div>
+  <p class="lede">You cannot direct a model, or a designer, toward something you cannot name. These twenty terms cover type, layout, color and motion. Each one comes with what it means and why it shows up when you work with AI.</p>
+  <div class="terms" id="terms"></div>
+</section>
+
+<!-- 2 -->
+<section class="lesson" id="slop">
+  <div class="lesson-head"><span class="n">2</span><h2>Spot the slop</h2></div>
+  <p class="lede">Slop is what happens when every choice is a default. None of these twenty patterns is wrong in itself. Each one becomes a tell when it appears without a reason, and when it appears alongside four others.</p>
+  <p class="lede muted">They are grouped by where they live, so you can scan a screen one layer at a time.</p>
+  <div id="slopGroups"></div>
+  <p class="note">Notice that dithering, ASCII art and gradients also appear in lesson 6 as ways to make a design richer. That is the whole lesson in one contradiction. A technique is slop when the model chose it for you, and craft when you chose it for the subject.</p>
+</section>
+
+<!-- 3 -->
+<section class="lesson" id="lab">
+  <div class="lesson-head"><span class="n">3</span><h2>The same card, before and after</h2></div>
+  <p class="lede">Here is one feature card for an imaginary coding agent, written the way a model tends to write it. Switch views and compare. The numbered dots mark each indicator from lesson 2.</p>
+  <div class="toggle" role="group" aria-label="Card version">
+    <button type="button" id="btnSlop" aria-pressed="true">Default AI output</button>
+    <button type="button" id="btnClean" aria-pressed="false">Unslopped</button>
+  </div>
+  <div class="lab">
+    <div class="stage">
+      <div class="slop" id="cardSlop">
+        <div class="box">
+          <div class="eb">02 · PLAN<span class="mk">1</span><span class="pill">NEW</span><span class="mk">2</span></div>
+          <h5>Plans <em>first</em>. Acts <em>second</em>.<span class="mk">3</span></h5>
+          <div class="sub">INTELLIGENT · AUTONOMOUS · SAFE<span class="mk">4</span></div>
+          <hr>
+          <div class="crumb">src/auth/refresh.py → tests/auth/ ← 3 relevant<span class="mk">5</span></div>
+          <p class="copy">Our powerful AI-driven planning engine lets you seamlessly see the plan before any changes are made, empowering you to edit, reorder, or reject it with confidence.<span class="mk">6</span></p>
+          <hr>
+          <div class="ctas"><span>Learn more →</span><span>Get started →</span><span class="mk" style="margin:auto 0">7</span></div>
+        </div>
+      </div>
+      <div class="clean" id="cardClean" hidden>
+        <h5>Read the plan before it touches a file</h5>
+        <p>The agent lists every step and the files it will change. Edit a step, reorder it, or reject the plan and nothing runs.</p>
+        <div class="shot">✓ reproduce failing test<br>✓ find the race in session refresh<br><span class="add">→ patch auth/refresh.py</span><br><span class="del">add regression test</span>&nbsp;skipped by you</div>
+        <span class="cta">Try it on your repo</span><span class="sec">See an example plan</span>
+      </div>
+    </div>
+    <div class="callouts" id="callouts">
+      <h3>What changed</h3>
+      <ol>
+        <li><b>Section numbering and eyebrow.</b> "02 · PLAN" restates the headline and implies an order the reader does not need. Removed.</li>
+        <li><b>Filler pill.</b> "New" says nothing about the feature. Removed.</li>
+        <li><b>Periods, random italics, Instrument Serif, tight kerning.</b> Replaced by one specific sentence in a face chosen for the product.</li>
+        <li><b>All-caps subtitle.</b> Three adjectives nobody reads. Removed.</li>
+        <li><b>Code breadcrumb.</b> Mono used as decoration. Mono now appears only inside the real plan, where it is code.</li>
+        <li><b>Verbose copy.</b> Thirty words became twenty, with the outcome stated plainly.</li>
+        <li><b>Two equal ghost buttons on a gradient.</b> One solid call to action, one quiet secondary link, on a calm ground. The plan itself is shown as the product.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="lesson" id="fixes">
+  <div class="lesson-head"><span class="n">4</span><h2>Twenty ways to fix it</h2></div>
+  <p class="lede">The fixes fall into four moves. Most of the work is subtraction. The rest is choosing one thing to make important, then building a small system so the rest stays consistent.</p>
+  <div id="fixGroups"></div>
+</section>
+
+<!-- 5 -->
+<section class="lesson" id="palette">
+  <div class="lesson-head"><span class="n">5</span><h2>Give it a direction with three colors</h2></div>
+  <p class="lede">Removing slop gets you to clean. Clean is still forgettable. The fastest way past it is to commit to a world: a dark ground, a light, and one signal color, each pulled from the subject itself. Type and imagery then follow the palette.</p>
+  <p class="lede muted">Three studies from the source videos, each a fictional brand.</p>
+  <div class="palettes">
+    <div class="pal">
+      <h3>Northern Time</h3>
+      <p class="mood">A mechanical watch brand, lit like the aurora</p>
+      <div class="sw"><div style="background:#000412;color:#E8EEF2">#000412</div><div style="background:#E8EEF2;color:#000412">#E8EEF2</div><div style="background:#2BF08A;color:#000412">#2BF08A</div></div>
+      <dl><dt>Ground</dt><dd>Black with a trace of blue, like a night sky</dd><dt>Light</dt><dd>Ice white for text and the steel case</dd><dt>Signal</dt><dd>Aurora green, used only in the light trails</dd><dt>Type</dt><dd>A high-contrast serif with wide-tracked small caps, luxury watchmaking's own vernacular</dd></dl>
+    </div>
+    <div class="pal">
+      <h3>Three Days Louder</h3>
+      <p class="mood">A music festival that wants to feel like a crowd surge</p>
+      <div class="sw"><div style="background:#C9EF35;color:#111111">#C9EF35</div><div style="background:#111111;color:#C9EF35">#111111</div><div style="background:#FF2E93;color:#111111">#FF2E93</div></div>
+      <dl><dt>Ground</dt><dd>Lime, loud enough to read from across a field</dd><dt>Light</dt><dd>Near-black for heavy display type</dd><dt>Signal</dt><dd>Hot pink as confetti in the photo</dd><dt>Type</dt><dd>A fat, chunky display face set huge and tight, poster style</dd></dl>
+    </div>
+    <div class="pal">
+      <h3>Still Waters</h3>
+      <p class="mood">A silent retreat in Kyoto, golden hour on water</p>
+      <div class="sw"><div style="background:#603E1E;color:#F1D9A8">#603E1E</div><div style="background:#F1D9A8;color:#603E1E">#F1D9A8</div><div style="background:#FFC34D;color:#603E1E">#FFC34D</div></div>
+      <dl><dt>Ground</dt><dd>Brown, warm and low like wood</dd><dt>Light</dt><dd>Pale gold for quiet text</dd><dt>Signal</dt><dd>Glowing gold as light rays on the heron</dd><dt>Type</dt><dd>A refined serif with generous tracking and lots of air</dd></dl>
+    </div>
+  </div>
+  <p class="note">These three use italics, wide-tracked caps and serif display faces, which lesson 2 flags. They work because every choice belongs to the brand's world and repeats with discipline. That is the test to apply to any rule in this course.</p>
+  <div class="method">
+    <div><span class="s">Step 1</span><h4>Name the feeling</h4><p>One sentence about a place or moment. "Aurora over a watch dial." Avoid adjectives like modern or clean.</p></div>
+    <div><span class="s">Step 2</span><h4>Pick three roles</h4><p>Ground, light, signal. The signal color covers under 10 percent of the screen.</p></div>
+    <div><span class="s">Step 3</span><h4>Let type follow</h4><p>Choose a face the subject would use on its own signage, packaging or poster.</p></div>
+    <div><span class="s">Step 4</span><h4>One hero image</h4><p>An image that carries the idea and uses the palette. The product, ideally.</p></div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="lesson" id="texture">
+  <div class="lesson-head"><span class="n">6</span><h2>Backgrounds with texture</h2></div>
+  <p class="lede">Flat fills read as unfinished, and a purple gradient reads as AI. Texture is the middle path. Every swatch below is drawn live in your browser with a few lines of canvas code, which also means a model can generate each one for you if you can name it.</p>
+  <div class="textures" id="textures"></div>
+</section>
+
+<!-- 7 -->
+<section class="lesson" id="audit">
+  <div class="lesson-head"><span class="n">7</span><h2>Audit a design</h2></div>
+  <p class="lede">Open something you or a model made and tick what you see. The panel tells you where to start fixing, ordered so the cheapest high-impact fixes come first.</p>
+  <div class="audit">
+    <form id="auditForm"></form>
+    <div class="result" aria-live="polite">
+      <div class="score" id="score">0<span> of 20</span></div>
+      <div class="verdict" id="verdict">Tick what you see</div>
+      <ul id="todo"></ul>
+      <button type="button" class="reset" id="resetAudit">Clear all</button>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="lesson" id="skills">
+  <div class="lesson-head"><span class="n">8</span><h2>Make it a skill</h2></div>
+  <p class="lede">Each prompt below is ready to paste into a skill builder (Claude's skill-creator works well). Each produces one focused skill. Start with the audit and the unslop pass, since the other four build on them.</p>
+  <p class="lede muted">These six now ship with this repository, as capabilities of the <code>unslopper</code> smart tool (<code>unslopper audit</code>, <code>unslop</code>, <code>direct</code>, <code>tutor</code>, <code>texture</code>, <code>antislop</code>) and as Agent Skills under <code>skills/</code>. The prompts stay here for anyone who wants to rebuild them elsewhere.</p>
+  <div class="prompts" id="prompts"></div>
+</section>
+
+<footer>The three lists of twenty and the texture list come from Charles Liu's short videos on AI design. Definitions, groupings, demos and prompts were written for this page. Brand names in lesson 5 are fictional studies from those videos.</footer>
+</main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+/* ---------- 1. vocabulary ---------- */
+const TERMS = [
+ ["Kerning","Adjusting the space between one specific pair of letters, like A and V, so the gaps look even.","Fonts ship with kerning tables. Models rarely break them, but they often add global letter-spacing that fights them.","kern"],
+ ["Optical centre","The point that looks centered to the eye, which sits slightly above the true middle. A play triangle needs nudging right for the same reason.","Generated layouts center by the math, so icons in buttons often look off."],
+ ["Tabular numbers","Digits that all take the same width, so columns of figures line up and counters do not jitter as they change.","Prices, tables and timers in AI mockups almost always use the default proportional digits.","nums"],
+ ["Layout shift","Content jumping around as images, fonts or data load in. Fixed by reserving space before the content arrives.","Models write the finished state and forget the loading one."],
+ ["Tracking","Uniform spacing across a whole run of text. Loosen it for small caps, tighten it slightly for large display type, leave body text alone.","The tell is negative tracking applied to everything, including small text."],
+ ["Optimistic update","Showing the result of an action immediately, before the server confirms, then rolling back if it fails. Makes apps feel instant.","Ask for it by name. Without it, generated UIs show a spinner on every like and checkbox."],
+ ["x-height","The height of lowercase letters. A taller x-height reads larger at the same point size, which matters when pairing two fonts.","Mismatched x-heights are why a body font and a heading font can look like they belong to different sites.","xh"],
+ ["Touch target","The tappable area of a control, which can be bigger than what is drawn. Aim for at least 44 by 44 points.","Tiny icon buttons are a common mobile miss in generated code.","tgt"],
+ ["Leading","The vertical space between lines, set as line-height. Body text breathes at about 1.5; big headlines want closer to 1.1.","Models default to one line-height for everything, which leaves headlines looking gappy."],
+ ["Origin-aware animation","A menu or popover grows out of the button that opened it, rather than from the center of the screen.","An easy instruction that makes a generated interface feel designed."],
+ ["OKLCH","A color space built around how people perceive lightness. Two colors with the same L value look equally bright, so scales and themes stay even.","Ask the model to build palettes in OKLCH and its tints stop going muddy."],
+ ["Widow","A single word stranded on the last line of a paragraph or heading. CSS text-wrap: pretty and balance fix most of them.","Very common in generated headlines, which are often set too wide."],
+ ["Safe area","The parts of a phone screen not covered by the notch, the rounded corners or the home bar.","Generated mobile layouts often put buttons under the home indicator."],
+ ["Stagger","Starting each item's animation a few milliseconds after the previous one, so a list arrives in a cascade.","Used with restraint it feels crafted. Used on every element it is another tell."],
+ ["Line length","How many characters fit on one line of text. Comfortable reading sits around 45 to 75.","Full-width paragraphs on desktop are a quick sign nobody checked."],
+ ["Affordance","A visual cue that tells you how something can be used: a raised button, an underlined link, a drag handle.","When every element is a bordered box, nothing has an affordance, because everything looks clickable."],
+ ["Combobox","A text field joined to a list: you type, the list filters, you pick. The right control for long option lists.","Name it and you get filtering and keyboard support instead of a 200-item dropdown."],
+ ["Interruptible animation","An animation that can change direction mid-flight when the user acts again, instead of finishing first.","Models write fixed CSS transitions that queue up and feel sluggish."],
+ ["Progressive disclosure","Showing the essentials first and revealing advanced options only when someone asks for them.","The antidote to over-detailed UI, slop indicator 5."],
+ ["Shared element transition","One element, like a card's image, smoothly grows into its place on the next screen. The View Transitions API does this natively.","A single one of these does more than ten decorative effects."]
+];
+function demo(kind){
+  if(kind==="kern") return `<div class="demo"><div class="pair"><div><div class="kern-off">AVATAR Type</div><small>No kerning</small></div><div><div class="kern-on">AVATAR Type</div><small>Kerned</small></div></div></div>`;
+  if(kind==="nums") return `<div class="demo"><div class="pair"><div class="nums prop">$1,111.11<br>$8,808.00<br>$  417.90</div><div class="nums tab">$1,111.11<br>$8,808.00<br>$  417.90</div></div><div class="pair"><small>Proportional</small><small>Tabular</small></div></div>`;
+  if(kind==="xh") return `<div class="demo"><div class="pair"><div><div class="xh" style="font-family:'Schibsted Grotesk',sans-serif">Hamburg</div><small>Tall x-height</small></div><div><div class="xh" style="font-family:'Instrument Serif',serif">Hamburg</div><small>Short x-height, same size</small></div></div></div>`;
+  if(kind==="tgt") return `<div class="demo"><div class="tgt"><button class="small" type="button" aria-label="Small target example">+</button><small style="margin:0">24 px, hard to hit</small><button class="big" type="button" aria-label="Large target example">+</button><small style="margin:0">44 px</small></div></div>`;
+  return "";
+}
+$("#terms").innerHTML = TERMS.map(t=>`<div class="term"><h3>${t[0]}</h3><p>${t[1]}</p><p class="ai">${t[2]}</p>${t[3]?demo(t[3]):""}</div>`).join("");
+
+/* ---------- fixes (needed by slop + audit) ---------- */
+const FIXES = {
+ 1:["Delete filler badges","If a pill says New, Beta or AI-powered on every item, it says nothing. Keep badges only for real state, like Sold out."],
+ 2:["Drop redundant labels","An eyebrow that repeats the heading, a label that names the obvious. Delete it and check whether anything was lost."],
+ 3:["Unitalicize random words","Italics are for one word of genuine stress or a title. Three per headline is decoration."],
+ 4:["Mono only where needed","Monospace belongs to code, data and terminals. Everywhere else it is costume."],
+ 5:["Use a design system","Define a handful of color, type and spacing tokens and use only those. Most mud comes from one-off values."],
+ 6:["Show the actual product","Replace abstract illustrations and fake dashboards with a real screenshot, the real output or a live demo."],
+ 7:["Enlarge the main feature","Pick the one thing the page exists for and make it clearly bigger than everything else."],
+ 8:["Group with spacing","Related things sit closer together, unrelated things further apart. Spacing does what borders and dividers were doing."],
+ 9:["Make headlines specific","Say what the thing does for this reader. A headline that fits any product fits none."],
+ 10:["Emphasize the CTA","One solid primary action per view. Secondary actions become quiet links."],
+ 11:["Add an accent color","One saturated color, used sparingly for the thing you want clicked or noticed."],
+ 12:["Keep icons consistent","One icon family, one stroke weight, one size grid. Mixed sets read as assembled."],
+ 13:["Remove embellishments","Sparkles, glows, decorative arrows, extra nodes in diagrams. If it carries no meaning, cut it."],
+ 14:["Inner radius = outer − padding","Nested rounded corners stay concentric when the inner radius equals the outer radius minus the gap between them."],
+ 15:["Improve text contrast","Gray text at 40 percent opacity on a gradient fails people. Aim for WCAG AA, 4.5 to 1 for body text."],
+ 16:["Wrap headlines properly","Use text-wrap: balance on headings and set a max width in ch, so lines break where a person would break them."],
+ 17:["Align by eye, not pixels","Round shapes, triangles and type overshoot their boxes. Nudge until it looks aligned, then trust your eye."],
+ 18:["Use tabular nums","Turn on tabular figures anywhere numbers stack or change: prices, tables, timers, stats."],
+ 19:["Add loading states","Design the skeleton, the empty state and the error, so the layout holds still while data arrives."],
+ 20:["Animate useful feedback","Motion should confirm something: added to cart, saved, moved. Animation without information is noise."]
+};
+const FIX_GROUPS = [
+ ["Subtract","Most slop is additive. Start here, it is the cheapest work.",[1,2,3,4,13]],
+ ["Focus","Decide what matters most and say it specifically.",[6,7,9,10,16]],
+ ["Systematize","Replace one-off choices with a few rules applied everywhere.",[5,8,11,12,14,15,17,18]],
+ ["Respond","Design the moments between states, where real products feel alive.",[19,20]]
+];
+$("#fixGroups").innerHTML = FIX_GROUPS.map(g=>`<div class="group"><h3>${g[0]}</h3><p>${g[1]}</p><div class="fixgrid">${g[2].map(i=>`<div class="fx"><h4>${FIXES[i][0]}</h4><p>${FIXES[i][1]}</p>${i===14?`<div class="radius-demo"><div class="rd wrong"><div class="o"><div class="i"></div></div>Same radius, looks pinched</div><div class="rd right"><div class="o"><div class="i"></div></div>24 − 12 = 12, concentric</div></div>`:""}</div>`).join("")}</div></div>`).join("");
+
+/* ---------- 2. slop indicators ---------- */
+const SLOP = [
+ ["Type","Look at the letters before anything else.",[
+  ["Instrument Serif","An elegant italic display serif that became the go-to tasteful choice in 2025. It is a fine typeface, and now it is a signature of generated pages.",[5]],
+  ["Excessive italics","Random words in a headline set in italics for flavor, as in Plans <em>first</em>. Acts <em>second</em>.",[3]],
+  ["Negative kerning","Tight negative letter-spacing applied to every heading, sometimes to body text, so letters start to collide.",[5,17]],
+  ["Excessive mono fonts","Monospace used for labels, captions, nav and stats to look technical.",[4]],
+  ["ALL CAPS subtitles","Small uppercase lines of adjectives under a headline. Hard to read and rarely read.",[2]],
+  ["Periods in titles","Short staccato headlines with full stops. Fast. Confident. Generic.",[9,16]]]],
+ ["Surface","Then look at fills, edges and effects.",[
+  ["Gradient backgrounds","The purple to blue diagonal, the most recognizable AI background there is.",[5,11]],
+  ["Color shades and opacities","Many tints of one hue at 10, 20 and 40 percent opacity, stacked until hierarchy turns to mud.",[5,11,15]],
+  ["Squircles","Large soft corner radii on every card, button and image, with nested corners that do not line up.",[14]],
+  ["Containers with borders","Every block boxed in a thin border, often inside another bordered box.",[8]],
+  ["Overusing dividers","Hairline rules between every section and inside every card.",[8]],
+  ["Dithering","Pixel dither patterns added for retro texture, regardless of the brand.",[13]],
+  ["ASCII images","Pictures drawn from characters, used as a shortcut to look technical.",[13,6]]]],
+ ["Structure","Then the scaffolding around the content.",[
+  ["Tags and pills","Rounded badges on headings and cards that carry no real information.",[1]],
+  ["Eyebrows","A tiny uppercase label above every heading, usually repeating it.",[2]],
+  ["Section numbering","01, 02, 03 on content that has no real order.",[2]],
+  ["Code breadcrumbs","File paths, arrows and comment syntax used as decoration on marketing pages.",[4,6]]]],
+ ["Content","Finally, what is actually being said and shown.",[
+  ["Verbose, redundant text","Copy that restates the headline, stacks adjectives and says seamlessly.",[9,2]],
+  ["Over-the-top detailed UI","Fake dashboards crammed with tiny charts, numbers and status dots to look impressive.",[6,7]],
+  ["Overly detailed diagrams","Flowcharts with more boxes, arrows and glows than the idea needs.",[13]]]]
+];
+$("#slopGroups").innerHTML = SLOP.map(g=>`<div class="group"><h3>${g[0]}</h3><p>${g[1]}</p><div class="rows">${g[2].map(s=>`<div class="row"><h4>${s[0]}</h4><div><p>${s[1]}</p><p class="fix"><b>Fix</b>&nbsp; ${s[2].map(i=>FIXES[i][0]).join(", ")}</p></div></div>`).join("")}</div></div>`).join("");
+
+/* ---------- 3. toggle ---------- */
+function setCard(clean){
+  $("#cardSlop").hidden = clean; $("#cardClean").hidden = !clean;
+  $("#btnSlop").setAttribute("aria-pressed", String(!clean));
+  $("#btnClean").setAttribute("aria-pressed", String(clean));
+}
+$("#btnSlop").onclick = ()=>setCard(false);
+$("#btnClean").onclick = ()=>setCard(true);
+
+/* ---------- 7. audit ---------- */
+const PRIORITY = [1,2,3,4,13,9,10,7,6,8,5,11,15,14,16,18,12,17,19,20];
+let n=0;
+$("#auditForm").innerHTML = SLOP.map(g=>`<fieldset><legend>${g[0]}</legend>${g[2].map(s=>{const id="a"+(n++);return `<label for="${id}"><input type="checkbox" id="${id}" data-fix="${s[2].join(",")}"><span>${s[0]}</span></label>`}).join("")}</fieldset>`).join("");
+function updateAudit(){
+  const boxes=[...document.querySelectorAll("#auditForm input")];
+  const on=boxes.filter(b=>b.checked);
+  const need=new Set(); on.forEach(b=>b.dataset.fix.split(",").forEach(f=>need.add(+f)));
+  $("#score").innerHTML = on.length+"<span> of 20</span>";
+  const v = on.length===0?"Tick what you see":on.length<=2?"Mostly intentional. Check those were choices":on.length<=5?"Some defaults showing":on.length<=9?"Reads as generated":"Pure default output";
+  $("#verdict").textContent=v;
+  $("#todo").innerHTML = PRIORITY.filter(f=>need.has(f)).map(f=>`<li>${FIXES[f][0]}</li>`).join("");
+}
+$("#auditForm").addEventListener("change",updateAudit);
+$("#resetAudit").onclick=()=>{document.querySelectorAll("#auditForm input").forEach(b=>b.checked=false);updateAudit();};
+
+/* ---------- 8. prompts ---------- */
+const PROMPTS = [
+ ["Design slop audit","Reviews a screenshot, HTML file or URL and reports which defaults are showing, with evidence. Read-only, so it is safe to run on anything.",
+`Create a skill called design-slop-audit.
+
+Purpose: review a visual design (screenshot, HTML/CSS file, or live URL) and report which AI design defaults it shows, so a person can decide what to change.
+
+The skill checks for these 20 indicators, grouped by layer:
+- Type: Instrument Serif or other trend display serif, excessive italics, negative letter-spacing on everything, excessive monospace, ALL CAPS subtitles, periods in headline titles
+- Surface: purple-to-blue gradient backgrounds, many tints and opacities of one hue, large uniform corner radii (squircles) with non-concentric nesting, bordered containers everywhere, overused dividers, dithering, ASCII images
+- Structure: tags and pills with no information, eyebrow labels above headings, section numbering on content with no real order, code breadcrumbs used as decoration
+- Content: verbose redundant copy, over-detailed fake UI, over-detailed diagrams
+
+For each indicator found, report: where it appears (element or region), the evidence (quote the text, CSS value or describe the visual), and whether it looks like a default or a deliberate brand choice. A choice counts as deliberate when it repeats consistently and connects to the subject's world. Flag it as a default otherwise.
+
+Output: a short verdict line, then findings ordered by impact, then the three fixes to make first. Never rewrite the design in this skill. Include a score out of 20.
+
+Include a references/indicators.md file with one paragraph per indicator: what it looks like, why models produce it, and when it is fine.`],
+ ["Unslop pass","Takes HTML/CSS (or a component) and applies the fixes, showing a diff first. Pairs with the audit.",
+`Create a skill called unslop-pass.
+
+Purpose: take an existing HTML/CSS page or UI component and apply design fixes that remove AI defaults, while keeping the content, brand colors and layout intent.
+
+Workflow:
+1. Run the same 20-indicator check as design-slop-audit (or read its report if one is provided).
+2. Propose changes as a plan, grouped into four moves, applied in this order:
+   - Subtract: delete filler badges, drop redundant labels and eyebrows, unitalicize random words, restrict monospace to code and data, remove embellishments
+   - Focus: show the actual product, enlarge the main feature, make headlines specific, emphasize one primary CTA, wrap headlines with text-wrap: balance and a max width in ch
+   - Systematize: introduce a small token set (4 to 6 colors, 2 to 3 fonts, a spacing scale), group with spacing instead of borders, add one accent color, consistent icons, inner radius = outer radius minus padding, WCAG AA text contrast, tabular-nums on numbers, optical alignment
+   - Respond: loading, empty and error states; motion only where it confirms an action
+3. Show a diff before writing. Apply only after approval, unless told to run unattended.
+4. Re-run the audit and report the before and after score.
+
+Rules: never invent new content claims. Rewrite copy only to make it shorter and more specific. Keep every existing link and form behavior working. Respect prefers-reduced-motion.`],
+ ["Palette director","Turns a one-line brief into a committed direction: concept, three-color palette with roles, type pairing and hero idea, emitted as CSS tokens.",
+`Create a skill called palette-director.
+
+Purpose: turn a short product or brand brief into a committed visual direction before any layout is built.
+
+Steps:
+1. Name the feeling as one concrete scene from the subject's world (for example "aurora over a watch dial", "a crowd surge at a festival", "golden hour on still water"). Ban the words modern, clean, sleek, minimal.
+2. Choose three colors with roles: ground (covers most of the screen), light (text and key shapes), signal (under 10 percent of the screen, used only for the one thing to notice). Give each a human name, a hex value and an OKLCH value.
+3. Check contrast: light on ground must pass WCAG AA for body text. Report the ratios.
+4. Pick a display face and a body face from Google Fonts that the subject would use on its own signage, packaging or posters. Explain the choice in one sentence. Avoid Instrument Serif, Inter and Space Grotesk unless the brief asks for them.
+5. Describe one hero image that carries the idea using the palette, ideally showing the product itself.
+6. Output a :root CSS block with the tokens and a dark/light variant if the brief needs both.
+
+Offer three distinct directions when the brief is open, one when it is specific. Never output a purple-to-blue gradient.`],
+ ["Design terms tutor","An interactive teacher for the 20 design terms, with live demos and a quiz. Good for onboarding non-designers.",
+`Create a skill called design-terms-tutor.
+
+Purpose: teach a non-designer the vocabulary they need to direct AI design work, one concept at a time.
+
+Terms: kerning, optical centre, tabular numbers, layout shift, tracking, optimistic update, x-height, touch target, leading, origin-aware animation, OKLCH, widow, safe area, stagger, line length, affordance, combobox, interruptible animation, progressive disclosure, shared element transition.
+
+For each term the skill can:
+- explain it in two plain sentences
+- build a tiny live HTML demo that shows the wrong and right version side by side
+- explain why AI-generated designs tend to get it wrong
+- give one sentence the learner can paste into a prompt to ask for it by name
+
+Modes: "teach me" walks the terms in a sensible order (type first, then layout, color, motion). "quiz me" shows a demo and asks which term applies. "explain this" takes a screenshot and names which terms are relevant to what is wrong.
+
+Track which terms the learner has answered correctly in the conversation and revisit missed ones later. Keep each turn short.`],
+ ["Texture backgrounds","Generates the 22 background textures as CSS or canvas code, tuned to a palette and checked for text contrast.",
+`Create a skill called texture-backgrounds.
+
+Purpose: generate non-flat background treatments for a design, as self-contained CSS or canvas code, in the user's palette.
+
+Supported textures: felt, fluted glass, thermal gradients, water ripples, speckled graphite, single-hue landscapes, blueprint grids, halftone, grainy gradients, grass, dithered images, paper, contour lines, cloud sky, pixel mosaics, lens distortion, stippled gradients, square-dot grids, blurred photos, iridescent shapes, impressionist painting, ASCII and pixels.
+
+For each request:
+1. Ask for or infer the palette (ground, light, signal).
+2. Recommend two or three textures that fit the subject, and say why. Texture should come from the subject's world (blueprint grid for engineering, paper for publishing, felt for games).
+3. Generate the code: prefer pure CSS (gradients, SVG feTurbulence noise as a data URI) and fall back to a small seeded canvas script. No external images.
+4. Verify text placed on top still meets WCAG AA. If not, add a scrim or lower the texture's contrast and say so.
+5. Keep it light: under 3 KB of code, no animation by default, honor prefers-reduced-motion if animated.
+
+Warn when the request uses dithering, ASCII or gradients as decoration with no link to the subject, since those read as AI defaults.`],
+ ["Design antislopper capability","A single entry point that chains the others, for anyone who already runs a writing antislop tool and wants the visual twin.",
+`Create a skill called design-antislopper, the visual counterpart to a writing antislop tool.
+
+Purpose: one entry point that takes any design artifact and returns an improved version plus a short explanation of what changed.
+
+Pipeline:
+1. design-slop-audit: score the input against the 20 indicators.
+2. If the score is 3 or more, run unslop-pass on the code.
+3. If the result is clean but has no direction (no clear ground, light and signal colors, or generic type), run palette-director with a brief inferred from the content, and apply the chosen tokens.
+4. Optionally run texture-backgrounds when the page is flat and the palette supports it.
+5. Run a polish checklist: tabular numbers, touch targets of at least 44px, no layout shift, loading and empty states, origin-aware and interruptible animation, text-wrap balance on headings, line length 45 to 75 characters.
+6. Re-audit and report the before and after score with a three-line summary.
+
+Also run the writing antislop pass on all visible copy, so the words and the visuals are fixed together.
+
+Configuration such as model choice or API keys comes from environment variables. Never read .env files.`]
+];
+$("#prompts").innerHTML = PROMPTS.map((p,i)=>`<div class="pr"><div class="head"><h3>${p[0]}</h3><button class="copy" type="button" data-i="${i}" aria-label="Copy the ${p[0]} prompt">Copy</button></div><p class="why">${p[1]}</p><pre id="p${i}">${esc(p[2])}</pre></div>`).join("");
+document.querySelectorAll(".pr .copy").forEach(b=>b.addEventListener("click",()=>{
+  const pre=$("#p"+b.dataset.i);
+  const done=()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy",1600)};
+  const sel=()=>{const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press copy"};
+  try{navigator.clipboard.writeText(PROMPTS[b.dataset.i][2]).then(done,sel)}catch(e){sel()}
+}));
+
+/* ---------- 6. textures ---------- */
+function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const W=320,H=200;
+function pix(c,fn){const d=c.createImageData(W,H);for(let y=0;y<H;y++)for(let x=0;x<W;x++){const v=fn(x,y),i=(y*W+x)*4;d.data[i]=v[0];d.data[i+1]=v[1];d.data[i+2]=v[2];d.data[i+3]=255}c.putImageData(d,0,0)}
+function noise(c,amt,r,mono=true){const d=c.getImageData(0,0,W,H);for(let i=0;i<d.data.length;i+=4){const n=(r()-.5)*amt;d.data[i]+=n;d.data[i+1]+=mono?n:(r()-.5)*amt;d.data[i+2]+=mono?n:(r()-.5)*amt}c.putImageData(d,0,0)}
+const lerp=(a,b,t)=>a+(b-a)*t, mix=(p,q,t)=>[lerp(p[0],q[0],t),lerp(p[1],q[1],t),lerp(p[2],q[2],t)];
+const g2=(x,y,cx,cy,s)=>Math.exp(-((x-cx)**2+(y-cy)**2)/(2*s*s));
+function ramp(stops,t){t=Math.max(0,Math.min(1,t));const k=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(k));return mix(stops[i],stops[i+1],k-i)}
+const TX=[
+ ["Felt texture","Warm, tactile. Games, kids' products, crafts.",(c,r)=>{c.fillStyle="#7B2D3B";c.fillRect(0,0,W,H);for(let i=0;i<9000;i++){const x=r()*W,y=r()*H,a=r()*6.28,l=2+r()*5;c.strokeStyle=r()<.5?"rgba(255,220,220,.10)":"rgba(40,0,10,.18)";c.beginPath();c.moveTo(x,y);c.lineTo(x+Math.cos(a)*l,y+Math.sin(a)*l);c.stroke()}noise(c,22,r)}],
+ ["Fluted glass","Color seen through ribbed glass. Premium, architectural.",(c,r)=>{pix(c,(x,y)=>{const xs=x+Math.sin((x%16)/16*Math.PI)*10;const v=g2(xs,y,90,80,60)*1.1+g2(xs,y,230,140,70);return ramp([[30,24,60],[240,90,80],[255,200,120]],v)});for(let x=0;x<W;x+=16){const g=c.createLinearGradient(x,0,x+16,0);g.addColorStop(0,"rgba(255,255,255,0)");g.addColorStop(.7,"rgba(255,255,255,.18)");g.addColorStop(1,"rgba(0,0,0,.18)");c.fillStyle=g;c.fillRect(x,0,16,H)}}],
+ ["Thermal gradients","Heat-camera color. Data, energy, performance.",(c,r)=>pix(c,(x,y)=>ramp([[10,10,60],[90,20,160],[230,40,60],[255,170,30],[255,250,200]],g2(x,y,110,90,55)+g2(x,y,230,130,45)*.8))],
+ ["Water ripples","Interference rings. Calm, wellness, travel.",(c,r)=>pix(c,(x,y)=>{const a=Math.hypot(x-90,y-80),b=Math.hypot(x-250,y-150);const v=(Math.sin(a*.22)+Math.sin(b*.18))/4+.5;return mix([18,78,96],[150,220,225],v*v)})],
+ ["Speckled graphite","Dark, mineral, serious. Tools, finance.",(c,r)=>{c.fillStyle="#2A2C31";c.fillRect(0,0,W,H);for(let i=0;i<2600;i++){c.fillStyle=r()<.5?"rgba(255,255,255,"+(.05+r()*.25)+")":"rgba(0,0,0,.35)";const s=r()*1.8+.4;c.fillRect(r()*W,r()*H,s,s)}noise(c,14,r)}],
+ ["Single-hue landscapes","Layered hills in one color. Outdoor, editorial.",(c,r)=>{c.fillStyle="#E9F0F2";c.fillRect(0,0,W,H);const L=[[200,220,226],[150,185,196],[100,145,162],[58,102,122],[28,62,80]];L.forEach((col,k)=>{c.fillStyle=`rgb(${col})`;c.beginPath();c.moveTo(0,H);const base=70+k*28,ph=r()*6;for(let x=0;x<=W;x+=4)c.lineTo(x,base+Math.sin(x*.02+ph)*14+Math.sin(x*.053+ph*2)*7);c.lineTo(W,H);c.fill()})}],
+ ["Blueprint grids","Engineering, hardware, developer tools.",(c,r)=>{c.fillStyle="#1C4E8A";c.fillRect(0,0,W,H);for(let x=0;x<=W;x+=10){c.fillStyle=x%50?"rgba(255,255,255,.12)":"rgba(255,255,255,.35)";c.fillRect(x,0,1,H)}for(let y=0;y<=H;y+=10){c.fillStyle=y%50?"rgba(255,255,255,.12)":"rgba(255,255,255,.35)";c.fillRect(0,y,W,1)}c.strokeStyle="rgba(255,255,255,.8)";c.lineWidth=1.2;c.beginPath();c.arc(200,100,40,0,6.28);c.moveTo(150,100);c.lineTo(250,100);c.stroke()}],
+ ["Halftone","Print and comics. Retro, editorial, zines.",(c,r)=>{c.fillStyle="#F2EEE3";c.fillRect(0,0,W,H);c.fillStyle="#D9472A";for(let y=5;y<H;y+=9)for(let x=5;x<W;x+=9){const v=g2(x,y,190,90,70)+x/W*.25;c.beginPath();c.arc(x+(y/9%2)*4.5,y,Math.min(4.6,v*4.6),0,6.28);c.fill()}}],
+ ["Grainy gradients","Soft color with film grain. Calmer than a plain gradient.",(c,r)=>{pix(c,(x,y)=>ramp([[255,140,100],[255,200,140],[110,170,160]],x/W*.6+y/H*.4));noise(c,46,r)}],
+ ["Grass texture","Organic and literal. Sport, garden, outdoors.",(c,r)=>{c.fillStyle="#2E5E22";c.fillRect(0,0,W,H);for(let i=0;i<4500;i++){const x=r()*W,y=r()*(H+20),h=6+r()*14,b=(r()-.5)*6;const g=110+r()*100;c.strokeStyle=`rgba(${g*.45},${g},${g*.3},.8)`;c.lineWidth=1;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+b*.3,y-h*.6,x+b,y-h);c.stroke()}}],
+ ["Dithered images","Two-tone pixel shading. Use with an intent, not as decoration.",(c,r)=>{const B=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];pix(c,(x,y)=>{const dx=x-160,dy=y-100,d=Math.hypot(dx,dy)/80;let v=d<1?(.25+.75*Math.max(0,(-dx-dy*.8+60)/170))*1:.12+y/H*.15;return v>(B[(y%4)*4+x%4]+.5)/16?[236,230,214]:[24,26,48]})}],
+ ["Paper texture","Publishing, stationery, anything about writing.",(c,r)=>{c.fillStyle="#EFE8D9";c.fillRect(0,0,W,H);for(let i=0;i<500;i++){c.strokeStyle="rgba(120,100,70,.08)";c.beginPath();const x=r()*W,y=r()*H;c.moveTo(x,y);c.lineTo(x+(r()-.5)*30,y+(r()-.5)*6);c.stroke()}noise(c,16,r)}],
+ ["Contour lines","Topographic maps. Outdoors, data, geography.",(c,r)=>pix(c,(x,y)=>{const f=g2(x,y,100,90,60)*1.2+g2(x,y,240,120,50)+g2(x,y,200,30,40)*.6;const k=(f*12)%1;return k<.09?[220,120,60]:[247,241,230]})],
+ ["Cloud sky","Airy and optimistic. Travel, weather, consumer.",(c,r)=>{const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,"#5C9BDB");g.addColorStop(1,"#BFDDF5");c.fillStyle=g;c.fillRect(0,0,W,H);for(let i=0;i<70;i++){const x=r()*W,y=40+r()*120,s=14+r()*30;const rg=c.createRadialGradient(x,y,0,x,y,s);rg.addColorStop(0,"rgba(255,255,255,.5)");rg.addColorStop(1,"rgba(255,255,255,0)");c.fillStyle=rg;c.fillRect(x-s,y-s,s*2,s*2)}}],
+ ["Pixel mosaics","Chunky color blocks. Games, playful brands.",(c,r)=>{const P=["#264653","#2A9D8F","#E9C46A","#F4A261","#E76F51"];for(let y=0;y<H;y+=16)for(let x=0;x<W;x+=16){const v=(g2(x,y,120,100,80)+x/W*.4+r()*.25);c.fillStyle=P[Math.min(4,Math.floor(v*3.2))];c.fillRect(x,y,16,16)}}],
+ ["Lens distortion","A grid bending as if behind glass. Optics, cameras, AR.",(c,r)=>pix(c,(x,y)=>{const nx=(x-160)/160,ny=(y-100)/160,rr=nx*nx+ny*ny,k=1+.9*rr;const u=nx*k*160+160,v=ny*k*160+100;const on=Math.abs((u%20+20)%20-10)>9||Math.abs((v%20+20)%20-10)>9;return on?[245,245,250]:mix([20,22,40],[60,40,120],rr)})],
+ ["Stippled gradients","Dots that thin out. Hand-made, scientific illustration.",(c,r)=>{c.fillStyle="#F3EFE6";c.fillRect(0,0,W,H);c.fillStyle="#1F2A44";for(let i=0;i<14000;i++){const x=r()*W,y=r()*H;if(r()<Math.pow(1-x/W,1.6)*.9)c.fillRect(x,y,1.3,1.3)}}],
+ ["Square-dot grids","A quiet technical ground. Dashboards, docs.",(c,r)=>{c.fillStyle="#F5F6F8";c.fillRect(0,0,W,H);for(let y=6;y<H;y+=12)for(let x=6;x<W;x+=12){c.fillStyle=`rgba(40,50,80,${.15+g2(x,y,160,100,90)*.6})`;c.fillRect(x,y,3,3)}}],
+ ["Blurred photos","A photo turned into soft color fields. Keeps mood, drops detail.",(c,r)=>{c.fillStyle="#3B2E2A";c.fillRect(0,0,W,H);[[60,60,110,"230,150,90"],[230,70,100,"120,150,190"],[170,170,120,"60,90,70"],[300,170,90,"240,210,170"]].forEach(b=>{const g=c.createRadialGradient(b[0],b[1],0,b[0],b[1],b[2]);g.addColorStop(0,`rgba(${b[3]},.95)`);g.addColorStop(1,`rgba(${b[3]},0)`);c.fillStyle=g;c.fillRect(0,0,W,H)})}],
+ ["Iridescent shapes","Oil-slick color on a single form. Beauty, fashion.",(c,r)=>pix(c,(x,y)=>{const d=Math.hypot(x-160,(y-100)*1.3);if(d>78)return[242,240,245];const t=(Math.atan2(y-100,x-160)/6.28+d/60)%1;const h=t*6.28;return[200+50*Math.sin(h),200+50*Math.sin(h+2.1),210+45*Math.sin(h+4.2)]})],
+ ["Impressionist paintings","Visible brushwork. Culture, food, hospitality.",(c,r)=>{c.fillStyle="#8DB7D6";c.fillRect(0,0,W,H);for(let i=0;i<3200;i++){const x=r()*W,y=r()*H;let col=y<110?[120+r()*60,170+r()*50,215+r()*30]:[60+r()*60,120+r()*60,60+r()*40];if(g2(x,y,240,50,26)>.4)col=[255,200+r()*40,90+r()*60];c.strokeStyle=`rgba(${col.map(Math.round)},.75)`;c.lineWidth=2.5+r()*2;c.lineCap="round";c.beginPath();const a=y<110?-.2:.4;c.moveTo(x,y);c.lineTo(x+Math.cos(a+r()*.5)*8,y+Math.sin(a+r()*.5)*8);c.stroke()}}],
+ ["ASCII and pixels","Characters as pixels. Developer brands, when it means something.",(c,r)=>{c.fillStyle="#0E1220";c.fillRect(0,0,W,H);c.font="8px monospace";c.textBaseline="top";const ch=" .:-=+*#%@";for(let y=0;y<H;y+=9)for(let x=0;x<W;x+=6){const v=g2(x,y,160,100,55)+g2(x,y,60,40,25)*.6;const i=Math.min(9,Math.floor(v*9));c.fillStyle=`rgba(120,230,170,${.35+v*.65})`;c.fillText(ch[i],x,y)}}]
+];
+$("#textures").innerHTML = TX.map((t,i)=>`<div class="tx"><canvas id="t${i}" width="${W}" height="${H}" role="img" aria-label="${t[0]} sample"></canvas><h4>${t[0]}</h4><p>${t[1]}</p></div>`).join("");
+TX.forEach((t,i)=>{try{t[2]($("#t"+i).getContext("2d",{willReadFrequently:true}),rng(i*97+13))}catch(e){}});
+
+/* ---------- nav highlight ---------- */
+const links=[...document.querySelectorAll("nav.index ol a")];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle("on",l.getAttribute("href")==="#"+e.target.id))}})},{rootMargin:"-30% 0px -60% 0px"});
+document.querySelectorAll("section.lesson").forEach(s=>io.observe(s));
+</script>
+
+</body></html>

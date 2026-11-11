@@ -71,6 +71,40 @@ The installed package's version, from its metadata. The CLI's `--version` prints
 def version() -> str
 ```
 
+## Capabilities
+
+Each capability has its own page under [capabilities/](capabilities/) with its arguments, what it returns or raises, and a worked invocation. The signatures `lib.py` exposes:
+
+```python
+def reference(topic: Topic, name: str | None = None) -> ReferenceResult                 # deterministic
+def route(intent: str) -> RouteResult                                                   # deterministic
+def scan(source: str | None = None, path: Path | None = None, url: str | None = None) -> ScanReport   # deterministic
+def contrast(foreground: str, background: str) -> ContrastResult                        # deterministic
+def audit(path=None, url=None, image=None, source=None, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> AuditReport
+def unslop(path, write=False, audit_report=None, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> UnslopResult
+def direct(brief, directions=None, dark_and_light=False, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> DirectResult
+def tutor(mode="teach", term=None, image=None, answer=None, progress=None, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> TutorTurn
+def texture(name=None, subject=None, ground=None, light=None, signal=None, animated=False, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> TextureResult
+def antislop(path, write=False, with_texture=False, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> AntislopReport
+```
+
+- [reference](capabilities/reference.md): the course material as data.
+- [route](capabilities/route.md): which capability and Agent Skill a job calls for.
+- [scan](capabilities/scan.md) and [audit](capabilities/audit.md): which indicators show, statically and with judgment.
+- [unslop](capabilities/unslop.md): the fixes as a diff, written on request.
+- [contrast](capabilities/contrast.md) and [direct](capabilities/direct.md): WCAG contrast, and a brief turned into a direction.
+- [tutor](capabilities/tutor.md): the twenty terms, taught one turn at a time.
+- [texture](capabilities/texture.md): a background from the subject's world, as code.
+- [antislop](capabilities/antislop.md): the pipeline over one file.
+
+Every result is a pydantic model in `unslopper.schemas`, so `model_dump_json()` is what the CLI prints. Every failure is an `UnslopperError` naming what went wrong and what to do.
+
+## Shared modules
+
+- `unslopper.knowledge`: the terms, indicators, fixes, textures and palette studies, with `fixes_for`, `verdict`, `fix` and `indicator` lookups. The one source of truth; prompts, scans and `reference` all read it.
+- `unslopper.sources`: `load_source(path, url, source)` loads exactly one of a file, a URL or inline text and says whether it is HTML, CSS or neither.
+- `unslopper.color`: `parse_hex`, `normalize_hex`, `relative_luminance`, `contrast_ratio`, `contrast` and `to_oklch`, pure functions with no model involved.
+
 ## Adding a capability
 
 A capability's code goes in `unslopper/capabilities/<name>/`, with its prompts, templates, and its own `skill_<capability>.md` beside it, named on its row in `core/skill.py` `CAPABILITIES`, and `lib.py` gets a facade function that imports it and is the only caller of it.

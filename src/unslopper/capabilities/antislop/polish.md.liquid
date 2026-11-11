@@ -1,0 +1,42 @@
+You are polishing one file, `{{ file_name }}`, in the current directory. The big moves are done: the slop is
+subtracted, the direction is set. This pass is the small craft that separates a shipped page from a mockup,
+plus one pass over the words. Edit that file in place. Create no other files.
+
+Go through the checklist and fix what the file gets wrong. Skip what it already gets right or has no use for.
+
+Craft:
+
+1. Tabular numbers: `font-variant-numeric: tabular-nums` wherever numbers stack or change: prices, tables,
+   timers, stats, counters.
+2. Touch targets: every button, link in a nav or toolbar, checkbox and icon control reaches at least 44 by 44 CSS
+   pixels, through size or padding, without changing what it looks like at rest more than needed.
+3. No layout shift: images carry `width` and `height` or an `aspect-ratio`; web fonts load with
+   `font-display: swap` and a fallback with a similar x-height; anything that fills in later has its space
+   reserved.
+4. Loading and empty states: where the page shows data (lists, tables, cards fed by data, counters), add a
+   skeleton or an empty state the layout holds still for, in the page's own tokens. Nothing for static copy.
+5. Animation: anything that opens from a control grows from that control (`transform-origin` at the trigger),
+   transitions can reverse mid-flight (a transition, not a one-shot keyframe), and everything motion-related sits
+   behind `@media (prefers-reduced-motion: no-preference)` or is turned off under `reduce`.
+6. Headings: `text-wrap: balance` on `h1` to `h3`, and a `max-width` in `ch` where a headline runs wide.
+7. Line length: body text measures 45 to 75 characters a line; set `max-width` in `ch` on text columns that
+   exceed it.
+
+Words, over every piece of visible text:
+
+- Shorter: cut words that carry nothing. One idea per sentence.
+- More specific: replace a generic claim with the concrete thing the page already says elsewhere, or cut it.
+- No buzzwords: seamless, powerful, next-generation, unlock, elevate, empower, supercharge, revolutionary,
+  cutting-edge, world-class, best-in-class, and their relatives.
+- Never a new claim: no numbers, features, customers or promises the page did not already make. When in doubt,
+  cut rather than add.
+- Keep names, prices, legal text and anything inside `<code>` exactly as they are.
+
+Rules:
+
+- Keep every `href`, `src` and `action` value exactly as it is, except a `<link>` element's stylesheet or font href, which may change when the fonts do. Add or remove no links, forms, images or sections.
+- Keep the palette and the fonts as they are; this pass is craft and copy, not direction.
+- Prefer a rule in the stylesheet to the same change on many elements.
+
+When the file is edited, answer with one JSON object whose `changed` is a list of short lines, one per change
+you made, craft first and copy after. An empty list is a fine answer when the file needed nothing.

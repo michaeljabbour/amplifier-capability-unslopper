@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Feature card, default AI output</title>
+<!-- The slop card from lesson 3 of docs/unslop-school.html, without the course's numbered callout dots. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{
+  /* colour */
+  --ink:#16141F;        /* text, 17:1 on --paper */
+  --ink-soft:#4A4658;   /* secondary text, 8.6:1 on --paper */
+  --paper:#F6F5FA;      /* ground */
+  --surface:#FFFFFF;    /* card */
+  --accent:#6E4CF5;     /* brand purple; white on it is 5.8:1 */
+  --code-bg:#ECEAF4;
+  /* type */
+  --display:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  /* spacing */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px;
+  /* radius */
+  --r-outer:20px;
+}
+.slop{background:var(--paper);padding:var(--s5);color:var(--ink);font-family:var(--display)}
+.slop .box{background:var(--surface);border-radius:var(--r-outer);padding:var(--s5);max-width:44ch}
+.slop h5{font:700 26px/1.15 var(--display);letter-spacing:-.02em;margin:0;text-wrap:balance;max-width:22ch}
+.slop .copy{font:400 15px/1.5 var(--display);color:var(--ink-soft);margin:var(--s2) 0 0}
+.slop .crumb{font:400 13px/1.5 var(--mono);font-variant-numeric:tabular-nums;background:var(--code-bg);color:var(--ink);
+  /* not corner-hugging (card padding exceeds outer radius), so a small radius from the same scale */
+  border-radius:var(--s1);padding:var(--s3) var(--s4);margin:var(--s4) 0 0;white-space:pre-wrap}
+.slop .ctas{display:flex;align-items:center;gap:var(--s4);margin-top:var(--s5)}
+.slop .ctas .cta{font:700 14px/1 var(--display);padding:var(--s3) var(--s4);border-radius:var(--s2);background:var(--accent);color:#fff;cursor:pointer}
+.slop .ctas .sec{font:500 14px/1 var(--display);color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="slop" id="cardSlop">
+  <div class="box">
+    <h5>See the plan before any file changes</h5>
+    <p class="copy">Edit it, reorder it or reject it with confidence.</p>
+    <pre class="crumb">src/auth/refresh.py → tests/auth/  (3 relevant)</pre>
+    <div class="ctas"><span class="cta">Get started</span><span class="sec">Learn more</span></div>
+  </div>
+</div>
+</body>
+</html>

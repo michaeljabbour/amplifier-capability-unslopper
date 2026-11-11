@@ -1,0 +1,17 @@
+{
+  "name": "Unslopper",
+  "promise": "The defaults a model reaches for, named, scored and removed",
+  "intro": "A Smart Tool: a Python library with a thin command line, built from the Unslop School course. {deterministic} capabilities run with no model and no credentials; {model_backed} run through an agent provider, Amplifier Agent or the Claude Agent SDK, and have their answers checked in code.",
+  "first_request": "Use unslopper on page.html: scan it first, then audit it, and tell me the three fixes to make first with the evidence for each.",
+  "theme": {
+    "family": "Amplifier Smart Tools",
+    "version": "0.1.0",
+    "paper": "#f6f4ee",
+    "ink": "#252823",
+    "muted": "#64685e",
+    "line": "#d8d8cc",
+    "gold": "#80642f",
+    "wash": "#e9ede5",
+    "accent": "#9E3A1C"
+  }
+}

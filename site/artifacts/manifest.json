@@ -1,0 +1,93 @@
+{
+  "captured": "2026-11-11T02:01:00+00:00",
+  "partial_rerun": [
+    "antislop"
+  ],
+  "fixture": "tests/fixtures/audit-slop-card.html",
+  "provider": "claude",
+  "note": "Every file here is the unedited stdout of the command named, run once on the date given.",
+  "runs": [
+    {
+      "name": "route",
+      "command": "unslopper route \"this landing page looks AI generated, what is wrong with it\"",
+      "exit_code": 0,
+      "seconds": 0.5,
+      "output": "route.json",
+      "stderr": ""
+    },
+    {
+      "name": "reference-indicators",
+      "command": "unslopper reference indicators",
+      "exit_code": 0,
+      "seconds": 0.3,
+      "output": "reference-indicators.json",
+      "stderr": ""
+    },
+    {
+      "name": "contrast",
+      "command": "unslopper contrast \"#E8EEF2\" \"#000412\"",
+      "exit_code": 0,
+      "seconds": 0.3,
+      "output": "contrast.json",
+      "stderr": ""
+    },
+    {
+      "name": "scan",
+      "command": "unslopper scan tests/fixtures/audit-slop-card.html",
+      "exit_code": 0,
+      "seconds": 0.2,
+      "output": "scan.json",
+      "stderr": ""
+    },
+    {
+      "name": "audit",
+      "command": "unslopper audit tests/fixtures/audit-slop-card.html --agent-provider claude",
+      "exit_code": 0,
+      "seconds": 30.1,
+      "output": "audit.json",
+      "stderr": ""
+    },
+    {
+      "name": "direct",
+      "command": "unslopper direct \"a silent retreat in Kyoto, golden hour on water\" --directions 1 --agent-provider claude",
+      "exit_code": 0,
+      "seconds": 21.5,
+      "output": "direct.json",
+      "stderr": ""
+    },
+    {
+      "name": "texture",
+      "command": "unslopper texture --name paper --subject \"a small press publishing poetry\" --ground \"#EFE8D9\" --light \"#2A2420\" --signal \"#B5472A\" --agent-provider claude",
+      "exit_code": 0,
+      "seconds": 41.2,
+      "output": "texture.json",
+      "stderr": ""
+    },
+    {
+      "name": "tutor",
+      "command": "unslopper tutor teach --term \"tabular numbers\" --agent-provider claude",
+      "exit_code": 0,
+      "seconds": 14.0,
+      "output": "tutor.json",
+      "stderr": ""
+    },
+    {
+      "name": "unslop",
+      "command": "unslopper unslop tests/fixtures/audit-slop-card.html --write --agent-provider claude",
+      "exit_code": 0,
+      "seconds": 40.3,
+      "output": "unslop.json",
+      "stderr": "",
+      "after": "after.html"
+    },
+    {
+      "name": "antislop",
+      "command": "unslopper antislop tests/fixtures/audit-slop-card.html --write --agent-provider claude",
+      "exit_code": 0,
+      "seconds": 155.6,
+      "output": "antislop.json",
+      "stderr": "",
+      "after": "after-antislop.html"
+    }
+  ]
+}

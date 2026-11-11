@@ -1,0 +1,38 @@
+You generate a textured background for a design, as self-contained code, following the Unslop School course. Flat fills read as unfinished and a purple gradient reads as AI; texture is the middle path. The texture comes from the subject's world: a blueprint grid for engineering, paper for publishing, felt for games. A technique is slop when the model chose it, craft when it was chosen for the subject.
+
+## The twenty-two textures
+
+{% for entry in textures %}- {{ entry.name }}: {{ entry.use }}
+{% endfor %}
+## The request
+
+Subject: {% if subject %}{{ subject }}{% else %}not given; take the subject from the texture and the palette{% endif %}.
+
+{% if requested %}Texture to draw: {{ requested.name }} ({{ requested.use }}). Make it the first recommendation, add one or two alternatives from the catalog that fit the subject with one sentence each on why, and draw {{ requested.name }}.{% else %}Recommend two or three textures from the catalog that fit the subject, one sentence each on why, the best fit first. Draw the first.{% endif %}
+
+{% if palette %}Palette: ground {{ palette.ground }} is the background, light {{ palette.light }} is the text colour, signal {{ palette.signal }} is the accent and is used sparingly. Build the texture from these three colours and their tints and shades only. Leave ground, light and signal empty in your answer.{% else %}No palette was given. Propose one from the subject's world: a ground for the background, a light for text that reads on the ground at WCAG AA (4.5 to 1 or better), and one saturated signal. Give them as #RRGGBB in ground, light and signal.{% endif %}
+
+Animation: {% if animated %}allowed. Keep the motion slow and inside `@media (prefers-reduced-motion: no-preference)`, so a reader who asked for less motion gets the still texture.{% else %}not allowed. The code must contain no @keyframes, animation, transition or requestAnimationFrame.{% endif %}
+
+## Reference
+
+The course draws each texture on a 320 by 200 canvas with `c` the 2d context and `r` a seeded random in [0, 1). `pix(c, fn)` fills every pixel from `fn(x, y) -> [r, g, b]`, `noise(c, amount, r)` adds grain, `g2(x, y, cx, cy, sigma)` is a gaussian blob, `ramp(stops, t)` interpolates a colour ramp and `mix(a, b, t)` lerps two colours. Use the code for the look of each texture, in the palette's colours rather than the course's.
+
+{% for snippet in snippets %}### {{ snippet.name }}
+
+{{ snippet.use }}
+
+```js
+{{ snippet.code }}
+```
+
+{% endfor %}
+## Code rules
+
+- Prefer pure CSS on the selector `.texture`: layered and repeating gradients, and SVG noise as a `data:image/svg+xml` URI using feTurbulence. A CSS answer is the rule set alone, with no `<style>` tag. Set `kind` to `css`.
+- Fall back to a small seeded canvas script only when CSS cannot draw the texture, such as brush strokes, grass blades or felt fibres. A canvas answer is `<canvas class="texture" width="640" height="400"></canvas>` followed by a `<script>` that draws it with its own seeded random, so it looks the same on every load. Set `kind` to `canvas`. Include any helper the drawing needs; nothing from the reference exists on the page.
+- No external images, fonts or scripts: no http or https URLs other than the SVG namespace, and no `url()` other than a `data:` URI.
+- Under {{ max_bytes }} bytes of code. Stay well under.
+- Text in the light colour will sit on this texture. In `contrast`, state how it stays at WCAG AA (4.5 to 1 for body text): either it already does because the texture stays close to the ground's lightness, or say which scrim you added or how you lowered the texture's contrast.
+- In `warning`: when the texture drawn is dithering, ASCII or a gradient (grainy, thermal or plain) and nothing in the subject calls for it, write one sentence saying it reads as an AI default and naming the texture from the subject's world to use instead. Otherwise leave it empty.
+- Put the drawn texture's catalog name in `texture`, exactly as listed above.

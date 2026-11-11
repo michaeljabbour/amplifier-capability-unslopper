@@ -14,10 +14,71 @@ DISTRIBUTION = "unslopper"
 # the Markdown beside its code, at `capabilities/<name>/skill_<capability>.md`.
 CAPABILITIES = (
     Capability("manifest", "Print the tool's manifest as JSON.", model_backed=False, skill="core/skill_manifest.md"),
+    Capability(
+        "reference",
+        "Print the course material: terms, indicators, fixes, textures or palette studies.",
+        model_backed=False,
+        skill="capabilities/reference/skill_reference.md",
+    ),
+    Capability(
+        "route",
+        "Pick the capability and Agent Skill a job calls for, from a sentence about the job.",
+        model_backed=False,
+        skill="capabilities/route/skill_route.md",
+    ),
+    Capability(
+        "scan",
+        "Find the slop indicators static heuristics can see in HTML or CSS, with evidence and a score.",
+        model_backed=False,
+        skill="capabilities/audit/skill_scan.md",
+    ),
+    Capability(
+        "audit",
+        "Review a file, URL or screenshot against the twenty indicators and report what shows, with evidence.",
+        model_backed=True,
+        skill="capabilities/audit/skill_audit.md",
+        resources=("capabilities/audit/indicators.md",),
+    ),
+    Capability(
+        "unslop",
+        "Apply the fixes to an HTML or CSS file as a diff, and write it on request.",
+        model_backed=True,
+        skill="capabilities/unslop/skill_unslop.md",
+    ),
+    Capability(
+        "contrast",
+        "WCAG contrast ratio between two colours and the levels it passes.",
+        model_backed=False,
+        skill="capabilities/direct/skill_contrast.md",
+    ),
+    Capability(
+        "direct",
+        "Turn a brief into a committed direction: scene, three-colour palette, type, hero and CSS tokens.",
+        model_backed=True,
+        skill="capabilities/direct/skill_direct.md",
+    ),
+    Capability(
+        "tutor",
+        "Teach, quiz or explain the twenty design terms, one short turn at a time.",
+        model_backed=True,
+        skill="capabilities/tutor/skill_tutor.md",
+    ),
+    Capability(
+        "texture",
+        "Recommend and generate a textured background as CSS or canvas code in a palette.",
+        model_backed=True,
+        skill="capabilities/texture/skill_texture.md",
+    ),
+    Capability(
+        "antislop",
+        "Run the whole pipeline over a file: audit, fix, direct, texture, polish and re-audit.",
+        model_backed=True,
+        skill="capabilities/antislop/skill_antislop.md",
+    ),
 )
 
 # Paths relative to the skill directory. Both ship inside the package, so both resolve after installation.
-SKILL_RESOURCES = ("SMART_TOOL.md", "lib.py")
+SKILL_RESOURCES = ("SMART_TOOL.md", "lib.py", "knowledge.py")
 
 
 def skill_directory() -> Path:
