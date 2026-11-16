@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict
 from unslopper import color, knowledge
 from unslopper.intelligence.interface import Intelligence, select_intelligence
 from unslopper.intelligence.schemas import AgentRequest
+from unslopper.roles import role_contract_text
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -123,13 +124,16 @@ def direct(
 def _render(path: Path, **variables: object) -> str:
     environment = Environment(undefined=StrictUndefined)
     studies = [study.model_dump() for study in knowledge.PALETTE_STUDIES]
-    return environment.from_string(path.read_text(encoding="utf-8")).render(
+    rendered = environment.from_string(path.read_text(encoding="utf-8")).render(
         banned=list(knowledge.BANNED_ADJECTIVES),
         default_faces=list(knowledge.DEFAULT_FACES),
         studies=studies,
         signal_share=SIGNAL_SHARE,
         aa_body=color.AA_BODY,
         **variables,
+    )
+    return (
+        role_contract_text() + "\n\nActive scope: designer proposing a new course-constrained direction.\n\n" + rendered
     )
 
 

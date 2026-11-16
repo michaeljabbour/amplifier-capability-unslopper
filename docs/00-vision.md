@@ -12,6 +12,7 @@ The material comes from the Unslop School course in [unslop-school.html](unslop-
 - `audit` and `scan` tell a person which defaults a design shows, with evidence they can check, a score out of twenty and the three fixes to make first. `scan` is static and free: its score counts candidate indicators, not visual quality. `audit` adds a model's judgment of whether a choice was deliberate; confirm actual problems before rewriting.
 - `unslop` turns that reading into a diff that keeps the content, brand colours and layout intent, and only writes when asked.
 - `scan`, `audit` and `unslop` with `prose=True` review or edit writing. Prose reports separate objective problems from review cues, anchor findings to the source, and abstain on authorship without a score.
+- Editor, research partner and designer are scoped roles over those existing capabilities. Research review maps claims to supplied evidence and returns questions about reasoning to the caller; design review separates source observations from inspected visual states and task impact. See [roles](roles.md).
 - `direct` and `contrast` take a design past clean to committed: one concrete scene, three colours with roles that pass WCAG AA, type the subject would use, and CSS tokens.
 - `texture` creates an optional background from the subject's world when requested, as code under 3 KB that keeps text readable.
 - `tutor` teaches the twenty terms with live demos, so a non-designer can ask for what they want by name.
@@ -23,6 +24,7 @@ The material comes from the Unslop School course in [unslop-school.html](unslop-
 - Not a renderer or a browser. Screenshots are read by the model; HTML is read as text. Visual regression and pixel measurement belong to other tools.
 - Not a design system. It emits a handful of tokens and leaves component libraries to the project.
 - Not an author or an authorship detector. It edits existing writing without inventing claims; it does not assign an AI probability. Facts, uncertainty, attribution, references, quotes, dialect and intentional rhetoric take priority over stylistic preferences.
+- Not comprehensive fact checking. A scoped source or logic review leaves unavailable evidence unverified and never contacts the original author.
 - Not a judge of taste. The twenty indicators are tells, not rules; a repeated, subject-driven choice is reported as deliberate and left alone.
 
 ## Principles

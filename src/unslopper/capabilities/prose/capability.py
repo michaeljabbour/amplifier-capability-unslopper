@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field, ValidationError
 from unslopper.intelligence.interface import Intelligence, select_intelligence
 from unslopper.intelligence.schemas import AgentRequest
 from unslopper.prose import MAX_PROSE_CHARS, check_fidelity, policy_text, scoped_text
+from unslopper.roles import review_context_text, role_contract_text, validate_review_comments
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -18,6 +19,8 @@ from unslopper.schemas import (
     ProseFinding,
     ProseScanReport,
     ReasoningEffort,
+    ReviewComment,
+    ReviewContext,
     UnslopperError,
 )
 
@@ -31,6 +34,11 @@ SCOPE_WARNING = (
 FIDELITY_WARNING = (
     "Mechanical fidelity checks preserve protected spans, numeric details and calibration/negation tokens; "
     "they do not verify meaning, names, attribution, factual truth or author voice. Review the diff."
+)
+REVIEW_WARNING = (
+    "This scoped editorial/source/argument review is not comprehensive fact checking. "
+    "Source support, applicability and logical validity remain model judgments; exact quotation checks do not prove them. "
+    "Author-facing comments are returned to the caller, not sent to an author."
 )
 
 RULES: tuple[tuple[str, re.Pattern[str], str, str], ...] = (
@@ -76,6 +84,7 @@ class ProseAuditAnswer(BaseModel):
     summary: str
     findings: list[ProseFinding]
     warnings: list[str] = Field(default_factory=list)
+    author_comments: list[ReviewComment] = Field(default_factory=list)
 
 
 class ProseEditAnswer(BaseModel):
@@ -83,6 +92,7 @@ class ProseEditAnswer(BaseModel):
 
     proposed_text: str
     notes: list[str] = Field(default_factory=list)
+    author_comments: list[ReviewComment] = Field(default_factory=list)
 
 
 def _load(source: str | None, path: Path | None) -> tuple[str, str]:
@@ -156,10 +166,18 @@ def scan_prose(source: str | None = None, path: Path | None = None) -> ProseScan
     return _scan(text, label, path)
 
 
-def _prompt(template: str, text: str, scanned: ProseScanReport, audit_report: ProseAuditReport | None = None) -> str:
+def _prompt(
+    template: str,
+    text: str,
+    scanned: ProseScanReport,
+    audit_report: ProseAuditReport | None = None,
+    context: ReviewContext | None = None,
+) -> str:
     environment = Environment(undefined=StrictUndefined)
     return environment.from_string((HERE / template).read_text(encoding="utf-8")).render(
         policy=policy_text(),
+        role_contract=role_contract_text(),
+        review_context=review_context_text(context),
         source_text=text,
         scan_json=scanned.model_dump_json(indent=2),
         audit_json=audit_report.model_dump_json(indent=2) if audit_report is not None else "",
@@ -216,20 +234,24 @@ def audit_prose(
     model: str | None = None,
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
+    context: ReviewContext | None = None,
 ) -> ProseAuditReport:
     """Judge prose candidates in context, retaining keep and uncertain outcomes. Model-backed."""
     text, label = _load(source, path)
     scanned = _scan(text, label, path)
+    prompt = _prompt("audit.md.liquid", text, scanned, context=context)
     intelligence, model = select_intelligence(intelligence, agent_provider, model, DEFAULT_INTELLIGENCE_MODELS)
     intelligence.preflight()
-    answer = _ask(intelligence, model, reasoning_effort, _prompt("audit.md.liquid", text, scanned), ProseAuditAnswer)
+    answer = _ask(intelligence, model, reasoning_effort, prompt, ProseAuditAnswer)
     _validate_findings(text, answer.findings)
+    validate_review_comments(text, answer.author_comments, context)
     return ProseAuditReport(
         source=label,
         summary=answer.summary,
         findings=answer.findings,
         scan=scanned,
-        warnings=[*scanned.warnings, *answer.warnings],
+        warnings=[*scanned.warnings, REVIEW_WARNING, *answer.warnings],
+        author_comments=answer.author_comments,
     )
 
 
@@ -241,6 +263,7 @@ def unslop_prose(
     model: str | None = None,
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
+    context: ReviewContext | None = None,
 ) -> ProseEditResult:
     """Propose a minimal prose edit and diff; write only after mechanical fidelity checks. Model-backed."""
     original, label = _load(None, path)
@@ -251,13 +274,15 @@ def unslop_prose(
                 "The prose audit belongs to a different source. Audit this file before reusing its report."
             )
         _validate_findings(original, audit_report.findings)
+        validate_review_comments(original, audit_report.author_comments, context)
+    prompt = _prompt("unslop.md.liquid", original, before, audit_report, context)
     intelligence, model = select_intelligence(intelligence, agent_provider, model, DEFAULT_INTELLIGENCE_MODELS)
     intelligence.preflight()
     answer = _ask(
         intelligence,
         model,
         reasoning_effort,
-        _prompt("unslop.md.liquid", original, before, audit_report),
+        prompt,
         ProseEditAnswer,
     )
     edited = answer.proposed_text.replace("\r\n", "\n")
@@ -266,6 +291,21 @@ def unslop_prose(
             "The prose edit exceeds the source size limit. Retry a smaller edit; the original file is untouched."
         )
     check_fidelity(original, edited)
+    validate_review_comments(original, answer.author_comments, context)
+    comments = list(audit_report.author_comments) if audit_report is not None else []
+    comments.extend(comment for comment in answer.author_comments if comment not in comments)
+    for comment in comments:
+        if (comment.action == "ask_author" or comment.argument is not None) and edited.count(
+            comment.passage
+        ) < original.count(comment.passage):
+            raise UnslopperError(
+                "The prose edit changed an argument or passage awaiting the author's response. "
+                "Keep it intact and return the focused author comment; the original file is untouched."
+            )
+    if context is not None and "editor" not in context.roles and edited != original:
+        raise UnslopperError(
+            "Research-only scope returns author comments without rewriting. Add an explicit editor scope for prose edits; the original file is untouched."
+        )
     if audit_report is not None:
         for found in audit_report.findings:
             if found.disposition in {"keep", "uncertain"} and edited.count(found.evidence) < original.count(
@@ -302,5 +342,6 @@ def unslop_prose(
         before=before,
         after=after,
         written=write,
-        notes=[*answer.notes, FIDELITY_WARNING],
+        notes=[*answer.notes, FIDELITY_WARNING, REVIEW_WARNING],
+        author_comments=comments,
     )

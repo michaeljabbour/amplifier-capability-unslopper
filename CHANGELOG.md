@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add one scoped editor, research-partner and designer contract to existing commands and skills.
+- Return source-grounded author comments for claims and reasoning, separating inference validity from premise support.
+- Preserve deliberate visual identity and distinguish source evidence from untested visual or usability claims.
 - Integrate Stop-Slop prose review into `scan`, `audit` and `unslop` with explicit `--prose` mode.
 - Share contextual copy guidance across design audit, fixing and polish, preserving voice, evidence and calibrated claims.
 - Add paired regressions, protected-span and fidelity guards, research limits and MIT lineage notices.

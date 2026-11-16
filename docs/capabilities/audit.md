@@ -16,6 +16,7 @@ def audit(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: bool = False,
+    context: ReviewContext | None = None,
 ) -> AuditReport | ProseAuditReport
 ```
 
@@ -52,17 +53,26 @@ rhetoric, quotations, attribution and calibrated uncertainty matter more than a 
 policy at `src/unslopper/prose-quality.md` also guides copy review in visual audits.
 See [evidence and limits](../prose-evidence.md).
 
+Optional prose `context` supplies editor purpose, audience and voice, or an explicit research-partner
+scope with source excerpts. `author_comments` return exact passages, source support and applicability
+questions, and charitable premises -> inference -> conclusion reviews. Validity is separate from
+premise evidence; a valid argument may stay while sources remain unverified. Feedback is returned to the
+caller, never sent to an author. See [roles](../roles.md) for context and comment fields. Design-mode
+context is rejected; use existing designer commands and briefs with a separate artifact scope.
+
 ## CLI
 
 ```bash
-unslopper audit [PATH] [--url TEXT] [--image PATH] [--source TEXT] [--prose]
+unslopper audit [PATH] [--url TEXT] [--image PATH] [--source TEXT] [--prose] [--context PATH]
                 [--agent-provider amplifier-agent|claude] [--model TEXT]
                 [--reasoning-effort low|medium|high|xhigh|max]
 ```
 
-Calls `lib.audit(..., prose=prose)` and prints the selected report as JSON. Exits 1 with the message on stderr
+Calls `lib.audit(..., prose=prose, context=context)` and prints the selected report as JSON. `--context`
+reads local JSON only in prose mode; it does not fetch source locators. Exits 1 with the message on stderr
 for any `UnslopperError`, 2 for a bad invocation.
 
 ```bash
 unslopper audit draft.md --prose
+unslopper audit draft.md --prose --context review.json
 ```

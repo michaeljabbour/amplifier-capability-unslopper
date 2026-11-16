@@ -13,6 +13,7 @@ from typer.models import CommandFunctionType
 
 from unslopper import lib
 from unslopper.core.skill import DISTRIBUTION
+from unslopper.roles import load_review_context
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -37,6 +38,12 @@ EffortOption = Annotated[
 ]
 ProseOption = Annotated[
     bool, typer.Option("--prose", help="Review text/Markdown writing quality; no authorship inference or design score.")
+]
+ReviewContextOption = Annotated[
+    Path | None,
+    typer.Option(
+        "--context", help="Local JSON with prose roles, scope, purpose, audience, voice and supplied sources."
+    ),
 ]
 
 
@@ -171,9 +178,20 @@ def audit(
     model: ModelOption = None,
     reasoning_effort: EffortOption = "medium",
     prose: ProseOption = False,
+    context: ReviewContextOption = None,
 ) -> None:
     """Review a design against the twenty slop indicators and report what shows, with evidence. Model-backed."""
-    report = lib.audit(path, url, image, source, agent_provider, model, reasoning_effort, prose=prose)
+    report = lib.audit(
+        path,
+        url,
+        image,
+        source,
+        agent_provider,
+        model,
+        reasoning_effort,
+        prose=prose,
+        context=load_review_context(context),
+    )
     typer.echo(report.model_dump_json(indent=2))
 
 
@@ -187,9 +205,12 @@ def unslop(
     model: ModelOption = None,
     reasoning_effort: EffortOption = "medium",
     prose: ProseOption = False,
+    context: ReviewContextOption = None,
 ) -> None:
     """Apply the fixes to a file as a diff, and write it with --write. Model-backed."""
-    result = lib.unslop(path, write, None, agent_provider, model, reasoning_effort, prose=prose)
+    result = lib.unslop(
+        path, write, None, agent_provider, model, reasoning_effort, prose=prose, context=load_review_context(context)
+    )
     typer.echo(result.model_dump_json(indent=2))
 
 

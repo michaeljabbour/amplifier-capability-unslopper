@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import Literal, NamedTuple
+from typing import Literal, NamedTuple, Self
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 ReasoningEffort = Literal["low", "medium", "high", "xhigh", "max"]
 AgentProvider = Literal["amplifier-agent", "claude"]
@@ -50,6 +50,84 @@ class Manifest(BaseModel):
 
 # region: Prose
 
+WorkRole = Literal["editor", "research-partner", "designer"]
+
+
+class SourceDocument(BaseModel):
+    """Supplied evidence, never a fetched or implicitly trusted reference."""
+
+    model_config = ConfigDict(extra="forbid")
+    id: str = Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+    label: str
+    text: str | None = Field(default=None, max_length=80_000)
+    locator: str = ""
+
+
+class ReviewContext(BaseModel):
+    """Explicit role scope and author preferences for a prose review or edit."""
+
+    model_config = ConfigDict(extra="forbid")
+    roles: list[WorkRole] = Field(default_factory=lambda: list[WorkRole](["editor"]), max_length=3)
+    scope: str = ""
+    purpose: str = ""
+    audience: str = ""
+    voice: str = ""
+    sources: list[SourceDocument] = Field(default_factory=list, max_length=16)
+
+    @model_validator(mode="after")
+    def check_scope(self) -> Self:
+        if not self.roles or len(set(self.roles)) != len(self.roles):
+            raise ValueError("Name each requested role once.")
+        if len(self.roles) > 1 and not self.scope.strip():
+            raise ValueError("Combined roles require an explicit scope.")
+        if len({source.id for source in self.sources}) != len(self.sources):
+            raise ValueError("Source IDs must be unique.")
+        if sum(len(source.text or "") for source in self.sources) > 80_000:
+            raise ValueError("Supplied evidence exceeds 80000 characters; narrow the review scope.")
+        return self
+
+
+class SourceQuote(BaseModel):
+    """An exact passage in a supplied source document, not an invented citation."""
+
+    source_id: str
+    start: int = Field(ge=0)
+    end: int = Field(gt=0)
+    quote: str = Field(min_length=1)
+
+
+class ArgumentTrace(BaseModel):
+    """A charitable reconstruction with validity assessed independently of premise support."""
+
+    premises: list[str] = Field(min_length=1)
+    inference: str = Field(min_length=1)
+    conclusion: str = Field(min_length=1)
+    validity: Literal["valid_within_scope", "invalid", "not_deductive", "undetermined"]
+
+
+class ReviewComment(BaseModel):
+    """Author-facing feedback, returned to the caller without contacting anyone."""
+
+    start: int = Field(ge=0)
+    end: int = Field(gt=0)
+    passage: str = Field(min_length=1)
+    kind: Literal["observation", "inference", "recommendation"]
+    issue: Literal[
+        "claim_support",
+        "applicability",
+        "deductive_failure",
+        "weak_induction",
+        "uncertainty",
+        "definition_or_goal",
+        "no_issue",
+    ]
+    explanation: str = Field(min_length=1)
+    action: Literal["keep", "ask_author"]
+    question_or_repair: str | None = None
+    support_status: Literal["supplied_support", "unverified", "mixed"] = "unverified"
+    sources: list[SourceQuote] = Field(default_factory=list)
+    argument: ArgumentTrace | None = None
+
 
 class ProseFinding(BaseModel):
     """A source-anchored observation or contextual editorial judgment, never an authorship signal."""
@@ -87,6 +165,7 @@ class ProseAuditReport(BaseModel):
     findings: list[ProseFinding]
     scan: ProseScanReport
     warnings: list[str] = Field(default_factory=list)
+    author_comments: list[ReviewComment] = Field(default_factory=list)
 
 
 class ProseEditResult(BaseModel):
@@ -100,6 +179,7 @@ class ProseEditResult(BaseModel):
     written: bool
     authorship: Literal["not_assessed"] = "not_assessed"
     notes: list[str] = Field(default_factory=list)
+    author_comments: list[ReviewComment] = Field(default_factory=list)
 
 
 # endregion
@@ -382,7 +462,9 @@ class TextureResult(BaseModel):
     kind: Literal["css", "canvas"]
     code: str = Field(description="Self-contained CSS, or a small seeded canvas script")
     size_bytes: int
-    contrast: str = Field(description="How text on top was kept at WCAG AA, or that it already was")
+    contrast: str = Field(
+        description="Proposed contrast treatment and measured solid-pair limits; rendered texture contrast remains untested"
+    )
     warning: str | None = Field(default=None, description="Set when the texture reads as a default for this subject")
 
 
@@ -433,6 +515,9 @@ class RouteResult(BaseModel):
     command: str = Field(description="An example invocation to start from")
     reason: str
     alternatives: list[RouteOption] = Field(description="Every route, so the caller can override the choice")
+    roles: list[WorkRole] = Field(
+        default_factory=list, description="Roles suggested by the intent, with scope still to confirm"
+    )
 
 
 # endregion

@@ -6,6 +6,7 @@ description: >-
   of twenty and the three fixes to make first. Read-only, so it is safe to run on anything. Use when asked
   whether a design looks AI-generated, to audit or review a landing page or mockup for slop, or before fixing
   one. Also reviews existing writing with `scan --prose` or `audit --prose`, without assessing authorship.
+  A scoped research-partner review can inspect supplied evidence and reasoning and return author-facing comments.
   Triggers on "design slop", "this design looks AI generated", "audit this design for AI defaults", "AI slop page", "audit this writing for slop".
 license: MIT
 metadata:
@@ -32,6 +33,7 @@ unslopper audit --url https://example.com
 unslopper audit --image screenshot.png --agent-provider claude
 unslopper scan draft.md --prose               # deterministic writing review cues, no score
 unslopper audit draft.md --prose              # model-backed writing review in context
+unslopper audit draft.md --prose --context review.json # supplied evidence and reasoning scope
 ```
 
 Install it with `uv tool install "unslopper[all] @ git+https://github.com/michaeljabbour/amplifier-capability-unslopper"`.
@@ -52,6 +54,14 @@ dialect, facts, calibrated uncertainty, attribution, quoted language, citations,
 Passives, adverbs, contrasts, tricolons and punctuation are not blanket problems. An intentional structure
 may stay; unsupported facts need a query or evidence, not invented specifics. Report limits and abstain
 on authorship. These cues cannot establish who wrote the text or supply an AI probability.
+
+Use the shared `role-contract.md` resource from `unslopper audit --help` (or the router's
+`references/role-contract.md`). Editor work establishes purpose, audience and voice. A local prose
+`--context` can add research-partner scope and supplied sources: distinguish observation, inference and
+recommendation; reconstruct consequential premises -> inference -> conclusion, separating validity from
+premise support. Ask a focused author question or keep a valid argument. Return these `author_comments`
+to the caller, never to the author; unavailable evidence stays unverified. Designer work needs separate
+visual evidence, with no screenshot or usability claims from source inspection alone.
 
 Prose guidance adapts Michael Jabbour's Stop-Slop behavior, derived from Hardik Pandya's Stop-Slop.
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the MIT notices.

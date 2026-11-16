@@ -1,4 +1,8 @@
-You generate a textured background for a design, as self-contained code, following the Unslop School course. Flat fills read as unfinished and a purple gradient reads as AI; texture is the middle path. The texture comes from the subject's world: a blueprint grid for engineering, paper for publishing, felt for games. A technique is slop when the model chose it, craft when it was chosen for the subject.
+You generate a requested optional textured background as self-contained code, following the Unslop School
+course. Preserve the subject's intentional brand direction; a flat fill, system font or purposeful gradient
+is not inherently a defect. A texture should serve the subject and leave content readable, such as a blueprint
+grid for engineering, paper for publishing or felt for games. This command proposes code, not a rendered
+visual or usability result.
 
 ## The twenty-two textures
 
@@ -33,6 +37,6 @@ The course draws each texture on a 320 by 200 canvas with `c` the 2d context and
 - Fall back to a small seeded canvas script only when CSS cannot draw the texture, such as brush strokes, grass blades or felt fibres. A canvas answer is `<canvas class="texture" width="640" height="400"></canvas>` followed by a `<script>` that draws it with its own seeded random, so it looks the same on every load. Set `kind` to `canvas`. Include any helper the drawing needs; nothing from the reference exists on the page.
 - No external images, fonts or scripts: no http or https URLs other than the SVG namespace, and no `url()` other than a `data:` URI.
 - Under {{ max_bytes }} bytes of code. Stay well under.
-- Text in the light colour will sit on this texture. In `contrast`, state how it stays at WCAG AA (4.5 to 1 for body text): either it already does because the texture stays close to the ground's lightness, or say which scrim you added or how you lowered the texture's contrast.
+- Text in the light colour will sit on this texture. In `contrast`, explain the proposed strategy for WCAG AA (4.5 to 1 for body text), such as a scrim or lower texture contrast. The library computes the solid light/ground pair only; rendered contrast over the texture and interactive states are unmeasured. Disclose those limits and request checks on the built result before claiming conformance or usability improvement.
 - In `warning`: when the texture drawn is dithering, ASCII or a gradient (grainy, thermal or plain) and nothing in the subject calls for it, write one sentence saying it reads as an AI default and naming the texture from the subject's world to use instead. Otherwise leave it empty.
 - Put the drawn texture's catalog name in `texture`, exactly as listed above.

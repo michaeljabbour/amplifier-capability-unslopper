@@ -22,6 +22,13 @@ covers the words that live inside the page.
 For a prose file, use `unslopper unslop draft.md --prose` or the prose method in `unslop-pass`;
 `antislop` remains the visual pipeline.
 
+Apply the shared `role-contract.md` from command-help resources or the router's
+`references/role-contract.md`: this pipeline combines designer and visible-copy editor scope. Preserve
+intentional brand distinctiveness and author voice. Separate code/DOM observations, visual states actually
+inspected and inferred task impact; disclose missing rendered and interaction checks. Source or reasoning
+review belongs to a separately scoped `audit --prose --context` and returns author-facing comments without
+contacting anyone.
+
 Prose guidance adapts Michael Jabbour's Stop-Slop behavior, derived from Hardik Pandya's Stop-Slop.
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the MIT notices.
 

@@ -31,6 +31,7 @@ from unslopper.capabilities.unslop import capability as unslop_capability
 from unslopper.intelligence.interface import Intelligence, select_intelligence
 from unslopper.intelligence.schemas import AgentRequest, HostWorkspace
 from unslopper.prose import policy_text
+from unslopper.roles import role_contract_text
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -71,7 +72,7 @@ class DirectionRead(BaseModel):
     """What one look at the page's CSS says about its direction, and the brief its content implies."""
 
     has_direction: bool = Field(
-        description="True only with a clear ground, light and signal colour and type that is not a default"
+        description="True when palette and type form a coherent, purposeful direction, including monochrome or system type"
     )
     flat_background: bool = Field(description="True when the main background is a flat fill or a plain gradient")
     inferred_brief: str = Field(description="The product or subject in one or two sentences, from the content")
@@ -352,7 +353,13 @@ def render(template: str, **variables: Any) -> str:
     source = (TEMPLATES / template).read_text(encoding="utf-8")
     if template == "polish.md.liquid":
         variables["prose_policy"] = policy_text()
-    return Environment(undefined=StrictUndefined).from_string(source).render(**variables)
+    rendered = Environment(undefined=StrictUndefined).from_string(source).render(**variables)
+    scope = "designer and editor" if template == "polish.md.liquid" else "designer"
+    return (
+        role_contract_text()
+        + f"\n\nActive scope: {scope}, limited to the supplied source and requested stage.\n\n"
+        + rendered
+    )
 
 
 def page_facts(copy: Path) -> dict[str, Any]:

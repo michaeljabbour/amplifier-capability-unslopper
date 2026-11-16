@@ -1,12 +1,16 @@
 You are reading one page's stylesheet choices to decide whether it commits to a visual direction.
 
-A committed direction means all three of these hold at once:
+Read source declarations, not a rendered or usability audit. Keep a
+coherent existing direction unless the supplied evidence establishes a specific problem.
+
+A committed direction means these choices work together for the subject:
 
 1. A clear ground colour (the dominant background), a light colour (the main text or surface that sits on the
-   ground) and a signal colour (one accent used for the one thing to notice). Three roles, not a spread of
-   shades and opacities, and not only black, white and grey.
-2. Type that the subject would use on its own signage, not a default: not the system stack alone, not Inter or
-   Arial alone, not Instrument Serif or Space Grotesk added because a model likes them.
+   ground) and a consistent way to signal emphasis. An intentional monochrome palette can have direction;
+   a missing chromatic accent or a flat background is not a reason to replace it.
+2. Type that serves the subject and its readers. System fonts, Inter, Arial or a distinctive display face can
+   be purposeful. Do not infer a default from a font name alone or replace established brand choices merely
+   because they resemble a course indicator.
 3. The colours are declared as tokens or used consistently, so the page reads as one decision rather than
    many.
 
@@ -35,7 +39,9 @@ background declarations found ({{ backgrounds.size }}):
 {% endfor %}
 Answer with one JSON object:
 
-- `has_direction`: true only when all three conditions above hold.
+- `has_direction`: true when the existing choices form a coherent direction worth keeping, including
+  intentional monochrome or system typography. The course's three-colour method is for a new direction,
+  not an automatic restyle requirement.
 - `flat_background`: true when the main background is a flat fill or a plain gradient (including one from
   `linear-gradient` or `radial-gradient` with no texture, image, pattern or canvas behind it).
 - `inferred_brief`: the product or subject in one or two sentences, inferred from the title and headings, written

@@ -4,8 +4,9 @@ description: >-
   Remove AI design defaults from visual work with the unslopper smart tool: scan or audit HTML,
   CSS, a URL or a screenshot against twenty slop indicators, apply the fixes as a diff, turn a
   brief into a three-colour direction with CSS tokens, generate textured backgrounds, teach the
-  twenty design terms, or review and edit existing writing with explicit prose mode. Use when a design a model produced looks
-  generic, when asked to "unslop", "de-slop" or "make this look less AI", when a page needs a
+  twenty design terms, or review and edit existing writing with explicit prose mode. Use for editor or scoped
+  research-partner review of supplied claims and reasoning, when a design looks generic, when asked to
+  "unslop", "de-slop" or "make this look less AI", when a page needs a
   visual direction or palette, or when someone needs design vocabulary. Drive it as `unslopper`
   from the command line or `unslopper.lib` from Python. Triggers on "unslopper", "design slop",
   "AI slop design", "unslop this page", "unslop this design", "unslop this writing", "stop slop".
@@ -36,6 +37,14 @@ uvx --from "unslopper[all] @ git+https://github.com/michaeljabbour/amplifier-cap
 
 Check with `unslopper manifest`, which needs no credentials.
 
+## Role scope
+
+Read [the shared role contract](references/role-contract.md), also exposed by command-help resources.
+Use editor, research-partner and designer roles with an explicit scope when combining them. An editor
+preserves purpose, audience and voice; a research partner maps claims to supplied sources and reviews
+reasoning; a designer separates code/DOM evidence, inspected visual states and task impact. Keep or query
+when evidence is insufficient. Return author-facing comments to the caller; never contact an author.
+
 ## Use it
 
 Run `unslopper --help`. It prints the tool's skill: when to use it, every capability, sharp
@@ -49,6 +58,7 @@ sentence>"`: it names the capability, an example command and the sibling skill, 
 - "Is this slop?" with evidence: `scan` first (free), then `audit` when judgment is needed.
 - "Fix it": `unslop PATH`, review the diff, then `unslop PATH --write`.
 - "Review this writing": `scan PATH --prose`, then `audit PATH --prose` for model judgment. For edits, `unslop PATH --prose` returns a diff.
+- "Review its evidence or reasoning": `audit PATH --prose --context review.json`; return `author_comments` and specific source or premise questions. Context is local JSON; source locators are not fetched.
 - "Give it a direction": `direct "<brief>"`, then `contrast` on any pair you change.
 - "The background is flat or a purple gradient": `texture` with the palette.
 - "Teach me / quiz me / what is wrong here": `tutor`.

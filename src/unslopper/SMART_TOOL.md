@@ -38,8 +38,10 @@ that remove them, twenty design terms, twenty-two textures and the three-colour 
 design a direction, and it applies them to HTML, CSS, screenshots and briefs. The material comes
 from the Unslop School course shipped in the repository's `docs/`.
 
-`scan`, `audit` and `unslop` also accept explicit prose mode for existing writing. Its shared
-Stop-Slop discipline reviews scaffolding and unsupported claims in context, preserving voice and facts.
+`scan`, `audit` and `unslop` also accept prose mode, preserving Stop-Slop's voice and factual fidelity.
+Read `role-contract.md`: editor, research-partner and designer roles use existing commands with explicit
+scope. Prose `audit`/`unslop --context review.json` can return source and reasoning comments to the caller,
+never an author; design work separates source observations from visual states and task impact.
 
 **The library is the tool.** `unslopper.lib` holds every capability. The CLI is a thin
 wrapper over it, so anything you can do from the shell you can also do from Python.
@@ -120,7 +122,7 @@ unslopper scan page.html                      # static, free: indicators with ev
 unslopper audit page.html                     # the same with a model's judgment of deliberate versus default
 unslopper unslop page.html                    # a diff; add --write to apply it
 unslopper scan draft.md --prose               # static writing cues with anchored evidence, no score
-unslopper audit draft.md --prose              # model-backed review in context
+unslopper audit draft.md --prose --context review.json # scoped editor or research-partner review
 unslopper unslop draft.md --prose             # proposed writing edits; add --write after review
 unslopper direct "a mechanical watch brand lit like the aurora"
 unslopper texture --name blueprint --subject "developer tools" --ground "#1C4E8A" --light "#F5F7FA" --signal "#FFB020"

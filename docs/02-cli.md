@@ -34,8 +34,8 @@ Each command's shape, options and exit codes are on its page under [capabilities
 unslopper reference TOPIC [--name TEXT]
 unslopper route INTENT
 unslopper scan [PATH] [--url URL] [--source TEXT] [--prose]
-unslopper audit [PATH] [--url URL] [--image PATH] [--source TEXT] [--prose] [model options]
-unslopper unslop PATH [--write] [--prose] [model options]
+unslopper audit [PATH] [--url URL] [--image PATH] [--source TEXT] [--prose] [--context PATH] [model options]
+unslopper unslop PATH [--write] [--prose] [--context PATH] [model options]
 unslopper contrast FOREGROUND BACKGROUND
 unslopper direct BRIEF [--directions N] [--dark-and-light] [model options]
 unslopper tutor [MODE] [--term TEXT] [--image PATH] [--answer TEXT] [--progress TEXT ...] [model options]
@@ -50,9 +50,14 @@ also accept inline `--source`. Prose mode rejects `--url` and `--image`. `scan` 
 `audit` and `unslop` use the configured model provider. Prose JSON has anchored findings and
 `authorship: "not_assessed"`, without a score. Review the diff for voice and factual fidelity before writing.
 
+`audit` and `unslop` accept `--context PATH` only with `--prose`. It reads a local JSON `ReviewContext`
+for editor preferences or an explicitly scoped research-partner review; it never fetches source locators.
+Research feedback appears in `author_comments`, not messages to an author. See [roles](roles.md).
+
 ```bash
 unslopper scan draft.md --prose
 unslopper audit --source "The observed rate may differ across sites." --prose
+unslopper audit draft.md --prose --context review.json
 unslopper unslop draft.md --prose
 unslopper unslop draft.md --prose --write
 ```

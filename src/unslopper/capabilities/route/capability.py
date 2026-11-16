@@ -2,7 +2,7 @@
 
 import re
 
-from unslopper.schemas import RouteOption, RouteResult, UnslopperError
+from unslopper.schemas import RouteOption, RouteResult, UnslopperError, WorkRole
 
 ROUTER_SKILL = "unslopper"
 
@@ -38,6 +38,7 @@ ROUTES: tuple[tuple[RouteOption, str, tuple[str, ...]], ...] = (
         "unslopper unslop page.html",
         (
             "fix",
+            "edit",
             "remove",
             "clean up",
             "unslop",
@@ -186,12 +187,27 @@ def route(intent: str) -> RouteResult:
     scores = [(_score(text, words), index) for index, (_, _, words) in enumerate(ROUTES)]
     best_score, best = max(scores, key=lambda pair: (pair[0], -pair[1]))
     alternatives = [option for option, _, _ in ROUTES]
-    if re.search(r"\b(?:prose|writing|paragraph|essay|stop[- ]slop)\b", text):
+    roles = _work_roles(text)
+    research = "research-partner" in roles
+    prose_artifact = re.search(r"\b(?:prose|writing|paragraph|essay|memo|text|copyedit|stop[- ]slop)\b", text)
+    if research or ("editor" in roles and ("designer" not in roles or prose_artifact)):
         capability = "audit"
         if any(_matches(text, word) for word in ("scan", "static", "offline", "no model", "lint")):
             capability = "scan"
-        elif any(_matches(text, word) for word in ("edit", "rewrite", "fix", "improve", "unslop", "clean up")):
+        elif not research and any(
+            _matches(text, word) for word in ("edit", "rewrite", "fix", "improve", "unslop", "clean up")
+        ):
             capability = "unslop"
+        context = " --context review.json" if research and capability != "scan" else ""
+        boundary = ""
+        if research:
+            boundary = " Research review needs supplied source context and author-facing comments; missing evidence stays unverified."
+        if research and capability == "scan":
+            boundary = " A static scan supplies editorial candidates only; review sources and reasoning separately with the research partner."
+        if "designer" in roles:
+            boundary += (
+                " Review the visual artifact separately; combine roles only with explicit scope for each artifact."
+            )
         return RouteResult(
             intent=intent,
             capability=capability,
@@ -200,9 +216,11 @@ def route(intent: str) -> RouteResult:
             else "unslop-pass"
             if capability == "unslop"
             else "design-slop-audit",
-            command=f"unslopper {capability} draft.md --prose",
-            reason="The job concerns writing. Use scoped prose review; style cues do not establish authorship.",
+            command=f"unslopper {capability} draft.md --prose{context}",
+            reason="The job concerns writing. Use scoped prose review; style cues do not establish authorship."
+            + boundary,
             alternatives=alternatives,
+            roles=roles,
         )
     if best_score == 0:
         return RouteResult(
@@ -212,6 +230,7 @@ def route(intent: str) -> RouteResult:
             command="unslopper --help",
             reason="Nothing in the job points at one capability. Read the table and pick, or start with scan.",
             alternatives=alternatives,
+            roles=roles,
         )
     option, command, words = ROUTES[best]
     matched = [word for word in words if _matches(text, word)]
@@ -222,7 +241,24 @@ def route(intent: str) -> RouteResult:
         command=command,
         reason=f"The job says {', '.join(repr(word) for word in matched)}. {option.when}",
         alternatives=alternatives,
+        roles=roles or (["designer"] if option.capability not in {"reference", "tutor"} else []),
     )
+
+
+def _work_roles(text: str) -> list[WorkRole]:
+    roles: list[WorkRole] = []
+    if re.search(r"\b(?:editor|prose|writing|paragraph|essay|memo|text|copyedit|stop[- ]slop)\b", text):
+        roles.append("editor")
+    if re.search(
+        r"\b(?:research|claim|claims|citations?|premises?|inference|deductive|logic|reasoning|first principles)\b", text
+    ):
+        roles.append("research-partner")
+    if re.search(
+        r"\b(?:designer|design|layout|visual|palette|screenshot|page|html|css|fonts?|colou?rs?|navigation|keyboard|contrast|texture)\b",
+        text,
+    ):
+        roles.append("designer")
+    return roles
 
 
 def _score(text: str, words: tuple[str, ...]) -> int:

@@ -16,6 +16,7 @@ from unslopper.capabilities.audit.scan import scan_document
 from unslopper.intelligence.interface import Intelligence, select_intelligence
 from unslopper.intelligence.schemas import AgentRequest, HostWorkspace
 from unslopper.prose import policy_text
+from unslopper.roles import role_contract_text
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -54,7 +55,9 @@ class AnswerFinding(BaseModel):
     location: str = Field(description="Element, selector, line or region of the image")
     evidence: str = Field(description="The quoted text, CSS value or visual description")
     deliberate: bool = Field(description="True when it repeats consistently and belongs to the subject's world")
-    rationale: str = Field(description="One or two sentences")
+    rationale: str = Field(
+        description="Evidence basis and likely reader/task consequence; distinguish observation from inference"
+    )
     impact: Impact = Field(description="How much removing it would improve the design")
 
 
@@ -164,6 +167,7 @@ def render_prompt(loaded: Source | None, scanned: ScanReport | None, image_name:
         layers=[{"name": name, "note": note} for name, note in knowledge.LAYERS.items()],
         indicator_notes=INDICATORS_FILE.read_text(encoding="utf-8").strip(),
         prose_policy=policy_text(),
+        role_contract=role_contract_text(),
         fixes=[fix.model_dump() for fix in knowledge.FIXES],
         source_label=loaded.label if loaded is not None else "",
         source_kind=loaded.kind if loaded is not None else "",

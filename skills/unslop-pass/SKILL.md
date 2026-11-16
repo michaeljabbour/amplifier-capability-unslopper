@@ -56,6 +56,13 @@ Use `unslop PATH --prose` for a local `.txt`, `.md` or `.markdown` file. The res
 `authorship` is `not_assessed`. Add `--write` only for the requested write. A matching prose audit can
 guide the library call: `unslop(path, audit_report=report, prose=True)`.
 
+Read the shared `role-contract.md` from command-help resources or the router's
+`references/role-contract.md`. Optional prose `--context review.json` supplies editor purpose, audience
+and voice, or explicit research-partner scope and source excerpts. Return source and reasoning questions
+in `author_comments`, never send them to an author or silently repair an argument. To reuse a prose audit,
+pass the same context/source packet to the library; retain its `ask_author` passages. Keep designer work
+in a separate visual artifact scope with actual view/state evidence.
+
 For a manual prose pass, use this method instead of the visual moves below. Identify the genre and purpose,
 then quote and locate each problem. Separate objective defects from review cues. Cut empty announcements
 or repeated scaffolding only when they add no meaning. Review vague claims using supplied facts; flag

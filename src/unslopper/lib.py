@@ -33,6 +33,7 @@ from unslopper.schemas import (
     ProseScanReport,
     ReasoningEffort,
     ReferenceResult,
+    ReviewContext,
     RouteResult,
     ScanReport,
     TextureResult,
@@ -109,6 +110,7 @@ def audit(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: Literal[False] = False,
+    context: ReviewContext | None = None,
 ) -> AuditReport: ...
 
 
@@ -123,6 +125,7 @@ def audit(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: Literal[True] = True,
+    context: ReviewContext | None = None,
 ) -> ProseAuditReport: ...
 
 
@@ -137,6 +140,7 @@ def audit(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: bool = False,
+    context: ReviewContext | None = None,
 ) -> AuditReport | ProseAuditReport: ...
 
 
@@ -150,12 +154,17 @@ def audit(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: bool = False,
+    context: ReviewContext | None = None,
 ) -> AuditReport | ProseAuditReport:
     """Review design defaults, or writing quality with `prose=True`. Model-backed; never infer authorship."""
+    if context is not None and not prose:
+        raise UnslopperError(
+            "Review context is scoped to prose. Use prose=True or a separate design brief and artifact."
+        )
     if prose:
         if url is not None or image is not None:
             raise UnslopperError("Prose mode accepts a local text/Markdown path or inline source, not a URL or image.")
-        return audit_prose(source, path, agent_provider, model, reasoning_effort, intelligence)
+        return audit_prose(source, path, agent_provider, model, reasoning_effort, intelligence, context)
     return _audit(path, url, image, source, agent_provider, model, reasoning_effort, intelligence)
 
 
@@ -169,6 +178,7 @@ def unslop(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: Literal[False] = False,
+    context: ReviewContext | None = None,
 ) -> UnslopResult: ...
 
 
@@ -182,6 +192,7 @@ def unslop(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: Literal[True] = True,
+    context: ReviewContext | None = None,
 ) -> ProseEditResult: ...
 
 
@@ -195,6 +206,7 @@ def unslop(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: bool = False,
+    context: ReviewContext | None = None,
 ) -> UnslopResult | ProseEditResult: ...
 
 
@@ -207,12 +219,17 @@ def unslop(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: bool = False,
+    context: ReviewContext | None = None,
 ) -> UnslopResult | ProseEditResult:
     """Apply the fixes to a file as a diff, writing only when asked. Model-backed."""
+    if context is not None and not prose:
+        raise UnslopperError(
+            "Review context is scoped to prose. Use prose=True or a separate design brief and artifact."
+        )
     if prose:
         if isinstance(audit_report, AuditReport):
             raise UnslopperError("Prose mode needs a prose audit report. Run audit(..., prose=True) or omit it.")
-        return unslop_prose(path, write, audit_report, agent_provider, model, reasoning_effort, intelligence)
+        return unslop_prose(path, write, audit_report, agent_provider, model, reasoning_effort, intelligence, context)
     if isinstance(audit_report, ProseAuditReport):
         raise UnslopperError("A prose audit needs unslop(..., prose=True). Omit it for an HTML/CSS pass.")
     return _unslop(path, write, audit_report, agent_provider, model, reasoning_effort, intelligence)

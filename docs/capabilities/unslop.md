@@ -19,6 +19,7 @@ def unslop(
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
     prose: bool = False,
+    context: ReviewContext | None = None,
 ) -> UnslopResult | ProseEditResult
 ```
 
@@ -69,13 +70,21 @@ than inventing specificity or an actor. Conservative guards cannot guarantee sem
 diff against the original. See `src/unslopper/prose-quality.md` and
 [evidence and limits](../prose-evidence.md).
 
+Optional prose `context` supplies editor purpose, audience and voice or scoped research-partner sources.
+Research feedback is returned in `author_comments`, never sent externally. A matching prose audit needs
+the same context/source packet when reused; `ask_author` passages are retained instead of silently
+repairing their reasoning. See [roles](../roles.md). Context is rejected outside prose mode; designer
+work uses the existing visual commands and briefs.
+
 ## CLI
 
 ```bash
-unslopper unslop PATH [--write] [--prose] [--agent-provider amplifier-agent|claude] [--model TEXT] [--reasoning-effort low|medium|high|xhigh|max]
+unslopper unslop PATH [--write] [--prose] [--context PATH] [--agent-provider amplifier-agent|claude] [--model TEXT] [--reasoning-effort low|medium|high|xhigh|max]
 ```
 
-Calls `lib.unslop(..., prose=prose)` and prints the selected result as JSON to stdout. The CLI cannot pass an audit report; use the library for that.
+Calls `lib.unslop(..., prose=prose, context=context)` and prints the selected result as JSON to stdout.
+`--context` reads local JSON only in prose mode and never fetches source locators. The CLI cannot pass an
+audit report; use the library for that.
 A failure the library can name prints its message to stderr and exits 1; a bad invocation exits 2.
 
 ```bash
@@ -83,4 +92,5 @@ unslopper unslop landing.html                      # propose: plan, diff and sco
 unslopper unslop landing.html --write              # apply
 unslopper unslop styles.css --agent-provider claude --reasoning-effort high
 unslopper unslop draft.md --prose                 # propose writing edits without a score
+unslopper unslop draft.md --prose --context review.json
 ```

@@ -20,6 +20,8 @@ Exactly one input:
 - `--source TEXT`: inline HTML or CSS.
 - `--prose`: review a local `.txt`, `.md` or `.markdown` file, or inline writing from `--source`.
   URL and image inputs are rejected in this mode.
+- `--context PATH`: local JSON `ReviewContext`, only with `--prose`: roles, explicit combined scope,
+  purpose, audience, voice and supplied source excerpts. Locators are never fetched.
 
 Model options, as on every model-backed capability:
 
@@ -34,6 +36,7 @@ unslopper audit landing.html
 unslopper audit --url https://example.com --reasoning-effort high
 unslopper audit --image hero.png --agent-provider claude
 unslopper audit draft.md --prose
+unslopper audit draft.md --prose --context review.json
 ```
 
 ```python
@@ -65,6 +68,13 @@ dialect, facts, calibrated uncertainty, attribution, quotations, citations, refe
 rhetoric. Do not turn passives, adverbs, contrasts, tricolons or punctuation into blanket errors or an
 AI probability. The same policy guides copy review in a visual audit.
 
+Read `role-contract.md` for editor, research-partner and designer boundaries. A prose context can request
+research review, returning `author_comments` with exact passages, source quotes/support status and focused
+author questions. Reconstruct consequential premises -> inference -> conclusion; distinguish invalid
+deduction from unverified premises, weak induction and legitimate probability. Keep valid arguments within
+scope. Unavailable sources remain unverified. This is scoped feedback, not comprehensive fact checking;
+the tool never contacts an author. Designer review needs a separate visual artifact and evidence scope.
+
 ## Failures
 
 Exit 1 with the reason on stderr: no input or more than one, a path that is not a file or an image
@@ -72,3 +82,4 @@ that is not one of the listed formats, text that is neither HTML nor CSS without
 installed or no credentials (the message names what to install or set), a model run that errored or
 timed out, or an answer that did not match the report's shape (run again or name another `--model`).
 Prose mode also rejects URL and image inputs and unsupported file types.
+Invalid context or inexact/unknown source evidence is rejected before returning research feedback.

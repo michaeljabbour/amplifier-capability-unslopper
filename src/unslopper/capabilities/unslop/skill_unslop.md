@@ -11,6 +11,8 @@ a scan score; for the whole pipeline with direction and texture, use `antislop` 
 - `PATH`: the `.html`, `.htm` or `.css` file to fix. Required; must exist.
 - `--write`: replace the file with the edited text, keeping its newline style. Off by default.
 - `--prose`: edit an existing local `.txt`, `.md` or `.markdown` file instead of a visual source.
+- `--context PATH`: local JSON `ReviewContext`, only with `--prose`, carrying roles, explicit combined
+  scope, purpose, audience, voice and supplied source excerpts. Source locators are never fetched.
 - `--agent-provider [amplifier-agent|claude]`: the agent provider to run through. The first
   installed when omitted.
 - `--model TEXT`: the model to run on. The agent provider's default when omitted.
@@ -22,6 +24,7 @@ unslopper unslop landing.html                      # propose: prints the plan, d
 unslopper unslop landing.html --write              # apply, once the diff looks right
 unslopper unslop styles.css --agent-provider claude --reasoning-effort high
 unslopper unslop draft.md --prose                 # propose prose edits without a score
+unslopper unslop draft.md --prose --context review.json
 ```
 
 ```python
@@ -54,6 +57,12 @@ and code. Review repeated scaffolding and vague claims in context; passives, adv
 tricolons and punctuation are not blanket errors. Use supplied facts; flag missing support rather than
 inventing specificity or an actor. Nothing is written without `--write`. Conservative guards cannot
 guarantee semantic fidelity: compare every proposed change with the source before applying it.
+
+Read `role-contract.md` for scoped editor, research-partner and designer work. A prose context can
+establish purpose, audience and voice, or request source/logic review returned in `author_comments`.
+Keep a focused author query instead of silently repairing an argument. When reusing a prose audit through
+the library, supply the same context/source packet; its `ask_author` passages are retained. No feedback
+is sent to an author. Design review uses its separate visual artifact scope and existing commands.
 
 ## Failures
 

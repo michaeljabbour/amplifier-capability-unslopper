@@ -23,6 +23,7 @@ from unslopper.capabilities.audit import capability as audit_capability
 from unslopper.intelligence.interface import Intelligence, select_intelligence
 from unslopper.intelligence.schemas import AgentRequest, HostWorkspace
 from unslopper.prose import policy_text
+from unslopper.roles import role_contract_text
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -154,6 +155,7 @@ def render_prompt(file_name: str, scan: ScanReport, audit_report: AuditReport | 
         scan_json=scan.model_dump_json(indent=2),
         audit_json=audit_report.model_dump_json(indent=2) if audit_report is not None else None,
         prose_policy=policy_text(),
+        role_contract=role_contract_text(),
     )
 
 
