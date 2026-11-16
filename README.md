@@ -2,6 +2,14 @@
 
 Removes AI design defaults from visual work: audits HTML, CSS or screenshots against twenty slop indicators, applies the fixes, commits a brief to a three-color direction, generates textured backgrounds, and teaches the vocabulary needed to direct a model.
 
+For existing writing, `scan`, `audit` and `unslop` also accept `--prose`: review local text or Markdown,
+then propose a diff that preserves the author's voice and claims. This integrates Michael Jabbour's
+Stop-Slop behavior with contextual review rather than blanket style bans. It does not assess authorship.
+
+Use the same commands as an editor, research partner or designer, with an explicit scope when combining
+roles. Research review returns author-facing comments about supplied evidence and reasoning; it does not
+contact the author. See [role scope and context](docs/roles.md).
+
 This is a [Smart Tool](https://github.com/microsoft/amplifier-smart-tools) which is a library with a thin CLI over it and model-backed capabilities sit behind an interface so many providers can be used.
 We support [Amplifier Agent](https://github.com/microsoft/amplifier-agent) and the [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk-python).
 
@@ -76,6 +84,12 @@ unslopper audit --image screenshot.png --agent-provider claude
 unslopper unslop page.html
 unslopper unslop page.html --write
 
+# Review writing, then propose an edit. Scan is deterministic; audit and unslop are model-backed.
+unslopper scan draft.md --prose
+unslopper audit draft.md --prose
+unslopper audit draft.md --prose --context review.json
+unslopper unslop draft.md --prose
+
 # WCAG contrast between two colours. Deterministic.
 unslopper contrast "#E8EEF2" "#000412"
 
@@ -102,6 +116,13 @@ See the [CLI reference](docs/02-cli.md) for every flag and the [library referenc
 linked stylesheets and report loaded, skipped and failed assets. Local and inline scans stay offline.
 Check coverage warnings, confirm candidates in the rendered page, and preserve functional controls before
 applying fixes. See [scan](docs/capabilities/scan.md) for the supported CSS scope and limits.
+
+Prose mode accepts local `.txt`, `.md` and `.markdown` files; `scan` and `audit` also accept inline
+`--source`. URL and image inputs are rejected in prose mode. Its reports separate objective problems
+from context-sensitive review cues, carry exact source spans and `authorship: "not_assessed"`, and have
+no score. Preserve facts, calibrated uncertainty, attribution, quotations, references, dialect and
+intentional rhetoric when reviewing the diff. Deterministic checks cannot guarantee semantic fidelity.
+See [evidence and limits](docs/prose-evidence.md) and the shared policy at `src/unslopper/prose-quality.md`.
 
 ## Website
 

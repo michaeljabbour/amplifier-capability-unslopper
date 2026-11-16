@@ -1,0 +1,86 @@
+[
+  {
+    "name": "empty announcement versus useful navigation",
+    "problem": "It is important to note that the queue retains failed jobs for 7 days.",
+    "expected_rules": ["empty-announcement"],
+    "legitimate": "The installation note explains why the queue retains failed jobs for 7 days.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "generic scene-setting versus relevant context",
+    "problem": "In today's rapidly evolving landscape, the queue retains failed jobs for 7 days.",
+    "expected_rules": ["generic-importance"],
+    "legitimate": "During a network outage, the queue retains failed jobs for 7 days.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "performative emphasis versus literal truth claim",
+    "problem": "Make no mistake, the queue retains failed jobs for 7 days.",
+    "expected_rules": ["performative-emphasis"],
+    "legitimate": "We could not establish the truth of that claim from the logs.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "repeated contrast scaffolding versus useful contrast",
+    "problem": "It is not a queue; it is a foundation.\nIt is not a retry; it is a journey.\nIt is not a log; it is a transformation.",
+    "expected_rules": ["repeated-scaffolding", "repeated-scaffolding", "repeated-scaffolding"],
+    "legitimate": "It is not a failed payment; it is a delayed confirmation. Check the receipt before retrying.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "accidental determiner duplication versus legitimate grammatical repetition",
+    "problem": "Read the the receipt before retrying.",
+    "expected_rules": ["duplicate-word"],
+    "legitimate": "They had had the receipt since Monday. That that receipt survived surprised us.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "empty framing versus calibrated scientific uncertainty",
+    "problem": "It's worth noting that most samples may remain stable for about 7 days (Lee et al., 2025) [1].",
+    "expected_rules": ["empty-announcement"],
+    "legitimate": "Most samples may remain stable for about 7 days (Lee et al., 2025) [1].",
+    "legitimate_rules": []
+  },
+  {
+    "name": "author prose versus quoted language",
+    "problem": "It is important to note that the deadline moved.",
+    "expected_rules": ["empty-announcement"],
+    "legitimate": "The witness said, \"It is important to note that the deadline moved.\"\n> Make no mistake, this is testimony.\n`the the` is the exact search string.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "prose versus code and destinations",
+    "problem": "Here's the thing: use the retry endpoint.",
+    "expected_rules": ["performative-emphasis"],
+    "legitimate": "Use the [retry endpoint](https://example.test/the-the).\n```text\nIt is important to note that the the request failed.\n```\n~~~text\nMake no mistake, this is an example payload.\n~~~",
+    "legitimate_rules": []
+  },
+  {
+    "name": "announcement versus bibliography",
+    "problem": "In this section, we will discuss the retry endpoint.",
+    "expected_rules": ["empty-announcement"],
+    "legitimate": "See [1] and [guide][retry].\n[retry]: https://example.test/notes \"Make no mistake\"\n## References\n1. Lee. It is important to note that failures recur. 2025.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "generic lead versus precise technical terminology",
+    "problem": "In the modern world, the API returns a powerful result.",
+    "expected_rules": ["generic-importance"],
+    "legitimate": "A powerful electromagnet unlocks the latch. The seamless pipe carries water; the passive sensor may report slowly.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "empty announcement versus dialect and intentional rhetorical form",
+    "problem": "It is crucial to note that the gate closed.",
+    "expected_rules": ["empty-announcement"],
+    "legitimate": "We ain't moving till the gate opens. We wait, we watch, we listen. Why wait? Because the gate's shut - and the guard knows it.",
+    "legitimate_rules": []
+  },
+  {
+    "name": "announcement versus causal attribution and cautious claim",
+    "problem": "It is essential to note that some witnesses could not identify the actor [@lee2025].",
+    "expected_rules": ["empty-announcement"],
+    "legitimate": "According to Lee [@lee2025], some witnesses could not identify the actor; the records were damaged.",
+    "legitimate_rules": []
+  }
+]

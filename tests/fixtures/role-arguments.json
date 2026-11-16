@@ -1,0 +1,62 @@
+[
+  {
+    "name": "necessary condition treated as sufficient",
+    "passage": "Every release approved for publication has passed the safety tests. Release R passed the safety tests. Therefore, release R is approved for publication.",
+    "premises": [
+      "Every release approved for publication has passed the safety tests.",
+      "Release R passed the safety tests."
+    ],
+    "inference": "Treat passing the tests, a necessary condition for approval, as a sufficient condition.",
+    "conclusion": "Release R is approved for publication.",
+    "validity": "invalid",
+    "issue": "deductive_failure",
+    "action": "ask_author",
+    "question_or_repair": "Does passing the tests also guarantee approval? If not, qualify the conclusion or supply the missing approval premise.",
+    "explanation": "An unapproved release could pass the safety tests, so the conclusion does not follow even if both stated premises are true."
+  },
+  {
+    "name": "valid necessary-condition inference",
+    "passage": "Every release approved for publication has passed the safety tests. Release R is approved for publication. Therefore, release R has passed the safety tests.",
+    "premises": [
+      "Every release approved for publication has passed the safety tests.",
+      "Release R is approved for publication."
+    ],
+    "inference": "Apply the stated approval-to-tests implication to the approved release.",
+    "conclusion": "Release R has passed the safety tests.",
+    "validity": "valid_within_scope",
+    "issue": "no_issue",
+    "action": "keep",
+    "question_or_repair": null,
+    "explanation": "The conclusion follows within the stated scope. No source packet establishes whether the premises are true."
+  },
+  {
+    "name": "valid inference with unavailable source",
+    "passage": "Every release listed in the signed approval register is authorized for publication. Release R is listed in that register. Therefore, release R is authorized for publication.",
+    "premises": [
+      "Every release listed in the signed approval register is authorized for publication.",
+      "Release R is listed in that register."
+    ],
+    "inference": "Apply the register's stated authorization rule to release R.",
+    "conclusion": "Release R is authorized for publication.",
+    "validity": "valid_within_scope",
+    "issue": "uncertainty",
+    "action": "ask_author",
+    "question_or_repair": "Could you provide the signed register entry for release R so the premises can be checked?",
+    "explanation": "The inference is valid if its premises hold; the unavailable register leaves those premises unverified."
+  },
+  {
+    "name": "legitimate calibrated probabilistic reasoning",
+    "passage": "In the observed sample, 80 of 100 launches needed a second review. If the next launch is comparable, it may also need a second review; the sample does not guarantee that outcome.",
+    "premises": [
+      "In the observed sample, 80 of 100 launches needed a second review.",
+      "The next launch may be comparable to those sampled."
+    ],
+    "inference": "Use a sample to motivate a qualified expectation, without claiming deductive certainty.",
+    "conclusion": "The next comparable launch may need a second review.",
+    "validity": "not_deductive",
+    "issue": "no_issue",
+    "action": "keep",
+    "question_or_repair": null,
+    "explanation": "The passage states its comparability assumption and probabilistic limit. Do not label this deliberate induction a deductive failure."
+  }
+]

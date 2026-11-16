@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 from unslopper import color, knowledge
 from unslopper.intelligence.interface import Intelligence, select_intelligence
 from unslopper.intelligence.schemas import AgentRequest, AgentResult
+from unslopper.roles import role_contract_text
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -34,8 +35,6 @@ EXTERNAL_URL = re.compile(r"https?://(?!www\.w3\.org/)")
 URL_TARGET = re.compile(r"url\(\s*['\"]?\s*([^'\")]*)")
 SCRIPT_OR_CANVAS = re.compile(r"<script|<canvas", re.IGNORECASE)
 SCRIPT = re.compile(r"<script", re.IGNORECASE)
-# What a contrast note has to say when light on ground alone fails AA body text.
-REMEDY_WORDS = re.compile(r"scrim|overlay|lower|reduce|opacit|adjust|darken|lighten|raise", re.IGNORECASE)
 
 
 class Answer(BaseModel):
@@ -47,7 +46,7 @@ class Answer(BaseModel):
     texture: str = Field(description="The catalog name of the texture the code draws")
     kind: Literal["css", "canvas"]
     code: str = Field(description="The self-contained CSS rule set, or the canvas element with its script")
-    contrast: str = Field(description="How text in the light colour stays at WCAG AA on this texture")
+    contrast: str = Field(description="Proposed contrast strategy and unmeasured rendered-texture limits")
     warning: str = Field(description="Empty, or one sentence when the texture reads as an AI default for this subject")
     ground: str = Field(description="#RRGGBB when a palette was inferred, else empty")
     light: str = Field(description="#RRGGBB when a palette was inferred, else empty")
@@ -133,7 +132,7 @@ def render_prompt(requested: Texture | None, subject: str | None, palette: Palet
     """The prompt: the catalog, the request, the relevant reference code and the code rules."""
     snippets = reference_snippets((requested,) if requested else knowledge.TEXTURES)
     template = Environment(undefined=StrictUndefined).from_string(PROMPT_PATH.read_text(encoding="utf-8"))
-    return template.render(
+    rendered = template.render(
         textures=[entry.model_dump() for entry in knowledge.TEXTURES],
         requested=None if requested is None else requested.model_dump(),
         subject=subject,
@@ -142,6 +141,7 @@ def render_prompt(requested: Texture | None, subject: str | None, palette: Palet
         snippets=snippets,
         max_bytes=MAX_BYTES,
     )
+    return role_contract_text() + "\n\nActive scope: designer generating the requested optional texture.\n\n" + rendered
 
 
 def check(answer: Answer, requested: Texture | None, palette: Palette | None, animated: bool) -> list[str]:
@@ -185,7 +185,12 @@ def _catalog(name: str, problems: list[str]) -> Texture | None:
 
 def retry_prompt(problems: list[str]) -> str:
     """What the model is told when its answer failed the checks."""
-    return "Your answer was not accepted: " + "; ".join(problems) + ". Answer again with the whole answer corrected."
+    return (
+        role_contract_text()
+        + "\n\nActive scope: designer correcting the requested optional texture.\n\nYour answer was not accepted: "
+        + "; ".join(problems)
+        + ". Answer again with the whole answer corrected."
+    )
 
 
 def _palette(ground: str | None, light: str | None, signal: str | None) -> Palette | None:
@@ -223,10 +228,11 @@ def _result(answer: Answer, palette: Palette | None) -> TextureResult:
         raise UnslopperError("The texture agent proposed no palette. Try again or pass --ground, --light and --signal.")
     note = answer.contrast.strip()
     measured = color.contrast(palette.light, palette.ground)
-    if not measured.aa_body and not REMEDY_WORDS.search(note):
+    if not measured.aa_body:
         remedy = (
-            f"Light on ground measures {measured.ratio}:1, under WCAG AA's 4.5:1 for body text: set body text on "
-            f"a scrim of {palette.ground} at 85 percent or more, or lower the texture's contrast beneath it."
+            f"Light on ground measures {measured.ratio}:1, under WCAG AA's 4.5:1 for body text. "
+            f"A scrim of {palette.ground} alone cannot correct this failing pair. Choose a passing text/surface "
+            "pair, then check rendered contrast over the texture and interactive states; those are unmeasured."
         )
         note = f"{note} {remedy}".strip()
     return TextureResult(

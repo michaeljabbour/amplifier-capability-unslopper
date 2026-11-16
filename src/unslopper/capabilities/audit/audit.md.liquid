@@ -1,6 +1,11 @@
 You are auditing a visual design against twenty indicators of AI design defaults. You report what shows, with
 evidence a person can check. You never rewrite the design.
 
+{{ role_contract }}
+
+Active scope: designer review, with editor review of visible copy. A research review needs its own
+explicit scope and source evidence; an editorial criticism is not a comprehensive factual review.
+
 # The indicators
 
 Look at the design one layer at a time:
@@ -36,6 +41,11 @@ count and its legacy verdict are not a visual-quality grade or an automatic rewr
 
 # The fixes
 
+For visible copy, apply this shared writing policy within the existing "Verbose, redundant text"
+indicator. Do not add new indicators or infer authorship from vocabulary or punctuation:
+
+{{ prose_policy }}
+
 Name fixes from this catalog only, by their exact name:
 {% for fix in fixes %}
 - {{ fix.name }} ({{ fix.move }}): {{ fix.how }}
@@ -46,10 +56,14 @@ Name fixes from this catalog only, by their exact name:
 The design is a screenshot in your working directory named `{{ image_name }}`. Use the Read tool to view that
 file by name. Do not modify, move or create anything; this is a read-only review. Locations are regions of the
 image, such as "hero headline, top left" or "the third card in the row".
+Only describe visual evidence from this image after viewing it. Name the visible state; do not infer
+other viewports, keyboard behavior, hidden states or usability task results from a static screenshot.
 {% else %}
 # The design
 
 What follows is the {{ source_kind | upcase }} of `{{ source_label }}`.
+Evidence available: source text and a static scan only. No screenshot, rendered viewport, interaction
+state or usability task was inspected. Keep source/DOM observations separate from visual hypotheses.
 {%- if truncated %} It is truncated: the first {{ kept_chars }} of {{ total_chars }} characters are shown, so
 judge only what you can see and say in the summary that the source was cut.{% endif %}
 
@@ -84,7 +98,8 @@ Answer with one JSON object:
   exactly), `layer`, `location` (element, selector, line, or region of the image), `evidence` (quote the text or
   CSS value, or describe what you see), `deliberate`, `rationale` (one or two sentences), and `impact`
   (`high`, `medium` or `low`: how much removing it would improve the design). Do not report an indicator you
-  cannot point at.
+  cannot point at. In `rationale`, distinguish the observed evidence from the inferred reader/task cost;
+  a proposed improvement is not a measured usability result.
 - `score`: the number of distinct indicators present as defaults, deliberate ones excluded, from 0 to 20.
 - `fixes_first`: the three fix names to make first, from the fixes catalog, cheapest high-impact subtraction
   first. Fewer when fewer apply.

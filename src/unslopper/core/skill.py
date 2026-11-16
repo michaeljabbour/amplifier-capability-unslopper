@@ -25,25 +25,33 @@ CAPABILITIES = (
         "Pick the capability and Agent Skill a job calls for, from a sentence about the job.",
         model_backed=False,
         skill="capabilities/route/skill_route.md",
+        resources=("role-contract.md",),
     ),
     Capability(
         "scan",
-        "Find the slop indicators static heuristics can see in HTML or CSS, with evidence and a score.",
+        "Find static design candidates in HTML/CSS, or scoped writing cues with --prose.",
         model_backed=False,
         skill="capabilities/audit/skill_scan.md",
+        resources=("prose-quality.md", "role-contract.md", "THIRD_PARTY_NOTICES.md"),
     ),
     Capability(
         "audit",
-        "Review a file, URL or screenshot against the twenty indicators and report what shows, with evidence.",
+        "Review design indicators, or writing quality with --prose, with evidence and contextual judgment.",
         model_backed=True,
         skill="capabilities/audit/skill_audit.md",
-        resources=("capabilities/audit/indicators.md",),
+        resources=(
+            "capabilities/audit/indicators.md",
+            "prose-quality.md",
+            "role-contract.md",
+            "THIRD_PARTY_NOTICES.md",
+        ),
     ),
     Capability(
         "unslop",
-        "Apply the fixes to an HTML or CSS file as a diff, and write it on request.",
+        "Propose design fixes or a faithful text edit with --prose as a diff; write on request.",
         model_backed=True,
         skill="capabilities/unslop/skill_unslop.md",
+        resources=("prose-quality.md", "role-contract.md", "THIRD_PARTY_NOTICES.md"),
     ),
     Capability(
         "contrast",
@@ -56,6 +64,7 @@ CAPABILITIES = (
         "Turn a brief into a committed direction: scene, three-colour palette, type, hero and CSS tokens.",
         model_backed=True,
         skill="capabilities/direct/skill_direct.md",
+        resources=("role-contract.md",),
     ),
     Capability(
         "tutor",
@@ -68,17 +77,19 @@ CAPABILITIES = (
         "Recommend and generate a textured background as CSS or canvas code in a palette.",
         model_backed=True,
         skill="capabilities/texture/skill_texture.md",
+        resources=("role-contract.md",),
     ),
     Capability(
         "antislop",
         "Run the whole pipeline over a file: audit, fix, direct, texture, polish and re-audit.",
         model_backed=True,
         skill="capabilities/antislop/skill_antislop.md",
+        resources=("role-contract.md",),
     ),
 )
 
 # Paths relative to the skill directory. Both ship inside the package, so both resolve after installation.
-SKILL_RESOURCES = ("SMART_TOOL.md", "lib.py", "knowledge.py")
+SKILL_RESOURCES = ("SMART_TOOL.md", "lib.py", "knowledge.py", "role-contract.md")
 
 
 def skill_directory() -> Path:

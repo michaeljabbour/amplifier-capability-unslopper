@@ -78,10 +78,10 @@ Each capability has its own page under [capabilities/](capabilities/) with its a
 ```python
 def reference(topic: Topic, name: str | None = None) -> ReferenceResult                 # deterministic
 def route(intent: str) -> RouteResult                                                   # deterministic
-def scan(source: str | None = None, path: Path | None = None, url: str | None = None) -> ScanReport   # deterministic
+def scan(source: str | None = None, path: Path | None = None, url: str | None = None, prose: bool = False) -> ScanReport | ProseScanReport  # deterministic
 def contrast(foreground: str, background: str) -> ContrastResult                        # deterministic
-def audit(path=None, url=None, image=None, source=None, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> AuditReport
-def unslop(path, write=False, audit_report=None, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> UnslopResult
+def audit(path=None, url=None, image=None, source=None, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None, prose=False, context=None) -> AuditReport | ProseAuditReport
+def unslop(path, write=False, audit_report=None, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None, prose=False, context=None) -> UnslopResult | ProseEditResult
 def direct(brief, directions=None, dark_and_light=False, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> DirectResult
 def tutor(mode="teach", term=None, image=None, answer=None, progress=None, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> TutorTurn
 def texture(name=None, subject=None, ground=None, light=None, signal=None, animated=False, agent_provider=None, model=None, reasoning_effort="medium", intelligence=None) -> TextureResult
@@ -99,11 +99,42 @@ def antislop(path, write=False, with_texture=False, agent_provider=None, model=N
 
 Every result is a pydantic model in `unslopper.schemas`, so `model_dump_json()` is what the CLI prints. Every failure is an `UnslopperError` naming what went wrong and what to do.
 
+### Prose mode
+
+Set `prose=True` on `scan`, `audit` or `unslop` for local `.txt`, `.md` and `.markdown` files.
+`scan` and `audit` also accept inline `source`; prose mode rejects `url` and `image` inputs.
+The default remains the visual path. `scan` needs no model provider.
+
+`ProseScanReport` provides deterministic candidates; `ProseAuditReport` adds model judgment through the
+same `Intelligence` interface. Findings use exact anchored source spans and distinguish objective problems
+from context-sensitive review cues. These reports have no score and carry `authorship="not_assessed"`.
+`ProseEditResult` provides a reviewable diff; `write=False` remains the default. Preserve voice, dialect,
+facts, calibrated uncertainty, attribution, quotations, citations and references. Conservative checks
+protect source material, but do not guarantee semantic fidelity; review the proposed edits in context.
+
+The shared policy is `src/unslopper/prose-quality.md`; [prose-evidence.md](prose-evidence.md)
+records provenance, research support and limits. The policy also informs model-backed copy review in visual work.
+
+### Role scope
+
+`audit` and `unslop` accept an optional `ReviewContext` in prose mode: requested roles, scope, purpose,
+audience, voice and supplied source excerpts. Combined roles need an explicit scope. Research-partner
+review returns `author_comments`, each anchored to the original passage, separating observation,
+inference and recommendation. Source support and deductive validity are separate judgments; unavailable
+sources remain unverified. Comments ask the author a focused question or retain a valid argument without
+sending anything. To reuse a prose audit in `unslop`, pass the same context and sources; passages marked
+`ask_author` are retained. See [roles](roles.md) for the model fields and worked invocation.
+
+Designer work uses the existing visual commands and briefs with its own artifact scope. Source code,
+inspected screenshots and usability outcomes are distinct evidence. An editor pass is not a factual or
+visual review. The shared `src/unslopper/role-contract.md` governs these boundaries.
+
 ## Shared modules
 
 - `unslopper.knowledge`: the terms, indicators, fixes, textures and palette studies, with `fixes_for`, `verdict`, `fix` and `indicator` lookups. The one source of truth; prompts, scans and `reference` all read it.
 - `unslopper.sources`: `load_source(path, url, source)` loads exactly one of a file, a URL or inline text and says whether it is HTML, CSS or neither. URL HTML also gathers bounded same-origin linked CSS separately from the original text. `ScanReport.assets` and `warnings` disclose coverage; `analysis_kind` identifies static candidates and `source_kind` distinguishes HTML from standalone CSS. Scores and legacy verdicts are not rendered design grades.
 - `unslopper.color`: `parse_hex`, `normalize_hex`, `relative_luminance`, `contrast_ratio`, `contrast` and `to_oklch`, pure functions with no model involved.
+- `unslopper.roles`: the shared role contract, local JSON context loading and exact source-anchor checks; no fetching or outreach.
 
 ## Adding a capability
 

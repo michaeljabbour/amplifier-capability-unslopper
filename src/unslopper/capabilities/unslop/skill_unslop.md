@@ -10,6 +10,9 @@ a scan score; for the whole pipeline with direction and texture, use `antislop` 
 
 - `PATH`: the `.html`, `.htm` or `.css` file to fix. Required; must exist.
 - `--write`: replace the file with the edited text, keeping its newline style. Off by default.
+- `--prose`: edit an existing local `.txt`, `.md` or `.markdown` file instead of a visual source.
+- `--context PATH`: local JSON `ReviewContext`, only with `--prose`, carrying roles, explicit combined
+  scope, purpose, audience, voice and supplied source excerpts. Source locators are never fetched.
 - `--agent-provider [amplifier-agent|claude]`: the agent provider to run through. The first
   installed when omitted.
 - `--model TEXT`: the model to run on. The agent provider's default when omitted.
@@ -20,6 +23,8 @@ a scan score; for the whole pipeline with direction and texture, use `antislop` 
 unslopper unslop landing.html                      # propose: prints the plan, diff and scores
 unslopper unslop landing.html --write              # apply, once the diff looks right
 unslopper unslop styles.css --agent-provider claude --reasoning-effort high
+unslopper unslop draft.md --prose                 # propose prose edits without a score
+unslopper unslop draft.md --prose --context review.json
 ```
 
 ```python
@@ -45,11 +50,26 @@ only with `--write`) and `notes` (what to check by hand: shortened copy, the acc
 that need real data). The deterministic score counts candidates. A drop is not proof of better
 design or working behavior; compare equivalent coverage and verify the rendered result.
 
+With `--prose`, the result is `ProseEditResult`: a diff and prose reports, with
+`authorship: "not_assessed"` and no score. Read the shared `prose-quality.md` resource. Preserve author
+voice, dialect, facts, numbers, calibrated uncertainty, attribution, quotations, citations, references
+and code. Review repeated scaffolding and vague claims in context; passives, adverbs, contrasts,
+tricolons and punctuation are not blanket errors. Use supplied facts; flag missing support rather than
+inventing specificity or an actor. Nothing is written without `--write`. Conservative guards cannot
+guarantee semantic fidelity: compare every proposed change with the source before applying it.
+
+Read `role-contract.md` for scoped editor, research-partner and designer work. A prose context can
+establish purpose, audience and voice, or request source/logic review returned in `author_comments`.
+Keep a focused author query instead of silently repairing an argument. When reusing a prose audit through
+the library, supply the same context/source packet; its `ask_author` passages are retained. No feedback
+is sent to an author. Design review uses its separate visual artifact scope and existing commands.
+
 ## Failures
 
 Fails with a message naming the fix, and never changes the file, when: `PATH` is missing or not
 `.html`, `.htm` or `.css`; no agent provider is installed or its credentials are not set; the agent
 errors or times out (thirty minutes); the edited file is empty, dropped an `href`, `src` or
 `action` value (a `<link>` stylesheet or font href may change), or has fewer `<a>` or `<form>`
-elements than the original. The message names
+elements than the original. With `--prose`, the input must instead be `.txt`, `.md` or `.markdown`,
+and invalid edits fail before writing. The message names
 the missing link targets, so the run can be retried or the file fixed by hand.

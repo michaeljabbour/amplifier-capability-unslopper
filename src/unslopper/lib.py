@@ -5,12 +5,14 @@ model-backed ones go through the `Intelligence` interface and say so in their do
 """
 
 from pathlib import Path
+from typing import Literal, overload
 
 from unslopper.capabilities.antislop.capability import antislop as _antislop
 from unslopper.capabilities.audit.capability import audit as _audit
 from unslopper.capabilities.audit.capability import scan as _scan
 from unslopper.capabilities.direct.capability import contrast as _contrast
 from unslopper.capabilities.direct.capability import direct as _direct
+from unslopper.capabilities.prose.capability import audit_prose, scan_prose, unslop_prose
 from unslopper.capabilities.reference.capability import reference as _reference
 from unslopper.capabilities.route.capability import route as _route
 from unslopper.capabilities.texture.capability import texture as _texture
@@ -26,14 +28,19 @@ from unslopper.schemas import (
     ContrastResult,
     DirectResult,
     Manifest,
+    ProseAuditReport,
+    ProseEditResult,
+    ProseScanReport,
     ReasoningEffort,
     ReferenceResult,
+    ReviewContext,
     RouteResult,
     ScanReport,
     TextureResult,
     Topic,
     TutorMode,
     TutorTurn,
+    UnslopperError,
     UnslopResult,
 )
 
@@ -63,9 +70,78 @@ def route(intent: str) -> RouteResult:
     return _route(intent)
 
 
-def scan(source: str | None = None, path: Path | None = None, url: str | None = None) -> ScanReport:
-    """The slop indicators static heuristics can see in HTML or CSS, with evidence and a score. Deterministic."""
+@overload
+def scan(
+    source: str | None = None, path: Path | None = None, url: str | None = None, prose: Literal[False] = False
+) -> ScanReport: ...
+
+
+@overload
+def scan(
+    source: str | None = None, path: Path | None = None, url: str | None = None, prose: Literal[True] = True
+) -> ProseScanReport: ...
+
+
+@overload
+def scan(
+    source: str | None = None, path: Path | None = None, url: str | None = None, prose: bool = False
+) -> ScanReport | ProseScanReport: ...
+
+
+def scan(
+    source: str | None = None, path: Path | None = None, url: str | None = None, prose: bool = False
+) -> ScanReport | ProseScanReport:
+    """Static candidates in HTML/CSS, or scoped writing cues with `prose=True`. Deterministic."""
+    if prose:
+        if url is not None:
+            raise UnslopperError("Prose mode accepts a local text/Markdown path or inline source, not a URL.")
+        return scan_prose(source=source, path=path)
     return _scan(source, path, url)
+
+
+@overload
+def audit(
+    path: Path | None = None,
+    url: str | None = None,
+    image: Path | None = None,
+    source: str | None = None,
+    agent_provider: AgentProvider | None = None,
+    model: str | None = None,
+    reasoning_effort: ReasoningEffort = "medium",
+    intelligence: Intelligence | None = None,
+    prose: Literal[False] = False,
+    context: ReviewContext | None = None,
+) -> AuditReport: ...
+
+
+@overload
+def audit(
+    path: Path | None = None,
+    url: str | None = None,
+    image: Path | None = None,
+    source: str | None = None,
+    agent_provider: AgentProvider | None = None,
+    model: str | None = None,
+    reasoning_effort: ReasoningEffort = "medium",
+    intelligence: Intelligence | None = None,
+    prose: Literal[True] = True,
+    context: ReviewContext | None = None,
+) -> ProseAuditReport: ...
+
+
+@overload
+def audit(
+    path: Path | None = None,
+    url: str | None = None,
+    image: Path | None = None,
+    source: str | None = None,
+    agent_provider: AgentProvider | None = None,
+    model: str | None = None,
+    reasoning_effort: ReasoningEffort = "medium",
+    intelligence: Intelligence | None = None,
+    prose: bool = False,
+    context: ReviewContext | None = None,
+) -> AuditReport | ProseAuditReport: ...
 
 
 def audit(
@@ -77,21 +153,85 @@ def audit(
     model: str | None = None,
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
-) -> AuditReport:
-    """Review a design against the twenty indicators and report what shows, with evidence. Model-backed."""
+    prose: bool = False,
+    context: ReviewContext | None = None,
+) -> AuditReport | ProseAuditReport:
+    """Review design defaults, or writing quality with `prose=True`. Model-backed; never infer authorship."""
+    if context is not None and not prose:
+        raise UnslopperError(
+            "Review context is scoped to prose. Use prose=True or a separate design brief and artifact."
+        )
+    if prose:
+        if url is not None or image is not None:
+            raise UnslopperError("Prose mode accepts a local text/Markdown path or inline source, not a URL or image.")
+        return audit_prose(source, path, agent_provider, model, reasoning_effort, intelligence, context)
     return _audit(path, url, image, source, agent_provider, model, reasoning_effort, intelligence)
+
+
+@overload
+def unslop(
+    path: Path,
+    write: bool = False,
+    audit_report: AuditReport | ProseAuditReport | None = None,
+    agent_provider: AgentProvider | None = None,
+    model: str | None = None,
+    reasoning_effort: ReasoningEffort = "medium",
+    intelligence: Intelligence | None = None,
+    prose: Literal[False] = False,
+    context: ReviewContext | None = None,
+) -> UnslopResult: ...
+
+
+@overload
+def unslop(
+    path: Path,
+    write: bool = False,
+    audit_report: AuditReport | ProseAuditReport | None = None,
+    agent_provider: AgentProvider | None = None,
+    model: str | None = None,
+    reasoning_effort: ReasoningEffort = "medium",
+    intelligence: Intelligence | None = None,
+    prose: Literal[True] = True,
+    context: ReviewContext | None = None,
+) -> ProseEditResult: ...
+
+
+@overload
+def unslop(
+    path: Path,
+    write: bool = False,
+    audit_report: AuditReport | ProseAuditReport | None = None,
+    agent_provider: AgentProvider | None = None,
+    model: str | None = None,
+    reasoning_effort: ReasoningEffort = "medium",
+    intelligence: Intelligence | None = None,
+    prose: bool = False,
+    context: ReviewContext | None = None,
+) -> UnslopResult | ProseEditResult: ...
 
 
 def unslop(
     path: Path,
     write: bool = False,
-    audit_report: AuditReport | None = None,
+    audit_report: AuditReport | ProseAuditReport | None = None,
     agent_provider: AgentProvider | None = None,
     model: str | None = None,
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
-) -> UnslopResult:
+    prose: bool = False,
+    context: ReviewContext | None = None,
+) -> UnslopResult | ProseEditResult:
     """Apply the fixes to a file as a diff, writing only when asked. Model-backed."""
+    if context is not None and not prose:
+        raise UnslopperError(
+            "Review context is scoped to prose. Use prose=True or a separate design brief and artifact."
+        )
+    if prose:
+        if isinstance(audit_report, AuditReport):
+            raise UnslopperError("Prose mode needs a prose audit report. Run audit(..., prose=True) or omit it.")
+        return unslop_prose(path, write, audit_report, agent_provider, model, reasoning_effort, intelligence, context)
+    if isinstance(audit_report, ProseAuditReport):
+        raise UnslopperError("A prose audit needs unslop(..., prose=True). Omit it for an HTML/CSS pass.")
     return _unslop(path, write, audit_report, agent_provider, model, reasoning_effort, intelligence)
 
 

@@ -237,12 +237,14 @@ def test_a_failing_contrast_gets_a_scrim_added_to_the_note() -> None:
     assert "scrim of #1C4E8A" in result.contrast
 
 
-def test_a_failing_contrast_keeps_a_note_that_already_names_a_scrim() -> None:
+def test_a_failing_contrast_discloses_pair_failure_even_when_model_names_a_scrim() -> None:
     fake = FakeIntelligence(answer(contrast="Body text sits on a scrim of the ground at 90 percent."))
 
     result = run(fake, ground="#1C4E8A", light="#4A7AB8", signal="#FFB020")
 
-    assert result.contrast == "Body text sits on a scrim of the ground at 90 percent."
+    assert result.contrast.startswith("Body text sits on a scrim of the ground at 90 percent. Light on ground measures")
+    assert "alone cannot correct this failing pair" in result.contrast
+    assert "interactive states; those are unmeasured" in result.contrast
 
 
 def test_a_warning_is_passed_through() -> None:
