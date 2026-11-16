@@ -19,6 +19,12 @@ One entry point for a design artifact: it goes in generic and comes out committe
 changed. The visual counterpart to a writing antislop tool; the two run well together, and the copy pass here
 covers the words that live inside the page.
 
+For a prose file, use `unslopper unslop draft.md --prose` or the prose method in `unslop-pass`;
+`antislop` remains the visual pipeline.
+
+Prose guidance adapts Michael Jabbour's Stop-Slop behavior, derived from Hardik Pandya's Stop-Slop.
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the MIT notices.
+
 ## Prefer the tool
 
 When `unslopper` is installed, run the pipeline rather than driving it by hand:
@@ -70,8 +76,11 @@ then only when asked.
 5. Polish. Tabular numbers where numbers stack or change; touch targets of at least 44 by 44 px; no layout shift
    (image dimensions, `font-display: swap`, reserved space); loading and empty states where there is data;
    origin-aware and interruptible animation behind `prefers-reduced-motion`; `text-wrap: balance` on headings;
-   body lines of 45 to 75 characters. Then the copy: shorter, more specific, no buzzwords, never a new claim;
-   names, prices, legal text and code stay exactly as they are.
+   body lines of 45 to 75 characters. Then review copy for needless repetition, empty announcements and
+   vague claims in context. Use supplied facts; do not ban words or grammatical forms. Preserve author
+   voice, dialect, calibrated uncertainty, attribution, quotes, citations and references; names, prices,
+   legal text and code stay exactly as they are. Flag missing support rather than inventing specificity
+   or an actor. Stylistic cues do not establish authorship or an AI probability.
 
 6. Re-audit with `design-slop-audit`; that is the "after".
 
@@ -101,5 +110,6 @@ Then the diff. Offer to write it; do not write it unasked.
   product in mono) is deliberate. Report it as such and leave it alone.
 - A CSS file has no title or headings; infer the brief from its selectors and comments, and apply direction and
   polish through declarations only.
-- Never invent a claim in the copy pass. When a sentence cannot be made specific from what the page already
-  says, cut it.
+- Never invent a claim in the copy pass. When a sentence cannot be clarified from supplied facts without
+  losing meaning, leave it and flag the missing support. Review the diff for semantic fidelity; retained
+  strings alone cannot guarantee it.

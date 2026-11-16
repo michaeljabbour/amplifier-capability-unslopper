@@ -15,6 +15,7 @@ from unslopper.capabilities.audit.document import parse_css, parse_html
 from unslopper.capabilities.audit.scan import scan_document
 from unslopper.intelligence.interface import Intelligence, select_intelligence
 from unslopper.intelligence.schemas import AgentRequest, HostWorkspace
+from unslopper.prose import policy_text
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -162,6 +163,7 @@ def render_prompt(loaded: Source | None, scanned: ScanReport | None, image_name:
         indicators=[entry.model_dump() for entry in knowledge.INDICATORS],
         layers=[{"name": name, "note": note} for name, note in knowledge.LAYERS.items()],
         indicator_notes=INDICATORS_FILE.read_text(encoding="utf-8").strip(),
+        prose_policy=policy_text(),
         fixes=[fix.model_dump() for fix in knowledge.FIXES],
         source_label=loaded.label if loaded is not None else "",
         source_kind=loaded.kind if loaded is not None else "",

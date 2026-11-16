@@ -18,6 +18,8 @@ Exactly one input:
   in the image's directory and views the file with its Read tool. Image audits work best on the
   `claude` agent provider, whose Read tool views images natively.
 - `--source TEXT`: inline HTML or CSS.
+- `--prose`: review a local `.txt`, `.md` or `.markdown` file, or inline writing from `--source`.
+  URL and image inputs are rejected in this mode.
 
 Model options, as on every model-backed capability:
 
@@ -31,6 +33,7 @@ Model options, as on every model-backed capability:
 unslopper audit landing.html
 unslopper audit --url https://example.com --reasoning-effort high
 unslopper audit --image hero.png --agent-provider claude
+unslopper audit draft.md --prose
 ```
 
 ```python
@@ -54,9 +57,18 @@ by impact, `fixes_first` (at most three fix names) and `scan` (the `ScanReport` 
 `null` for an image). Each `Finding` has `indicator`, `layer`, `location`, `evidence`, `deliberate`
 and `rationale`. Very long sources are truncated before the model sees them and the summary says so.
 
+With `--prose`, the result is `ProseAuditReport`: model judgment informed by the deterministic prose
+scan, with exact anchored findings, objective problems separated from context-sensitive review cues,
+`authorship: "not_assessed"` and no score. Read the shared `prose-quality.md` resource. Review empty
+announcements, repeated scaffolding and vague claims for this genre and audience; preserve author voice,
+dialect, facts, calibrated uncertainty, attribution, quotations, citations, references and intentional
+rhetoric. Do not turn passives, adverbs, contrasts, tricolons or punctuation into blanket errors or an
+AI probability. The same policy guides copy review in a visual audit.
+
 ## Failures
 
 Exit 1 with the reason on stderr: no input or more than one, a path that is not a file or an image
-that is not one of the listed formats, text that is neither HTML nor CSS, no agent provider
+that is not one of the listed formats, text that is neither HTML nor CSS without `--prose`, no agent provider
 installed or no credentials (the message names what to install or set), a model run that errored or
 timed out, or an answer that did not match the report's shape (run again or name another `--model`).
+Prose mode also rejects URL and image inputs and unsupported file types.

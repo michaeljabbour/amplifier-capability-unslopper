@@ -30,6 +30,7 @@ from unslopper.capabilities.texture import capability as texture_capability
 from unslopper.capabilities.unslop import capability as unslop_capability
 from unslopper.intelligence.interface import Intelligence, select_intelligence
 from unslopper.intelligence.schemas import AgentRequest, HostWorkspace
+from unslopper.prose import policy_text
 from unslopper.schemas import (
     DEFAULT_INTELLIGENCE_MODELS,
     AgentProvider,
@@ -349,6 +350,8 @@ class Pipeline:
 def render(template: str, **variables: Any) -> str:
     """One prompt from the template beside this module; a variable the template names but is not given fails."""
     source = (TEMPLATES / template).read_text(encoding="utf-8")
+    if template == "polish.md.liquid":
+        variables["prose_policy"] = policy_text()
     return Environment(undefined=StrictUndefined).from_string(source).render(**variables)
 
 

@@ -15,7 +15,8 @@ def audit(
     model: str | None = None,
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
-) -> AuditReport
+    prose: bool = False,
+) -> AuditReport | ProseAuditReport
 ```
 
 Exactly one of `path`, `url`, `image` or `source`. For HTML, CSS or a URL the deterministic `scan` runs first,
@@ -38,16 +39,30 @@ image). The model answers in `AuditAnswer`, whose `indicator` field only admits 
 assembled from it in code.
 
 Raises `UnslopperError` when the input is not exactly one, the path is not a file or the image not an image,
-the text is neither HTML nor CSS, no agent provider or credentials are available, the run returned an error or
+the text is neither HTML nor CSS without prose mode, no agent provider or credentials are available, the run returned an error or
 timed out (`TIMEOUT_SECONDS`), or the answer did not match the shape. Every message names the remedy.
+
+## Prose mode
+
+With `prose=True`, pass a local `.txt`, `.md` or `.markdown` file or inline `source`; URL and image inputs
+are rejected. The deterministic prose scan informs a model review through the same `Intelligence` interface.
+`ProseAuditReport` anchors findings to exact source spans, distinguishes objective problems from contextual
+review cues, and carries `authorship="not_assessed"` without a score. Genre, audience, dialect, intentional
+rhetoric, quotations, attribution and calibrated uncertainty matter more than a pattern match. The shared
+policy at `src/unslopper/prose-quality.md` also guides copy review in visual audits.
+See [evidence and limits](../prose-evidence.md).
 
 ## CLI
 
 ```bash
-unslopper audit [PATH] [--url TEXT] [--image PATH] [--source TEXT]
+unslopper audit [PATH] [--url TEXT] [--image PATH] [--source TEXT] [--prose]
                 [--agent-provider amplifier-agent|claude] [--model TEXT]
                 [--reasoning-effort low|medium|high|xhigh|max]
 ```
 
-Calls `lib.audit(path, url, image, source, agent_provider, model, reasoning_effort)` and prints the
-`AuditReport` as JSON. Exits 1 with the message on stderr for any `UnslopperError`, 2 for a bad invocation.
+Calls `lib.audit(..., prose=prose)` and prints the selected report as JSON. Exits 1 with the message on stderr
+for any `UnslopperError`, 2 for a bad invocation.
+
+```bash
+unslopper audit draft.md --prose
+```

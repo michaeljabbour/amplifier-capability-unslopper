@@ -5,7 +5,8 @@ description: >-
   design defaults and reports which show, with evidence, whether each looks deliberate or default, a score out
   of twenty and the three fixes to make first. Read-only, so it is safe to run on anything. Use when asked
   whether a design looks AI-generated, to audit or review a landing page or mockup for slop, or before fixing
-  one. Triggers on "design slop", "this design looks AI generated", "audit this design for AI defaults", "AI slop page".
+  one. Also reviews existing writing with `scan --prose` or `audit --prose`, without assessing authorship.
+  Triggers on "design slop", "this design looks AI generated", "audit this design for AI defaults", "AI slop page", "audit this writing for slop".
 license: MIT
 metadata:
   version: "0.2.0"
@@ -29,12 +30,31 @@ unslopper scan page.html                      # deterministic, free: what static
 unslopper audit page.html                     # model-backed: confirms, rejects and adds judgment
 unslopper audit --url https://example.com
 unslopper audit --image screenshot.png --agent-provider claude
+unslopper scan draft.md --prose               # deterministic writing review cues, no score
+unslopper audit draft.md --prose              # model-backed writing review in context
 ```
 
 Install it with `uv tool install "unslopper[all] @ git+https://github.com/michaeljabbour/amplifier-capability-unslopper"`.
 Without it, or without a model provider, do the audit by hand as follows. `references/indicators.md`
 carries one paragraph per indicator: what it looks like, why models produce it, and when it is fine.
 Label this a manual review, not a successful model-backed tool run. Missing credentials do not block `scan`.
+
+## Prose review
+
+With `--prose`, use a local `.txt`, `.md` or `.markdown` file, or inline `--source`; URL and image
+inputs are rejected. `ProseScanReport` and `ProseAuditReport` provide anchored findings, separate objective
+problems from contextual review cues, and carry `authorship: "not_assessed"` without a score.
+
+For writing, use this review instead of the visual layers below, including when working manually.
+Read for genre, audience and purpose; quote exact evidence and explain the reader's difficulty. Review
+empty announcements, repeated rhetorical scaffolding and vague claims in context. Preserve author voice,
+dialect, facts, calibrated uncertainty, attribution, quoted language, citations, references and code.
+Passives, adverbs, contrasts, tricolons and punctuation are not blanket problems. An intentional structure
+may stay; unsupported facts need a query or evidence, not invented specifics. Report limits and abstain
+on authorship. These cues cannot establish who wrote the text or supply an AI probability.
+
+Prose guidance adapts Michael Jabbour's Stop-Slop behavior, derived from Hardik Pandya's Stop-Slop.
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the MIT notices.
 
 ## The method
 

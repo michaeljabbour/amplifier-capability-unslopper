@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Integrate Stop-Slop prose review into `scan`, `audit` and `unslop` with explicit `--prose` mode.
+- Share contextual copy guidance across design audit, fixing and polish, preserving voice, evidence and calibrated claims.
+- Add paired regressions, protected-span and fidelity guards, research limits and MIT lineage notices.
+
 ## 0.2.0
 
 - URL scans gather bounded same-origin stylesheets and disclose incomplete coverage.

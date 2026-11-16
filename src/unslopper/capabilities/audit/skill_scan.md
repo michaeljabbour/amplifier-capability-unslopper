@@ -19,14 +19,17 @@ Exactly one of the three:
 - `PATH`: an `.html`, `.htm` or `.css` file.
 - `--url TEXT`: fetch HTML or CSS over http(s); HTML also gathers bounded same-origin linked CSS.
 - `--source TEXT`: inline HTML or CSS; the kind is told from its shape.
+- `--prose`: instead review a local `.txt`, `.md` or `.markdown` file, or inline prose from `--source`.
+  URL input is rejected in this mode. No model or credentials are needed.
 
-A `.css` file or inline stylesheet runs only the rule-based checks. Plain text that is neither fails
+A `.css` file or inline stylesheet runs only the rule-based checks. Without `--prose`, plain text that is neither fails
 naming what to pass instead.
 
 ```bash
 unslopper scan landing.html
 unslopper scan --url https://example.com
 unslopper scan --source '<div class="pill">NEW</div><div class="pill">BETA</div>'
+unslopper scan draft.md --prose
 ```
 
 ```python
@@ -52,7 +55,14 @@ for compatibility, not a visual-quality judgment. Coverage fields: `analysis_kin
 `bytes_read`, and `warnings` lists limitations. Disclose partial coverage when reporting results.
 A lower count alone proves no improvement: check rendered desktop/mobile views and interactions.
 
+With `--prose`, the result is `ProseScanReport`, not `ScanReport`: exact anchored source spans,
+objective problems separated from context-sensitive review cues, `authorship: "not_assessed"` and no
+score. Code, quotes and references need conservative handling; protection is incomplete. A stylistic
+pattern requires contextual review and cannot establish authorship. Read `prose-quality.md` from the
+skill resources for the shared policy.
+
 ## Failures
 
 Exit 1 with the reason on stderr: no input or more than one, a path that is not a file, a URL that
-could not be fetched, or text that is neither HTML nor CSS.
+could not be fetched, or, without `--prose`, text that is neither HTML nor CSS. Prose mode rejects
+URL input and unsupported file types.

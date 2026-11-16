@@ -186,6 +186,24 @@ def route(intent: str) -> RouteResult:
     scores = [(_score(text, words), index) for index, (_, _, words) in enumerate(ROUTES)]
     best_score, best = max(scores, key=lambda pair: (pair[0], -pair[1]))
     alternatives = [option for option, _, _ in ROUTES]
+    if re.search(r"\b(?:prose|writing|paragraph|essay|stop[- ]slop)\b", text):
+        capability = "audit"
+        if any(_matches(text, word) for word in ("scan", "static", "offline", "no model", "lint")):
+            capability = "scan"
+        elif any(_matches(text, word) for word in ("edit", "rewrite", "fix", "improve", "unslop", "clean up")):
+            capability = "unslop"
+        return RouteResult(
+            intent=intent,
+            capability=capability,
+            skill="unslopper"
+            if capability == "scan"
+            else "unslop-pass"
+            if capability == "unslop"
+            else "design-slop-audit",
+            command=f"unslopper {capability} draft.md --prose",
+            reason="The job concerns writing. Use scoped prose review; style cues do not establish authorship.",
+            alternatives=alternatives,
+        )
     if best_score == 0:
         return RouteResult(
             intent=intent,

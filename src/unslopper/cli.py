@@ -35,6 +35,9 @@ ModelOption = Annotated[str | None, typer.Option("--model", help=f"The model to 
 EffortOption = Annotated[
     ReasoningEffort, typer.Option("--reasoning-effort", help="How hard the model thinks before it answers.")
 ]
+ProseOption = Annotated[
+    bool, typer.Option("--prose", help="Review text/Markdown writing quality; no authorship inference or design score.")
+]
 
 
 class CapabilityCommand(TyperCommand):
@@ -121,7 +124,7 @@ def cli(
         ),
     ] = False,
 ) -> None:
-    """Removes AI design defaults from visual work: audits HTML, CSS or screenshots against twenty slop indicators, applies the fixes, commits a brief to a three-color direction, generates textured backgrounds, and teaches the vocabulary needed to direct a model"""
+    """Reviews HTML, CSS, screenshots and prose for context-sensitive defaults, proposes reviewable edits, directs palettes, generates textures and teaches design vocabulary"""
 
 
 @app.command()
@@ -152,9 +155,10 @@ def scan(
     path: Annotated[Path | None, typer.Argument(help="An HTML or CSS file.")] = None,
     url: Annotated[str | None, typer.Option("--url", help="A page to fetch instead of a file.")] = None,
     source: Annotated[str | None, typer.Option("--source", help="Inline HTML or CSS instead of a file.")] = None,
+    prose: ProseOption = False,
 ) -> None:
     """Find the slop indicators static heuristics can see in HTML or CSS. Deterministic."""
-    typer.echo(lib.scan(source, path, url).model_dump_json(indent=2))
+    typer.echo(lib.scan(source, path, url, prose=prose).model_dump_json(indent=2))
 
 
 @app.command()
@@ -166,9 +170,10 @@ def audit(
     agent_provider: AgentProviderOption = None,
     model: ModelOption = None,
     reasoning_effort: EffortOption = "medium",
+    prose: ProseOption = False,
 ) -> None:
     """Review a design against the twenty slop indicators and report what shows, with evidence. Model-backed."""
-    report = lib.audit(path, url, image, source, agent_provider, model, reasoning_effort)
+    report = lib.audit(path, url, image, source, agent_provider, model, reasoning_effort, prose=prose)
     typer.echo(report.model_dump_json(indent=2))
 
 
@@ -181,9 +186,10 @@ def unslop(
     agent_provider: AgentProviderOption = None,
     model: ModelOption = None,
     reasoning_effort: EffortOption = "medium",
+    prose: ProseOption = False,
 ) -> None:
     """Apply the fixes to a file as a diff, and write it with --write. Model-backed."""
-    result = lib.unslop(path, write, None, agent_provider, model, reasoning_effort)
+    result = lib.unslop(path, write, None, agent_provider, model, reasoning_effort, prose=prose)
     typer.echo(result.model_dump_json(indent=2))
 
 

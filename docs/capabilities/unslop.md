@@ -4,7 +4,7 @@ Applies the twenty fixes to one HTML or CSS file, in four moves: Subtract, Focus
 An agent edits a copy of the file in a scratch directory, guided by the deterministic scan and, when given, an audit; the library validates the result, diffs it against the original and scans it again.
 Nothing on disk changes unless `write` is true, so the diff is the deliverable to review first.
 
-Reach for it when `scan` or `audit` shows a score worth fixing on a file you can edit.
+Reach for it when `scan` or `audit` identifies confirmed problems worth fixing on a file you can edit.
 For a whole pass with direction and texture, use `antislop`, which calls this.
 
 ## Library
@@ -13,12 +13,13 @@ For a whole pass with direction and texture, use `antislop`, which calls this.
 def unslop(
     path: Path,
     write: bool = False,
-    audit_report: AuditReport | None = None,
+    audit_report: AuditReport | ProseAuditReport | None = None,
     agent_provider: AgentProvider | None = None,
     model: str | None = None,
     reasoning_effort: ReasoningEffort = "medium",
     intelligence: Intelligence | None = None,
-) -> UnslopResult
+    prose: bool = False,
+) -> UnslopResult | ProseEditResult
 ```
 
 - `path`: an existing `.html`, `.htm` or `.css` file.
@@ -32,7 +33,7 @@ Returns `UnslopResult`:
 - `plan`: `PlannedChange` entries in the order the agent made them, each with `move`, `fix_id`, `fix` and a one-sentence `change`.
 - `diff`: a unified diff from the original to the edited text, labelled `a/<name>` and `b/<name>`. Empty when the agent changed nothing.
 - `before`: `scan(path=path)`, taken before the agent ran.
-- `after`: `scan(source=edited)`, so the drop in score is deterministic evidence.
+- `after`: `scan(source=edited)`, a candidate count whose change alone does not prove improvement.
 - `written`: whether the file was replaced.
 - `notes`: what to check by hand: shortened copy, the accent chosen, states that need real data.
 
@@ -50,21 +51,36 @@ report = audit(path=page)
 result = unslop(page, audit_report=report)
 print(result.before.score, "->", result.after.score)
 print(result.diff)
-if result.after.score < result.before.score:
-    unslop(page, write=True, audit_report=report)
+# After reviewing the diff, rendered views and interactions:
+unslop(page, write=True, audit_report=report)
 ```
+
+## Prose mode
+
+With `prose=True`, `path` must be a local `.txt`, `.md` or `.markdown` file. A matching `ProseAuditReport`
+may guide the edit. The model proposes edits through the same `Intelligence` interface, and
+`ProseEditResult` returns a diff with prose reports instead of visual scores. Nothing is written unless
+`write=True`. Prose reports carry `authorship="not_assessed"` and have no score.
+
+Preserve author voice, dialect, facts, numbers, calibrated uncertainty, attribution, quotations, citations
+and references. Review repeated scaffolding and vague claims in context; passives, adverbs, contrasts,
+tricolons and punctuation are not blanket errors. Use only supplied facts, and flag missing support rather
+than inventing specificity or an actor. Conservative guards cannot guarantee semantic fidelity; review the
+diff against the original. See `src/unslopper/prose-quality.md` and
+[evidence and limits](../prose-evidence.md).
 
 ## CLI
 
 ```bash
-unslopper unslop PATH [--write] [--agent-provider amplifier-agent|claude] [--model TEXT] [--reasoning-effort low|medium|high|xhigh|max]
+unslopper unslop PATH [--write] [--prose] [--agent-provider amplifier-agent|claude] [--model TEXT] [--reasoning-effort low|medium|high|xhigh|max]
 ```
 
-Calls `lib.unslop(path, write, None, agent_provider, model, reasoning_effort)` and prints the `UnslopResult` as JSON to stdout. The CLI cannot pass an audit report; use the library for that.
+Calls `lib.unslop(..., prose=prose)` and prints the selected result as JSON to stdout. The CLI cannot pass an audit report; use the library for that.
 A failure the library can name prints its message to stderr and exits 1; a bad invocation exits 2.
 
 ```bash
 unslopper unslop landing.html                      # propose: plan, diff and scores as JSON
 unslopper unslop landing.html --write              # apply
 unslopper unslop styles.css --agent-provider claude --reasoning-effort high
+unslopper unslop draft.md --prose                 # propose writing edits without a score
 ```

@@ -38,6 +38,11 @@ A model has already read this design. Findings marked `deliberate: true` are cho
 {% endif %}
 # Rules
 
+For copy, use the shared policy below. The visual example later in this prompt illustrates layout;
+it is not evidence for new product facts. Never add example output unless the original establishes it.
+
+{{ prose_policy }}
+
 - Keep the content, the brand colours and the layout intent. The page must still be recognisably the same page about the same thing.
 - Never invent new content claims. Rewrite copy only to make it shorter and more specific, using facts already on the page.
 - Keep every existing link and form behaviour working: every `href`, `src` and `action` value stays, and no `<a>` or `<form>` is removed. The one exception is a `<link>` element's href: stylesheet and font links may change or go when a fix replaces the font, since no reader follows them. The result is rejected automatically if one goes missing.

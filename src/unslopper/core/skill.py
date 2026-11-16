@@ -28,22 +28,24 @@ CAPABILITIES = (
     ),
     Capability(
         "scan",
-        "Find the slop indicators static heuristics can see in HTML or CSS, with evidence and a score.",
+        "Find static design candidates in HTML/CSS, or scoped writing cues with --prose.",
         model_backed=False,
         skill="capabilities/audit/skill_scan.md",
+        resources=("prose-quality.md", "THIRD_PARTY_NOTICES.md"),
     ),
     Capability(
         "audit",
-        "Review a file, URL or screenshot against the twenty indicators and report what shows, with evidence.",
+        "Review design indicators, or writing quality with --prose, with evidence and contextual judgment.",
         model_backed=True,
         skill="capabilities/audit/skill_audit.md",
-        resources=("capabilities/audit/indicators.md",),
+        resources=("capabilities/audit/indicators.md", "prose-quality.md", "THIRD_PARTY_NOTICES.md"),
     ),
     Capability(
         "unslop",
-        "Apply the fixes to an HTML or CSS file as a diff, and write it on request.",
+        "Propose design fixes or a faithful text edit with --prose as a diff; write on request.",
         model_backed=True,
         skill="capabilities/unslop/skill_unslop.md",
+        resources=("prose-quality.md", "THIRD_PARTY_NOTICES.md"),
     ),
     Capability(
         "contrast",

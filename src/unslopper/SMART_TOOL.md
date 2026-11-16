@@ -3,8 +3,9 @@ smart_tool_format: 1
 name: unslopper
 version: 0.2.0
 description: >-
-  Removes AI design defaults from visual work: audits HTML, CSS or screenshots against twenty slop indicators, applies the fixes, commits a brief to a three-color direction, generates textured backgrounds, and teaches the vocabulary needed to direct a model
+  Reviews HTML, CSS, screenshots and prose for context-sensitive defaults, proposes reviewable edits, directs palettes, generates textures and teaches design vocabulary
 use_cases:
+  - Review or edit existing text and Markdown with anchored findings, preserving voice and facts without assessing authorship
   - Tell whether a page a model generated reads as default output, with evidence and a score out of twenty
   - Remove the tells from an HTML or CSS file without changing what it says or how it is laid out
   - Give a product one committed visual direction instead of a purple gradient and Inter
@@ -37,6 +38,9 @@ that remove them, twenty design terms, twenty-two textures and the three-colour 
 design a direction, and it applies them to HTML, CSS, screenshots and briefs. The material comes
 from the Unslop School course shipped in the repository's `docs/`.
 
+`scan`, `audit` and `unslop` also accept explicit prose mode for existing writing. Its shared
+Stop-Slop discipline reviews scaffolding and unsupported claims in context, preserving voice and facts.
+
 **The library is the tool.** `unslopper.lib` holds every capability. The CLI is a thin
 wrapper over it, so anything you can do from the shell you can also do from Python.
 
@@ -48,6 +52,7 @@ Skill that teaches the same method by hand, and costs nothing.
 - A page, component or screenshot a model produced looks generic and you need to say why, with
   evidence: `scan` (free, static) or `audit` (model-backed, judges deliberate from default).
 - You have the HTML or CSS and want the fixes applied as a reviewable diff: `unslop`.
+- Existing writing needs review or a careful edit: `scan --prose`, `audit --prose` or `unslop --prose`.
 - A brief needs a direction before layout starts: `direct`, with `contrast` to check any pair.
 - A background is flat or a purple gradient: `texture`.
 - Someone needs the vocabulary to ask for what they want: `tutor`, or `reference terms`.
@@ -55,6 +60,8 @@ Skill that teaches the same method by hand, and costs nothing.
 
 Not for rendering or pixel measurement, not a design system, and not a judge of taste: a choice
 that repeats and belongs to the subject's world is reported as deliberate and left alone.
+Prose mode does not assess authorship or assign an AI probability. It separates objective problems from
+review cues, preserves dialect and calibrated uncertainty, and does not ban grammatical or rhetorical forms.
 
 ## Before writing code
 
@@ -112,6 +119,9 @@ unslopper route "make this page look less AI"   # which capability and skill fit
 unslopper scan page.html                      # static, free: indicators with evidence, score, fixes first
 unslopper audit page.html                     # the same with a model's judgment of deliberate versus default
 unslopper unslop page.html                    # a diff; add --write to apply it
+unslopper scan draft.md --prose               # static writing cues with anchored evidence, no score
+unslopper audit draft.md --prose              # model-backed review in context
+unslopper unslop draft.md --prose             # proposed writing edits; add --write after review
 unslopper direct "a mechanical watch brand lit like the aurora"
 unslopper texture --name blueprint --subject "developer tools" --ground "#1C4E8A" --light "#F5F7FA" --signal "#FFB020"
 unslopper tutor teach --term "tabular numbers"
@@ -124,6 +134,12 @@ Results go to stdout as one JSON document, diagnostics to stderr. A failure prin
 naming what went wrong and how to fix it, and exits non-zero: 1 for a failure the tool can name,
 2 for a bad invocation. Nothing on disk changes unless a command is given `--write`; without it the
 diff in the result is the deliverable. Never treat an empty result as success.
+
+Prose mode accepts local `.txt`, `.md` and `.markdown` files, or inline `--source` for `scan` and
+`audit`; it rejects URL and image inputs. It returns dedicated prose reports with exact source spans,
+`authorship: "not_assessed"` and no score. Preserve facts, uncertainty, attribution, quotes, citations
+and references when reviewing edits. Conservative source checks cannot guarantee semantic fidelity.
+Read `prose-quality.md` for the policy and the repository's `docs/prose-evidence.md` for evidence and limits.
 
 ## Choosing a surface
 

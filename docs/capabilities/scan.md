@@ -8,7 +8,7 @@ for compatibility. A lower count does not prove a better design.
 ## Library
 
 ```python
-def scan(source: str | None = None, path: Path | None = None, url: str | None = None) -> ScanReport
+def scan(source: str | None = None, path: Path | None = None, url: str | None = None, prose: bool = False) -> ScanReport | ProseScanReport
 ```
 
 Exactly one of the three. `path` is an `.html`, `.htm` or `.css` file; `url` is fetched over http(s) and classified
@@ -32,17 +32,30 @@ selectors, conditional rules, complete shorthand resets and scoped custom-proper
 Confirm findings in rendered desktop and mobile views and exercise interactions before claiming improvement.
 
 Raises `UnslopperError` when no input or more than one is given, the path is not a file, the URL cannot be
-fetched, or the text is neither HTML nor CSS.
+fetched, or, without prose mode, the text is neither HTML nor CSS.
 
 The checks live in `capabilities/audit/scan.py`, one function per indicator, named after the entry in
 `knowledge.INDICATORS` so layer and fixes are read from there. Each errs toward silence: slight negative tracking
 on display type, monospace inside code, one warm gradient and a multi-line terminal block are left alone.
 
+## Prose mode
+
+With `prose=True`, pass a local `.txt`, `.md` or `.markdown` file or inline `source`; URL input is rejected.
+Returns `ProseScanReport` with exact source spans, objective problems separated from review cues,
+`authorship="not_assessed"` and no score. It is a deterministic first pass, not an authorship detector.
+Quoted material, code and references need conservative handling; syntax-based protection is incomplete.
+Review cues require context before any edit. See [evidence and limits](../prose-evidence.md).
+
 ## CLI
 
 ```bash
-unslopper scan [PATH] [--url TEXT] [--source TEXT]
+unslopper scan [PATH] [--url TEXT] [--source TEXT] [--prose]
 ```
 
-Calls `lib.scan(source, path, url)` and prints the `ScanReport` as JSON. Exits 1 with the message on stderr for
+Calls `lib.scan(source, path, url, prose)` and prints the selected report as JSON. Exits 1 with the message on stderr for
 any `UnslopperError`, 2 for a bad invocation.
+
+```bash
+unslopper scan draft.md --prose
+unslopper scan --source "The observed rate may differ across sites." --prose
+```

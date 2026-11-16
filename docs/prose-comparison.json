@@ -1,0 +1,249 @@
+{
+  "method": "Identical synthetic fixtures through each checkout's library scan. No model calls or detector scores.",
+  "limits": "Main lacks prose mode; its input errors indicate unsupported input, not missed detections. Fixture expectations are narrow editorial regressions, not a validated quality or authorship benchmark. Commit is context; source_sha256 fingerprints the actual source, including uncommitted changes.",
+  "fixture_sha256": "528e79ee38e3fa8525727dec629f4e6ea40b4b223f71931ef0c243fdccf672d7",
+  "baseline": {
+    "commit": "bb8bba498e061958b011a3340efd2742395dc9cc",
+    "source_sha256": "d71f4688cdc2adb37590328ea627610a9dfb602eecdbc02a876e4eb6cc0ec98b",
+    "supports_prose": false,
+    "samples": 24,
+    "supported_samples": 0,
+    "input_errors": 24,
+    "matching_expectations": 0,
+    "positive_samples_flagged": 0,
+    "legitimate_samples_flagged": 0,
+    "rows": [
+      {
+        "id": "1:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "1:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "2:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "2:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "3:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "3:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "4:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "4:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "5:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "5:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "6:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "6:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "7:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "7:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "8:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "8:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "9:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "9:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "10:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "10:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "11:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "11:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "12:problem",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      },
+      {
+        "id": "12:legitimate",
+        "error": "inline is neither HTML nor CSS. Pass an .html or .css file, a URL, or inline markup or stylesheet text that starts with a tag or contains rules."
+      }
+    ]
+  },
+  "feature": {
+    "commit": "bb8bba498e061958b011a3340efd2742395dc9cc",
+    "source_sha256": "cf802fa97bca69701c206c0dcdcea9c96391d2a760dc4b5879f00e2bc5d0243b",
+    "supports_prose": true,
+    "samples": 24,
+    "supported_samples": 24,
+    "input_errors": 0,
+    "matching_expectations": 24,
+    "positive_samples_flagged": 12,
+    "legitimate_samples_flagged": 0,
+    "rows": [
+      {
+        "id": "1:problem",
+        "rules": [
+          "empty-announcement"
+        ]
+      },
+      {
+        "id": "1:legitimate",
+        "rules": []
+      },
+      {
+        "id": "2:problem",
+        "rules": [
+          "generic-importance"
+        ]
+      },
+      {
+        "id": "2:legitimate",
+        "rules": []
+      },
+      {
+        "id": "3:problem",
+        "rules": [
+          "performative-emphasis"
+        ]
+      },
+      {
+        "id": "3:legitimate",
+        "rules": []
+      },
+      {
+        "id": "4:problem",
+        "rules": [
+          "repeated-scaffolding",
+          "repeated-scaffolding",
+          "repeated-scaffolding"
+        ]
+      },
+      {
+        "id": "4:legitimate",
+        "rules": []
+      },
+      {
+        "id": "5:problem",
+        "rules": [
+          "duplicate-word"
+        ]
+      },
+      {
+        "id": "5:legitimate",
+        "rules": []
+      },
+      {
+        "id": "6:problem",
+        "rules": [
+          "empty-announcement"
+        ]
+      },
+      {
+        "id": "6:legitimate",
+        "rules": []
+      },
+      {
+        "id": "7:problem",
+        "rules": [
+          "empty-announcement"
+        ]
+      },
+      {
+        "id": "7:legitimate",
+        "rules": []
+      },
+      {
+        "id": "8:problem",
+        "rules": [
+          "performative-emphasis"
+        ]
+      },
+      {
+        "id": "8:legitimate",
+        "rules": []
+      },
+      {
+        "id": "9:problem",
+        "rules": [
+          "empty-announcement"
+        ]
+      },
+      {
+        "id": "9:legitimate",
+        "rules": []
+      },
+      {
+        "id": "10:problem",
+        "rules": [
+          "generic-importance"
+        ]
+      },
+      {
+        "id": "10:legitimate",
+        "rules": []
+      },
+      {
+        "id": "11:problem",
+        "rules": [
+          "empty-announcement"
+        ]
+      },
+      {
+        "id": "11:legitimate",
+        "rules": []
+      },
+      {
+        "id": "12:problem",
+        "rules": [
+          "empty-announcement"
+        ]
+      },
+      {
+        "id": "12:legitimate",
+        "rules": []
+      }
+    ]
+  }
+}

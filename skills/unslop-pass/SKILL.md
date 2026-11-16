@@ -3,7 +3,8 @@ name: unslop-pass
 description: >-
   Removes AI design defaults from an existing HTML or CSS page or component by applying twenty fixes
   in four moves (Subtract, Focus, Systematize, Respond) while keeping the content, brand colours,
-  layout intent and every link and form. Shows a diff before writing. Use when a page or component "looks AI
+  layout intent and every link and form. Also edits existing text or Markdown with explicit prose mode,
+  preserving author voice and factual meaning. Shows a diff before writing. Use when a page or component "looks AI
   generated", "reads as design slop", needs "unslopping", or an audit found specific problems worth fixing.
 license: MIT
 metadata:
@@ -26,6 +27,7 @@ survived, and returns a unified diff with a before and after score.
 ```bash
 unslopper unslop page.html                      # propose: review the diff and the plan
 unslopper unslop page.html --write              # apply, once the diff looks right
+unslopper unslop draft.md --prose               # propose edits to existing writing
 ```
 
 Read `unslopper unslop --help` first for the arguments and the result shape. When the file was
@@ -46,6 +48,24 @@ unless the user has asked for an unattended run. Report the before and after sco
 not a visual-quality grade. Retained legacy verdicts are not rewrite gates; review coverage warnings first.
 
 Install, if missing: `uv tool install "unslopper[all] @ git+https://github.com/michaeljabbour/amplifier-capability-unslopper"`.
+
+## Prose pass
+
+Use `unslop PATH --prose` for a local `.txt`, `.md` or `.markdown` file. The result is a
+`ProseEditResult` with a reviewable diff and prose reports, without a score or AI probability;
+`authorship` is `not_assessed`. Add `--write` only for the requested write. A matching prose audit can
+guide the library call: `unslop(path, audit_report=report, prose=True)`.
+
+For a manual prose pass, use this method instead of the visual moves below. Identify the genre and purpose,
+then quote and locate each problem. Separate objective defects from review cues. Cut empty announcements
+or repeated scaffolding only when they add no meaning. Review vague claims using supplied facts; flag
+missing support rather than inventing specificity or an actor. Preserve author voice, dialect, facts,
+numbers, calibrated uncertainty, attribution, quotes, citations, references and code. Intentional contrast,
+tricolons, passives, adverbs and punctuation may be appropriate. If uncertain, leave the passage and explain
+the concern. Read the diff against the original; deterministic guards cannot guarantee semantic fidelity.
+
+Prose guidance adapts Michael Jabbour's Stop-Slop behavior, derived from Hardik Pandya's Stop-Slop.
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the MIT notices.
 
 ## Doing the pass by hand
 
@@ -96,7 +116,7 @@ Design the moments between states.
 
 ## Rules that hold through every move
 
-- Never invent new content claims. Rewrite copy only to be shorter and more specific.
+- Never invent new content claims. Rewrite copy only for a confirmed clarity problem using supplied facts; preserve voice, dialect, uncertainty, attribution, quotations, citations and references. Stylistic patterns are review cues, not authorship evidence.
 - Keep every existing link and form behaviour working. Before and after, list the `href`, `src` and `action` values and the `<a>` and `<form>` counts; nothing may go missing. A `<link>` to a stylesheet or font is the one exception: it may change when a fix replaces the font.
 - Keep scripts and the ids and classes they rely on, functional navigation, filters, keyboard focus and accessible names. Hidden empty/loading/error states are not filler.
 - Preserve intentional sentence headings, punctuation, coherent palettes and typography. Flat backgrounds are not defects; new colours and texture are optional, not required.

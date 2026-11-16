@@ -33,9 +33,9 @@ Each command's shape, options and exit codes are on its page under [capabilities
 ```
 unslopper reference TOPIC [--name TEXT]
 unslopper route INTENT
-unslopper scan [PATH] [--url URL] [--source TEXT]
-unslopper audit [PATH] [--url URL] [--image PATH] [--source TEXT] [model options]
-unslopper unslop PATH [--write] [model options]
+unslopper scan [PATH] [--url URL] [--source TEXT] [--prose]
+unslopper audit [PATH] [--url URL] [--image PATH] [--source TEXT] [--prose] [model options]
+unslopper unslop PATH [--write] [--prose] [model options]
 unslopper contrast FOREGROUND BACKGROUND
 unslopper direct BRIEF [--directions N] [--dark-and-light] [model options]
 unslopper tutor [MODE] [--term TEXT] [--image PATH] [--answer TEXT] [--progress TEXT ...] [model options]
@@ -44,6 +44,18 @@ unslopper antislop PATH [--write] [--with-texture] [model options]
 ```
 
 Model options, on every model-backed command: `--agent-provider {amplifier-agent,claude}`, `--model TEXT` and `--reasoning-effort {low,medium,high,xhigh,max}`. Their help names each provider's default model. Nothing on disk changes without `--write`.
+
+`--prose` selects writing review for local `.txt`, `.md` or `.markdown` files; `scan` and `audit`
+also accept inline `--source`. Prose mode rejects `--url` and `--image`. `scan` stays deterministic;
+`audit` and `unslop` use the configured model provider. Prose JSON has anchored findings and
+`authorship: "not_assessed"`, without a score. Review the diff for voice and factual fidelity before writing.
+
+```bash
+unslopper scan draft.md --prose
+unslopper audit --source "The observed rate may differ across sites." --prose
+unslopper unslop draft.md --prose
+unslopper unslop draft.md --prose --write
+```
 
 ## Adding a command
 

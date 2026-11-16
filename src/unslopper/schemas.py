@@ -48,6 +48,62 @@ class Manifest(BaseModel):
 
 # endregion
 
+# region: Prose
+
+
+class ProseFinding(BaseModel):
+    """A source-anchored observation or contextual editorial judgment, never an authorship signal."""
+
+    rule_id: str
+    category: Literal["objective", "review"]
+    start: int = Field(ge=0, description="Inclusive Python character offset in the original source")
+    end: int = Field(gt=0, description="Exclusive Python character offset in the original source")
+    line: int = Field(ge=1)
+    evidence: str
+    rationale: str
+    suggestion: str | None = None
+    disposition: Literal["fix", "review", "keep", "uncertain"] = "review"
+
+
+class ProseScanReport(BaseModel):
+    """Deterministic prose candidates with scope and limitations; no aggregate quality or detector score."""
+
+    source: str
+    source_kind: Literal["text", "markdown"]
+    analysis_kind: Literal["static_prose_candidates"] = "static_prose_candidates"
+    authorship: Literal["not_assessed"] = "not_assessed"
+    findings: list[ProseFinding]
+    protected_spans: int = Field(ge=0)
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ProseAuditReport(BaseModel):
+    """Contextual prose review, retaining keep and uncertain decisions as inspectable findings."""
+
+    source: str
+    analysis_kind: Literal["model_prose_review"] = "model_prose_review"
+    authorship: Literal["not_assessed"] = "not_assessed"
+    summary: str
+    findings: list[ProseFinding]
+    scan: ProseScanReport
+    warnings: list[str] = Field(default_factory=list)
+
+
+class ProseEditResult(BaseModel):
+    """A proposed prose edit and its fidelity checks; the original changes only when write is requested."""
+
+    path: Path
+    proposed_text: str
+    diff: str
+    before: ProseScanReport
+    after: ProseScanReport
+    written: bool
+    authorship: Literal["not_assessed"] = "not_assessed"
+    notes: list[str] = Field(default_factory=list)
+
+
+# endregion
+
 # region: Skill
 
 
